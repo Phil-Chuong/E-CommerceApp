@@ -1,0 +1,76 @@
+openapi: 3.0.3
+info:
+  title: E-Commerce REST API
+  version: 1.0.0
+  description: E-commerce shopping back-end API server
+schemes: 
+  - http
+host: localhost:4000
+basePath: "/"
+paths:
+  /users:
+    summary: Get all users data
+    description: Retrieve all users data
+    get:
+      summary: Get all users
+      operationId: getUsers
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        default:
+          description: Error response
+      tags:
+        - Users
+  /users/{id}:
+    summary: Get user by ID
+    description: Retrieve user data by ID
+    parameters:
+      - in: path
+        name: id
+        required: true
+        description: User ID
+        schema:
+          type: integer
+    get:
+      summary: Get user by ID
+      operationId: getUserById
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          description: Error response
+      tags:
+        - Users
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        firstname:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        username:
+          type: string
+
+    Users:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'

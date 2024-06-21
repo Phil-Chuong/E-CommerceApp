@@ -1,0 +1,32 @@
+<!-- views/index.ejs -->
+<!-- HOMEPAGE -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+</head>
+<body>
+    <h1>Welcome, <%= username %>!</h1>
+    <h2>Introduction AREA</h2>
+    <ul>
+        <% products.forEach(product => { %>
+            <li><%= product.name %>: $<%= product.price %></li>
+            <form method="post" action="/cart/add">
+                <input type="hidden" name="productId" value="<%= product.id %>" />
+                <input type="number" name="quantity" value="1" />
+                <input type="hidden" name="productName" value="<%= product.product_name %>" />
+                <input type="hidden" name="productPrice" value="<%= product.product_price %>" />
+                <input type="submit" value="Add to Cart"/>
+            </form>
+        <% }) %>
+    </ul>
+</body>
+</html>
+
+
+<form action="/logout?_method=DELETE" method="POST">
+    <button type="submit">Log Out</button>
+</form>

@@ -1,0 +1,122 @@
+-- Table: public.users
+
+-- DROP TABLE IF EXISTS public.users;
+
+CREATE TABLE IF NOT EXISTS public.users
+(
+    id integer NOT NULL DEFAULT nextval('users_id_seq'::regclass),
+    firstname character varying(255) COLLATE pg_catalog."default",
+    lastname character varying(255) COLLATE pg_catalog."default",
+    email character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    password character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    username character varying(255) COLLATE pg_catalog."default",
+    CONSTRAINT users_pkey PRIMARY KEY (id),
+    CONSTRAINT users_email_key UNIQUE (email),
+    CONSTRAINT users_username_key UNIQUE (username)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.users
+    OWNER to postgres;
+
+    -- Table: public.products
+
+    -- DROP TABLE IF EXISTS public.products;
+    
+    CREATE TABLE IF NOT EXISTS public.products
+    (
+        id integer NOT NULL DEFAULT nextval('products_id_seq'::regclass),
+        name character varying(255) COLLATE pg_catalog."default" NOT NULL,
+        description text COLLATE pg_catalog."default",
+        price numeric(10,2) NOT NULL,
+        stock integer NOT NULL DEFAULT 0,
+        created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+        updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT products_pkey PRIMARY KEY (id)
+    )
+    
+    TABLESPACE pg_default;
+    
+    ALTER TABLE IF EXISTS public.products
+        OWNER to postgres;
+
+        -- Table: public.cart
+
+        -- DROP TABLE IF EXISTS public.cart;
+        
+        CREATE TABLE IF NOT EXISTS public.cart
+        (
+            id integer NOT NULL DEFAULT nextval('cart_id_seq'::regclass),
+            user_id integer NOT NULL,
+            status character varying(50) COLLATE pg_catalog."default" NOT NULL DEFAULT 'active'::character varying,
+            created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+            updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+            CONSTRAINT cart_pkey PRIMARY KEY (id),
+            CONSTRAINT cart_user_id_fkey FOREIGN KEY (user_id)
+                REFERENCES public.users (id) MATCH SIMPLE
+                ON UPDATE NO ACTION
+                ON DELETE CASCADE
+        )
+        
+        TABLESPACE pg_default;
+        
+        ALTER TABLE IF EXISTS public.cart
+            OWNER to postgres;
+
+            -- Table: public.cart_items
+
+            -- DROP TABLE IF EXISTS public.cart_items;
+            
+            CREATE TABLE IF NOT EXISTS public.cart_items
+            (
+                id integer NOT NULL DEFAULT nextval('cart_items_id_seq'::regclass),
+                cart_id integer NOT NULL,
+                product_id integer NOT NULL,
+                qty integer NOT NULL,
+                created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+                updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+                price numeric(10,2) NOT NULL,
+                CONSTRAINT cart_items_pkey PRIMARY KEY (id),
+                CONSTRAINT cart_items_cart_id_fkey FOREIGN KEY (cart_id)
+                    REFERENCES public.cart (id) MATCH SIMPLE
+                    ON UPDATE NO ACTION
+                    ON DELETE CASCADE,
+                CONSTRAINT cart_items_product_id_fkey FOREIGN KEY (product_id)
+                    REFERENCES public.products (id) MATCH SIMPLE
+                    ON UPDATE NO ACTION
+                    ON DELETE CASCADE
+            )
+            
+            TABLESPACE pg_default;
+            
+            ALTER TABLE IF EXISTS public.cart_items
+                OWNER to postgres;
+
+                -- Table: public.orders
+
+                -- DROP TABLE IF EXISTS public.orders;
+                
+                CREATE TABLE IF NOT EXISTS public.orders
+                (
+                    id integer NOT NULL DEFAULT nextval('orders_id_seq'::regclass),
+                    user_id integer NOT NULL,
+                    cart_id integer NOT NULL,
+                    created timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+                    "totalPrice" money NOT NULL,
+                    status text COLLATE pg_catalog."default" NOT NULL,
+                    CONSTRAINT orders_pkey PRIMARY KEY (id),
+                    CONSTRAINT orders_cart_id_fkey FOREIGN KEY (cart_id)
+                        REFERENCES public.cart (id) MATCH SIMPLE
+                        ON UPDATE NO ACTION
+                        ON DELETE NO ACTION,
+                    CONSTRAINT orders_user_id_fkey FOREIGN KEY (user_id)
+                        REFERENCES public.users (id) MATCH SIMPLE
+                        ON UPDATE NO ACTION
+                        ON DELETE NO ACTION
+                )
+                
+                TABLESPACE pg_default;
+                
+                ALTER TABLE IF EXISTS public.orders
+                    OWNER to postgres;
