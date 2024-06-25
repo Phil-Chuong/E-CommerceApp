@@ -1,16 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
-const authService = require('../services/authService');
 const pool = require('../DB/db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { checkAuthenticated, checkNotAuthenticated } = require('../services/authService');
 require('dotenv').config();
+
+
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
 // Register route
-router.post('/register', authService.checkNotAuthenticated, async (req, res) => {
+router.post('/register', checkNotAuthenticated, async (req, res) => {
   try {
       const { firstname, lastname, username, email, password } = req.body;
 
@@ -36,7 +38,7 @@ router.post('/register', authService.checkNotAuthenticated, async (req, res) => 
   }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', checkNotAuthenticated, async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -59,18 +61,38 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Logout
-router.post('/logout', (req, res) => {
-  req.logOut(() => {
-    res.redirect('/login');
-  });
+// Handle login
+router.post('/login', checkNotAuthenticated, passport.authenticate('local', {
+  successRedirect: '/HomePage', // Redirect to home page on successful login
+  failureRedirect: '/login',    // Redirect back to login page on failure
+  failureFlash: true            // Enable flash messages for authentication failures
+}));
+
+// Logout route
+router.post('/logout', async (req, res) => {
+  const { token } = req.body;
+  if (!token) {
+    return res.status(400).json({ error: 'Token required' });
+  }
+
+  try {
+    // Optionally, implement token invalidation logic
+    res.json({ message: 'Logged out successfully' });
+  } catch (error) {
+    console.error('Error during logout:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
-// Handle DELETE request for logout
-router.delete('/logout', (req, res) => {
-  req.logOut(() => {
-    res.redirect('/login');
-  });
+//Redirect Route if not authenticated
+router.get('/HomePage', checkAuthenticated, (req, res) => {
+  res.render('HomePage');
 });
+
+router.get('/login', checkNotAuthenticated, (req, res) => {
+  res.render('login');
+});
+
+
 
 module.exports = router;

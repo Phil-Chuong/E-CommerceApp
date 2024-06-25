@@ -13,23 +13,25 @@ const usersRouter = require('./routes/users');
 const ordersRouter = require('./routes/order');
 const config = require('./config');
 const pool = require('./DB/db');
-const LocalStrategy = require('passport-local').Strategy;
-const authService = require('./services/authService');
+const { initializePassport } = require('./services/authService');
 const methodOverride = require('method-override');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 const bodyParser = require('body-parser');
 const path = require('path');
-
 const app = express();
+
+
 
 //Method Override
 app.use(methodOverride('_method'));
 
-
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+// Initialize Passport
+initializePassport(passport, pool);
 
 // Session middleware
 app.use(session({ 
@@ -46,9 +48,6 @@ app.use(flash());
 //BodyParser
 app.use(bodyParser.json());
 
-// Initialize Passport
-authService.initializePassport(passport, pool);
-
 // Global variables
 app.use((req, res, next) => {
   res.locals.currentUser = req.user;
@@ -57,8 +56,8 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/auth', authRouter);
-app.use('/authRoutes', authRoutes);
 app.use('/products', productRouter);
+app.use('/auth', authRoutes);
 app.use('/cart', cartRouter);
 app.use('/users', usersRouter);
 app.use('/orders', ordersRouter);
@@ -76,7 +75,6 @@ app.get('*', (req, res) => {
 app.get('/', (req, res) => {
   res.redirect('/login');
 });
-
 
 // Swagger options
 const options = {

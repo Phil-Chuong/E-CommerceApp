@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const RegisterPage = () => {
   const [firstname, setFirstname] = useState('');
@@ -14,7 +14,10 @@ const RegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/auth/register', { firstname, lastname, username, email, password });
+      const response = await axios.post('/auth/register', { firstname, lastname, username, email, password });
+      const { token } = response.data;
+      // Store token in local storage or cookie
+      localStorage.setItem('token', token);
       navigate('/HomePage');
     } catch (error) {
       if (error.response) {
@@ -38,7 +41,7 @@ const RegisterPage = () => {
       <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required/>
       <button type="submit">Register</button>
       <br/>
-      <button><a href='/login'>Login</a></button>
+      <Link to="/login">Login</Link> {/* Use Link component for internal navigation */}
     </form>
     
   )

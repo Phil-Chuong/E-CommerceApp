@@ -1,25 +1,23 @@
 const bcrypt = require('bcrypt');
+const LocalStrategy = require('passport-local').Strategy;
 
-//Initialize Passport
 const initializePassport = (passport, pool) => {
-    const LocalStrategy = require('passport-local').Strategy;
-
     const authenticateUser = async (email, password, done) => {
         try {
-            const user = await getUserByEmail(pool, email);
-            console.log('User', user);
+            const query = 'SELECT * FROM users WHERE email = $1';
+            const result = await pool.query(query, [email]);
+            const user = result.rows[0];
+
             if (!user) {
                 return done(null, false, { message: 'No user with that email' });
             }
 
-            console.log('Password:', user.password);
             if (await bcrypt.compare(password, user.password)) {
                 return done(null, user);
             } else {
                 return done(null, false, { message: 'Password incorrect' });
             }
         } catch (error) {
-            console.error('Error in bcrypt compare:', error);
             return done(error);
         }
     };
@@ -34,44 +32,29 @@ const initializePassport = (passport, pool) => {
             if (user) {
                 done(null, user);
             } else {
-                done({ message: 'User not found' }, null);
+                done(new Error('User not found'));
             }
         } catch (error) {
-            console.error('Error in deserializeUser:', error);
-            done(error, null);
+            done(error);
         }
     });
 };
 
-
-//GET users Email
-const getUserByEmail = async (pool, email) => {
-    try {
-        const query = 'SELECT * FROM users WHERE email = $1';
-        const result = await pool.query(query, [email]);
-        return result.rows[0]; // This will return the first user found with the specified email
-    } catch (error) {
-        throw error;
-    }
-};
-
-// Redirect when user is Authenticated
+// backend/middleware/authMiddleware.js
 const checkAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
-        return next();
+      return next();
     }
     res.redirect('/login');
-};
-
-const checkNotAuthenticated = (req, res, next) => {
+  };
+  
+  const checkNotAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
-        return res.redirect('/HomePage');
+      return res.redirect('/HomePage');
     }
     next();
-};
+  };
 
-module.exports = { 
-    initializePassport,
-    checkAuthenticated, 
-    checkNotAuthenticated,
-};
+
+
+module.exports = { initializePassport, checkAuthenticated, checkNotAuthenticated };

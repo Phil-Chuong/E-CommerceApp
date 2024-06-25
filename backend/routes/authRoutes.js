@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
+const passport = require('passport')
 const { OAuth2Client } = require('google-auth-library');
 const pool = require('../DB/db');
 const jwt = require('jsonwebtoken');
@@ -9,10 +10,12 @@ require('dotenv').config();
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const JWT_SECRET = process.env.JWT_SECRET;
 
-router.post('/google-login', async (req, res) => {
-  const { token } = req.body;
 
+// Handle Google login
+router.post('/google-login', async (req, res) => {
   try {
+    const { token } = req.body;
+    // Verify token with Google and get user information
     const ticket = await client.verifyIdToken({
       idToken: token,
       audience: process.env.GOOGLE_CLIENT_ID,
@@ -48,5 +51,6 @@ router.post('/google-login', async (req, res) => {
     res.status(401).json({ error: 'Invalid Google token' });
   }
 });
+
 
 module.exports = router;

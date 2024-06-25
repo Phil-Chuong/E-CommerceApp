@@ -30,7 +30,7 @@ const LoginPage = () => {
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
       const { credential } = credentialResponse;
-      const response = await axios.post('/authRoutes/google-login', { token: credential });
+      const response = await axios.post('/auth/google-login', { token: credential });
       const { token } = response.data;
       localStorage.setItem('token', token);
       navigate('/HomePage');
@@ -66,7 +66,7 @@ const LoginPage = () => {
         onError={handleGoogleError}
       />
       <p>
-        Don't have an account? <a href="/">Register here</a>
+        Don't have an account? <a href="/register">Register here</a>
       </p>
     </form>   
   );
