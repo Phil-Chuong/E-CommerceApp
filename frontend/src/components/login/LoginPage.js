@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
+import './LoginPage.css';
+import Logo from '../images/Logo.jpg';
+
+
 // import jwtDecode from 'jwt-decode';
 
 const LoginPage = () => {
@@ -44,31 +48,37 @@ const LoginPage = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Login</h2>
-      <input 
-        type="email" 
-        value={email} 
-        onChange={(e) => setEmail(e.target.value)} 
-        placeholder="Email" 
-      />
-      <input 
-        type="password" 
-        value={password} 
-        onChange={(e) => setPassword(e.target.value)} 
-        placeholder="Password" 
-      />
-      <button type="submit">Login</button>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-    
-      <GoogleLogin
-        onSuccess={handleGoogleSuccess}
-        onError={handleGoogleError}
-      />
-      <p>
-        Don't have an account? <a href="/register">Register here</a>
-      </p>
-    </form>   
+    <div className='loginBody'>
+        <form className='loginForm' onSubmit={handleSubmit}>
+          <img className='logo' src={Logo} alt='companyLogo'/>
+          <h2>Login</h2>
+          <input
+            type="email" 
+            value={email} 
+            onChange={(e) => setEmail(e.target.value)} 
+            placeholder="Email" 
+          />
+          <input 
+            type="password" 
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)} 
+            placeholder="Password" 
+          />
+          <br/>
+          <button type="submit">Login</button>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+
+          <br/>
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+          />
+          <br/>
+          <p>
+            Don't have an account? <a href="/register">Register here</a>
+          </p>
+        </form>  
+    </div>    
   );
 };
 

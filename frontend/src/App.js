@@ -1,11 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import ProductDetail from './components/ProductDetail';
-import LoginPage from './components/LoginPage';
-import HomePage from './components/HomePage';
-import RegisterPage from './components/RegisterPage';
+import ProductDetail from './Routes/products/ProductDetail';
+import LoginPage from './components/login/LoginPage';
+import HomePage from './Routes/homepage/HomePage';
+import RegisterPage from './components/register/RegisterPage';
 import PrivateRoutes from './Routes/PrivateRoutes';
-import CartPage from './components/CartPage';
+import CartPage from './Routes/cart/CartPage';
+import ProductList from './Routes/productlist/ProductList';
+import AuthenticatedLayout from './Routes/AuthenticatedLayout';
 
 function App() {
   return (
@@ -18,10 +20,13 @@ function App() {
 
           {/* Private routes */}
           <Route element={<PrivateRoutes />}>
-            <Route element={<HomePage />} path='/HomePage' exact/>
-            <Route element={<ProductDetail />} path='/products/:id' />
-            <Route element={<CartPage />} path='/cart' exact/>
-          </Route>    
+            <Route element={<AuthenticatedLayout />}> 
+              <Route element={<HomePage />} path='/HomePage' exact/>
+              <Route element={<ProductList />} path='/products' exact/>
+              <Route element={<ProductDetail />} path='/products/:id' exact/>
+              <Route element={<CartPage />} path='/cart' exact/>  
+            </Route>
+          </Route>                    
       </Routes>
     </Router>
   );

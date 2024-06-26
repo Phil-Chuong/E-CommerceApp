@@ -25,16 +25,16 @@ const HomePage = () => {
   }, [navigate]);
 
 
-  const handleLogout = async () => {
-    const token = localStorage.getItem('token');
-    try {
-      await axios.post('/auth/logout', { token });  // Ensure this URL matches your backend route
-      localStorage.removeItem('token'); // Clear authentication token
-      navigate('/login'); // Redirect to login page
-    } catch (error) {
-      console.error('Error during logout:', error);
-    }
-  };
+  // const handleLogout = async () => {
+  //   const token = localStorage.getItem('token');
+  //   try {
+  //     await axios.post('/auth/logout', { token });  // Ensure this URL matches your backend route
+  //     localStorage.removeItem('token'); // Clear authentication token
+  //     navigate('/login'); // Redirect to login page
+  //   } catch (error) {
+  //     console.error('Error during logout:', error);
+  //   }
+  // };
 
   return (
     <div>
@@ -45,7 +45,6 @@ const HomePage = () => {
           <li key={product.id}>{product.name}</li>
         ))}
       </ul>
-      <button onClick={handleLogout}>Logout</button>
     </div>
   );
 };
