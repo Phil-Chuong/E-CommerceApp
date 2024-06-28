@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
-const ProductList = () => {
+const ProductList = ({product}) => {
     const [products, setProducts] = useState([]);
     const navigate = useNavigate();
 
@@ -29,8 +29,11 @@ const ProductList = () => {
         <div>
             <div><h1>Products</h1></div>
             <ul>
-                {products.map(product => (
-            <li key={product.id}>{product.name}</li>
+                {products.map((product) => (
+                  <div key={product.id}>
+                    <h3>{product.name}</h3>
+                    <img src={product.image_path} alt={product.name} width="100" />
+                  </div>
                 ))}
             </ul>
         </div>

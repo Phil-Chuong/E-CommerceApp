@@ -16,11 +16,11 @@ const ProductDetail = () => {
   if (!product) return <div>Loading...</div>;
 
   return (
-    <div>
-      <h1>{product.name}</h1>
+    <div className="product">
+      <img src={product.image_path} alt={product.name} className="product-image" />
+      <h2>{product.name}</h2>
       <p>{product.description}</p>
-      <p>Price: {product.price}</p>
-      <p>Category: {product.category}</p>
+      <p>${product.price.toFixed(2)}</p>
     </div>
   );
 };

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import './HomePage.css';
 
 const HomePage = () => {
   const [products, setProducts] = useState([]);
@@ -25,24 +26,20 @@ const HomePage = () => {
   }, [navigate]);
 
 
-  // const handleLogout = async () => {
-  //   const token = localStorage.getItem('token');
-  //   try {
-  //     await axios.post('/auth/logout', { token });  // Ensure this URL matches your backend route
-  //     localStorage.removeItem('token'); // Clear authentication token
-  //     navigate('/login'); // Redirect to login page
-  //   } catch (error) {
-  //     console.error('Error during logout:', error);
-  //   }
-  // };
-
   return (
-    <div>
-      <div><h1>Welcome to my shop</h1></div>
+    <div className='homepageBody'>
+      <div className='title'><h1>Welcome to my shop</h1></div>
       <h2>New Products</h2>
       <ul>
-        {products.map(product => (
-          <li key={product.id}>{product.name}</li>
+        {/* {products.map(product => (
+          <li key={product.id}>{product.name} £{product.price}</li>
+        ))} */}
+
+        {products.map((product) => (
+            <div key={product.id}>
+                <h3>{product.name}</h3>
+                <img src={product.image_path} alt={product.name} width="100" />
+            </div>
         ))}
       </ul>
     </div>

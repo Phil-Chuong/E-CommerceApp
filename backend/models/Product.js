@@ -33,15 +33,20 @@ class Product {
     }
   }
 
-  static async getProductsByCountry(country) {
-    const query = 'SELECT * FROM products WHERE country = $1';
+  static async updateProductImage(id, imagePath) {
+    const query = 'UPDATE products SET image_path = $1 WHERE id = $2 RETURNING *';
     try {
-      const result = await pool.query(query, [country]);
-      return result.rows;
+      const result = await pool.query(query, [imagePath, id]);
+      if (result.rows.length === 0) {
+        return null; // Product with given ID not found
+      }
+      return result.rows[0]; // Return the updated product
     } catch (error) {
-      throw error;
+      throw new Error(`Error updating product image: ${error.message}`);
     }
   }
+
 }
+
 
 module.exports = Product;
