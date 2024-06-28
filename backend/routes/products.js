@@ -7,15 +7,6 @@ const path = require('path');
 const Product = require('../models/Product');
 
 // Set storage engine
-// const storage = multer.diskStorage({
-//   destination: './uploads',
-//   filename: function (req, file, cb) {
-//     const filename = file.originalname.split(' ').join('-');
-//     cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-//   }
-// });
-
-// Set storage engine
 const storage = multer.diskStorage({
   destination: './uploads',
   filename: function (req, file, cb) {

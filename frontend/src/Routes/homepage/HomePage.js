@@ -39,6 +39,7 @@ const HomePage = () => {
             <div key={product.id}>
                 <h3>{product.name}</h3>
                 <img src={product.image_path} alt={product.name} width="100" />
+                <h3>£{product.price}</h3>
             </div>
         ))}
       </ul>
