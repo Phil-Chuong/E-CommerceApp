@@ -2,6 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import './ProductList.css';
+import images from './Logo.jpg'
 
 const ProductList = ({product}) => {
     const [products, setProducts] = useState([]);
@@ -25,19 +27,23 @@ const ProductList = ({product}) => {
 
 
   return (
-    <div>
-        <div>
-            <div><h1>Products</h1></div>
-            <ul>
-                {products.map((product) => (
-                  <div key={product.id}>
-                    <h3>{product.name}</h3>
-                    <img src={product.image_path} alt={product.name} width="100" />
-                  </div>
-                ))}
-            </ul>
-        </div>
-    </div>  
+    <div className='productListBody'>
+      <div className='productTitleHeader'>
+        <img src={images} alt='titleLogo' className='productTitleLogo'/>
+      </div>
+      <div className='productContainer'>
+      <h2>Instock Now!!</h2>
+        <ul className='productCard'>
+          {products.map((product) => (
+            <li key={product.id} className='productItems'>
+              <h3>{product.name}</h3>
+              <img src={product.image_path} alt={product.name} />
+              <p>£{product.price}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div> 
   )
 }
 

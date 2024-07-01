@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './HomePage.css';
+import images from './Logo.jpg'
 
 const HomePage = () => {
   const [products, setProducts] = useState([]);
@@ -26,23 +27,26 @@ const HomePage = () => {
   }, [navigate]);
 
 
+  const limitedProducts = products.slice(0, 10); // Limit to 10 products
+
+
   return (
     <div className='homepageBody'>
-      <div className='title'><h1>Welcome to my shop</h1></div>
-      <h2>New Products</h2>
-      <ul>
-        {/* {products.map(product => (
-          <li key={product.id}>{product.name} £{product.price}</li>
-        ))} */}
-
-        {products.map((product) => (
-            <div key={product.id}>
-                <h3>{product.name}</h3>
-                <img src={product.image_path} alt={product.name} width="100" />
-                <h3>£{product.price}</h3>
-            </div>
-        ))}
-      </ul>
+      <div className='homeTitleHeader'>
+        <img src={images} alt='TitleLogo' className='homeTitleLogo'/>
+      </div>
+      <div className='homeProductContainer'>
+      <h2>Highlights 2024</h2>
+        <ul className='homeProductCard'>
+          {limitedProducts.map((product) => (
+            <li key={product.id} className='homeProductItems'>
+              <h3>{product.name}</h3>
+              <img src={product.image_path} alt={product.name} />
+              <p>£{product.price}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
