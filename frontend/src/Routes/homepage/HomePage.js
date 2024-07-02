@@ -1,7 +1,7 @@
 // src/components/HomePage.js or any other component using useNavigate
 
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './HomePage.css';
 import images from './Logo.jpg'
@@ -40,9 +40,11 @@ const HomePage = () => {
         <ul className='homeProductCard'>
           {limitedProducts.map((product) => (
             <li key={product.id} className='homeProductItems'>
-              <h3>{product.name}</h3>
-              <img src={product.image_path} alt={product.name} />
-              <p>£{product.price}</p>
+              <Link to={`/products/${product.id}`}>
+                <h3>{product.name}</h3>
+                <img src={product.image_path} alt={product.name} />
+                <p>£{product.price}</p>
+              </Link>
             </li>
           ))}
         </ul>

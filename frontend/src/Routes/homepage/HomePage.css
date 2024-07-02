@@ -9,9 +9,10 @@
     align-items: center;
 }
 
+/* Logo Header */
 .homeTitleHeader {
     width: 100%;
-    height: 150px;
+    height: 130px;
     background-color: #0b1841;
     display: flex;
     justify-content: center;
@@ -21,6 +22,12 @@
     margin-top: 60px;
 }
 
+.homeTitleLogo {
+    width: 30%;
+    height: 90%;
+}
+
+/* Product Container */
 .homeProductContainer {
     width: 100%;
     display: flex;
@@ -52,6 +59,10 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.homeProductItems:hover {
+    box-shadow: 0 0 4px 4px #0b1841;
+}
+
 .homeProductItems img {
     width: 100%;
     min-height: 300px;
@@ -63,15 +74,16 @@
 .homeProductItems h3 {
     height: 50px;
     margin: 5px 0;
+    color: black;
+    font-weight: 500;
 }
 
 .homeProductItems p {
     font-size: 1.2em;
-    color: rgb(45, 84, 158);
+    color: black;
     margin: 5px 0;
+    font-weight: 500;
 }
 
-.homeTitleLogo {
-    width: 30%;
-    height: 100%;
-}
+
+
