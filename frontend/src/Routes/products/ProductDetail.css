@@ -31,7 +31,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin-top: 13em;  
+    margin-top: 15em;  
     margin-bottom: 5em;
     border-radius: 10px;
     background-color: #05174f; 
@@ -77,7 +77,7 @@
 .cartContainer {
     max-width: 30%;
     height: fit-content;
-    display: flex;
+    display: inline-block;
     flex-wrap: wrap;
     margin: 1em;
     padding: 5px;
@@ -85,3 +85,10 @@
     background-color: cornflowerblue; 
 }
 
+.cartContainer button {
+    border-radius: 10px;
+}
+
+.cartContainer p {
+    font-weight: 500;
+}

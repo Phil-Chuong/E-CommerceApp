@@ -36,8 +36,8 @@ const ProductList = ({product}) => {
       <h2>Instock Now!!</h2>      
         <ul className='productCard'>         
             {products.map((product) => (
-              <Link to={`/products/${product.id}`}>
-                <li key={product.id} className='productItems'>
+              <Link to={`/products/${product.id}`} key={product.id}>
+                <li className='productItems'>
                   <h3>{product.name}</h3>
                   <img src={product.image_path} alt={product.name} />
                 <p>£{product.price}</p>

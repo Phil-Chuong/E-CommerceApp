@@ -4,12 +4,24 @@ const express = require('express');
 const router = express.Router();
 const Cart = require('../models/Cart');
 const authService = require('../services/authService');
+const authenticateToken = require('../services/authenticateToken');
 const CheckoutService = require('../services/CheckoutService');
 const Checkout = require('../models/Checkout');
 const Order = require('../models/Order');
 
+// Get all cart
+router.get('/', async (req, res) => {
+  try {
+    const cart = await Cart.getAllCart();
+    res.send(cart);
+  } catch (error) {
+    console.error('Error retrieving users', error);
+    res.status(500).json({ error: 'Error retrieving users' });
+  }
+});
+
 // Get cart by id
-router.get('/:cartId', async (req, res) => {
+router.get('/cart/:cartId', async (req, res) => {
   const { cartId } = req.params;
   try {
     const cart = await Cart.getCartById(cartId);
@@ -20,11 +32,23 @@ router.get('/:cartId', async (req, res) => {
   }
 });
 
+// Get cart by user ID
+router.get('/user/:userId/cart', authenticateToken, async (req, res) => {
+  const userId = parseInt(req.params.userId);
+  try {
+    const cart = await getCartByUserId(userId);
+    res.status(200).json(cart);
+  } catch (error) {
+    console.error('Error retrieving cart:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 // Create a new cart
-router.post('/', async (req, res) => {
+router.post('/cart', async (req, res) => {
   try {
     const { user_id } = req.body;
-    if (!user_id ) {
+    if (!user_id) {
       return res.status(400).json({ message: 'user_id is required' });
     }
     const cart = await Cart.createCart(user_id);
@@ -35,24 +59,57 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Add product to cart
-router.post('/add', async (req, res) => {
+//get all cart_items
+router.get('/cart_items', async (req, res) => {
   try {
-    const { productId, quantity, cartId } = req.body; // Extract cartId from request body
+    const cartItems = await Cart.getAllCartItems();
+    res.send(cartItems);
+  } catch (error) {
+    console.error('Error retrieving users', error);
+    res.status(500).json({ error: 'Error retrieving users' });
+  }
+});
 
-    // Check if cartId is provided
-    if (!cartId) {
-      return res.status(400).json({ error: 'cartId is required' });
+// Add product to cart or create cart if it doesn't exist
+router.post('/cart_items', async (req, res) => {
+  console.log('Request body:', req.body);
+  try {
+    const { productId, quantity, cartId } = req.body;
+
+    // Check if all required fields are provided
+    if (!cartId || !productId || !quantity) {
+      return res.status(400).json({ error: ' cartId, productId, and quantity are required' });
+    }
+
+    // Check if cart exists, otherwise create a new cart
+    let currentCartId = cartId;
+    if (!currentCartId) {
+      const newCart = await Cart.createCart(user_id);
+      currentCartId = newCart.id;
     }
 
     // Add product to cart
-    const addedProduct = await Cart.addProductToCart(cartId, productId, quantity);
+    const addedProduct = await Cart.addProductToCart(currentCartId, productId, quantity);
     res.status(200).json(addedProduct);
   } catch (error) {
     console.error('Error adding product to cart', error);
     res.status(500).json({ error: 'Error adding product to cart' });
   }
 });
+
+
+// // POST route to add an item to the cart
+// router.post('/cart_items', authenticateToken, async (req, res) => {
+//   const { cartId, productId, quantity } = req.body;
+
+//   try {
+//     const result = await addProductToCart(cartId, productId, quantity);
+//     res.status(200).json(result);
+//   } catch (error) {
+//     console.error('Error adding item to cart:', error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
 
 // Update product in cart
 router.put('/:cartId/cartItems/:productId', async (req, res) => {

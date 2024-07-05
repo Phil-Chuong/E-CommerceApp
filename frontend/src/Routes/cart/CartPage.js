@@ -1,9 +1,19 @@
-import React from 'react'
+import React from 'react';
+import CartItemList from '../../components/cartItem/CartItemList';
+import images from './Logo.jpg'
 
-function CartPage() {
+const CartPage = () => { 
   return (
-    <div>CartPage</div>
-  )
-}
+    <div className='cartBody'>
+      <div className='homeTitleHeader'>
+        <img src={images} alt='TitleLogo' className='homeTitleLogo'/>
+      </div>
 
-export default CartPage
+      <div className='cartItemBox'>
+        <CartItemList />
+      </div>      
+    </div>        
+  );
+};
+
+export default CartPage;

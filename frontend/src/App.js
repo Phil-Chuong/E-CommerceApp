@@ -8,6 +8,10 @@ import PrivateRoutes from './Routes/PrivateRoutes';
 import CartPage from './Routes/cart/CartPage';
 import ProductList from './Routes/productlist/ProductList';
 import AuthenticatedLayout from './Routes/AuthenticatedLayout';
+import axios from 'axios';
+
+axios.defaults.baseURL = 'http://localhost:4000';
+
 
 function App() {
   return (

@@ -1,0 +1,116 @@
+/* Main Container*/
+.cartItemContainer {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.itemContainer {
+    margin-top: 180px;
+}
+
+/*Component Container */
+.itemBox {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    border: 2px solid #0b1841;
+    border-radius: 10px;
+    height: fit-content;
+    margin: 30px 20%;
+}
+
+/* Left side Container*/
+.itemBoxChild {
+    width: 60%;
+    display: flex;
+}
+
+.cartItemUL {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.itemProduct {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: left;
+}
+
+.itemProduct h3 {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    flex-wrap: wrap;
+}
+
+.itemProduct p {
+    font-weight: 500;
+}
+
+.items {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    margin-bottom: 15px;
+    border: 1px solid cornflowerblue;
+}
+
+li.items {
+    width: 100%;
+    height: fit-content;
+    background-color: cornflowerblue;
+    border-radius: 10px;
+}
+
+img {
+
+    width: 100%;
+    max-height: 300px;
+}
+
+/* Add and Remove quantity button */
+.addRemove {
+    width: 100%;
+    height: auto;
+    margin: 5px;
+    display: flex;
+    justify-content: center;
+}
+
+.addRemove button {
+    border-radius: 5px;
+}
+
+
+/* Right Side Total Price Container */
+.totalPrice {
+    width: 30%;
+    height: fit-content;
+    display: flex;
+    justify-content: center;  
+    background-color: cornflowerblue;
+    border-radius: 10px;
+    margin-top: 26px;
+    margin-bottom: 35px;
+    border: 1px solid cornflowerblue;
+}
+
+.totalPrice h3 {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}

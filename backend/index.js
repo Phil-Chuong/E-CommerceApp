@@ -72,6 +72,9 @@ app.use('/cart', cartRouter);
 app.use('/users', usersRouter);
 app.use('/orders', ordersRouter);
 
+const cartRoutes = require('./routes/cart');
+app.use('/cart', cartRoutes);
+
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../frontend/build')));
 
