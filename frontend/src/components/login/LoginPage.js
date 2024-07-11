@@ -31,15 +31,6 @@ const LoginPage = () => {
       console.error('Error handling login success:', error);
       setError('An error occurred while setting up your cart.');
     }
-
-    // try {
-    //   const cartId = await fetchOrCreateCart(); // Ensure cart is fetched or created after login
-    //   await fetchCartItems(cartId); // Fetch and update cart items
-    //   navigate('/HomePage');
-    // } catch (error) {
-    //   console.error('Error handling login success:', error);
-    //   setError('An error occurred while setting up your cart.');
-    // }
   };
 
   // Function to handle token refresh
@@ -60,55 +51,6 @@ const LoginPage = () => {
     throw error; // Handle error or redirect as needed
     }
   };
-
-
-  // const fetchCartItems = async (cartId) => {
-  //   let token = localStorage.getItem('token');
-  //   let refreshToken = localStorage.getItem('refreshToken');
-  
-  //   if (!token) {
-  //     console.error('No token found.');
-  //     window.location.href = '/login';
-  //     return;
-  //   }
-  
-  //   try {
-  //     const response = await axios.get('/cart/items', {
-  //       headers: { Authorization: `Bearer ${token}` }
-  //     });
-  
-  //     console.log('Cart items:', response.data);
-  //     setCartItems(response.data); // Update state with fetched cart items
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error('Error fetching cart items:', error);
-  
-  //     if (error.response && error.response.status === 401) {
-  //       console.error('Token expired or invalid, refreshing token...');
-  //       try {
-  //         const refreshResponse = await axios.post('/auth/refresh', { token: refreshToken });
-  //         token = refreshResponse.data.accessToken;
-  //         localStorage.setItem('token', token);
-  
-  //         // Retry the request with the new token
-  //         const response = await axios.get(`/cart/items/${cartId}`, {
-  //           headers: { Authorization: `Bearer ${token}` }
-  //         });
-  
-  //         console.log('Cart items:', response.data);
-  //         setCartItems(response.data); // Update state with fetched cart items
-  //         return response.data;
-  //       } catch (refreshError) {
-  //         console.error('Error refreshing token:', refreshError);
-  //         localStorage.removeItem('token');
-  //         localStorage.removeItem('refreshToken');
-  //         window.location.href = '/login';
-  //       }
-  //     } else {
-  //       throw error;
-  //     }
-  //   }
-  // };
 
   const fetchCartItems = async (cartId) => {
     const token = localStorage.getItem('token');
@@ -264,10 +206,6 @@ const LoginPage = () => {
     try {
       const response = await axios.post('/auth/login', { email, password });
       const { accessToken, refreshToken, cartId } = response.data;
-
-      // localStorage.setItem('token', accessToken);
-      // localStorage.setItem('refreshToken', refreshToken);
-      // localStorage.setItem('cartId', cartId);
 
       handleLoginSuccess(accessToken, refreshToken, cartId); // Handle post-login actions
     } catch (error) {
