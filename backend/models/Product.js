@@ -14,12 +14,17 @@ class Product {
   }
 
   static async getProductById(id) {
+    // Validate if id is a number
+    if (isNaN(id)) {
+      throw new Error('Product ID must be a number');
+    }
+
     const query = 'SELECT * FROM products WHERE id = $1';
     try {
       const result = await pool.query(query, [id]);
       return result.rows[0];
     } catch (error) {
-      throw error;
+      throw new Error(`Error retrieving product: ${error.message}`);
     }
   }
 

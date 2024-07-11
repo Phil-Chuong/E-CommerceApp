@@ -3,11 +3,15 @@
 const express = require('express');
 const router = express.Router();
 const Cart = require('../models/Cart');
+const User = require('../models/User');
 const authService = require('../services/authService');
-const authenticateToken = require('../services/authenticateToken');
+const { authenticateToken } = require('../services/authenticateToken');
 const CheckoutService = require('../services/CheckoutService');
 const Checkout = require('../models/Checkout');
 const Order = require('../models/Order');
+require('dotenv').config();
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Get all cart
 router.get('/', async (req, res) => {
@@ -21,41 +25,21 @@ router.get('/', async (req, res) => {
 });
 
 // Get cart by id
-router.get('/cart/:cartId', async (req, res) => {
-  const { cartId } = req.params;
+router.get('/cart/:id', authenticateToken, async (req, res) => {
+  const cartId = parseInt(req.params.id, 10); // Ensure cartId is an integer
+  console.log('Fetching cart with ID:', cartId); // Debugging log
+
+  if (isNaN(cartId)) {
+    console.error('Invalid cart ID');
+    return res.status(400).json({ error: 'Invalid cart ID' });
+  }
+
   try {
     const cart = await Cart.getCartById(cartId);
-    res.json(cart);
+    res.status(200).json(cart);
   } catch (error) {
     console.error('Error retrieving cart', error);
     res.status(500).json({ error: 'Error retrieving cart' });
-  }
-});
-
-// Get cart by user ID
-router.get('/user/:userId/cart', authenticateToken, async (req, res) => {
-  const userId = parseInt(req.params.userId);
-  try {
-    const cart = await getCartByUserId(userId);
-    res.status(200).json(cart);
-  } catch (error) {
-    console.error('Error retrieving cart:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-// Create a new cart
-router.post('/cart', async (req, res) => {
-  try {
-    const { user_id } = req.body;
-    if (!user_id) {
-      return res.status(400).json({ message: 'user_id is required' });
-    }
-    const cart = await Cart.createCart(user_id);
-    res.status(201).json(cart);
-  } catch (error) {
-    console.error('Error creating cart', error);
-    res.status(500).json({ error: 'Error creating cart' });
   }
 });
 
@@ -69,6 +53,42 @@ router.get('/cart_items', async (req, res) => {
     res.status(500).json({ error: 'Error retrieving users' });
   }
 });
+
+//get ACTIVE user by id
+router.get('/active/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const activeCart = await Cart.getActiveCartByUserId(userId);
+    if (!activeCart) {
+      return res.status(404).json({ message: 'Active cart not found' });
+    }
+    res.json(activeCart);
+  } catch (error) {
+    console.error('Error fetching active cart:', error);
+    res.status(500).json({ error: 'Error fetching active cart' });
+  }
+});
+
+
+// Create or get active cart for the user
+router.post('/cart', authenticateToken, async (req, res) => {
+  const userId = req.user.userId;
+  console.log('User ID from token:', userId); // Debugging log
+
+  try {
+    let cart = await Cart.getActiveCartByUserId(userId);
+
+    if (!cart) {
+      cart = await Cart.createCart(userId);
+    }
+
+    res.status(200).json({ cartId: cart.id });
+  } catch (error) {
+    console.error('Error fetching or creating cart', error);
+    res.status(500).json({ error: 'Error fetching or creating cart' });
+  }
+});
+
 
 // Add product to cart or create cart if it doesn't exist
 router.post('/cart_items', async (req, res) => {
@@ -97,20 +117,6 @@ router.post('/cart_items', async (req, res) => {
   }
 });
 
-
-// // POST route to add an item to the cart
-// router.post('/cart_items', authenticateToken, async (req, res) => {
-//   const { cartId, productId, quantity } = req.body;
-
-//   try {
-//     const result = await addProductToCart(cartId, productId, quantity);
-//     res.status(200).json(result);
-//   } catch (error) {
-//     console.error('Error adding item to cart:', error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
-
 // Update product in cart
 router.put('/:cartId/cartItems/:productId', async (req, res) => {
   const { cartId, productId } = req.params;
@@ -136,14 +142,21 @@ router.delete('/:cartId', async (req, res) => {
   }
 });
 
-// Delete cart item id
-router.delete('/cartItems/:cartItemId', async (req, res) => {
-  const { cartItemId } = req.params;
+
+//DELETE cart item by id
+router.delete('/cart_items/:id', async (req, res) => {
+  const { id } = req.params;
   try {
-    const result = await Cart.deleteCartItem(cartItemId);
-    res.status(200).json({ message: 'Cart item deleted successfully' });
+    console.log(`Attempting to delete cart item with id: ${id}`);
+    const result = await Cart.deleteCartItem(id);
+    console.log(`Delete result: ${result}`);
+    if (result) {
+      res.status(200).json({ message: 'Cart item deleted successfully' });
+    } else {
+      res.status(404).json({ error: 'Cart item not found' });
+    }
   } catch (error) {
-    console.error('Error deleting cart item', error);
+    console.error('Error deleting cart item:', error);
     res.status(500).json({ error: 'Error deleting cart item' });
   }
 });

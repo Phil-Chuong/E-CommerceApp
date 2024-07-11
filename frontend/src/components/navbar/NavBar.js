@@ -1,24 +1,41 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { ShoppingCart } from 'phosphor-react'
-import { House } from 'phosphor-react'
+import { ShoppingCart, House } from 'phosphor-react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import '../navbar/NavBar.css'
 
 
 const NavBar = () => {
-
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    const token = localStorage.getItem('token');
     try {
-      await axios.post('/auth/logout', { token });  // Ensure this URL matches your backend route
-      localStorage.removeItem('token'); // Clear authentication token
-      navigate('/login'); // Redirect to login page
+      const token = localStorage.getItem('token');
+      const cartId = localStorage.getItem('cartId');
+      
+      if (!token || !cartId) {
+        console.error('Token or cartId not found.');
+        return;
+      }
+
+      // Ensure the correct URL and headers
+      await axios.post('/auth/logout', { token, cartId }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      // Clear tokens and cartId from localStorage
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('cartId');
+      navigate('/login'); // Redirect to login page after logout
+
     } catch (error) {
-      console.error('Error during logout:', error);
+      console.error('Logout error:', error);
+      // Handle error (e.g., display error message)
     }
   };
 
@@ -29,6 +46,7 @@ const NavBar = () => {
       </div>
       <div className='links'>
         <Link to={'/products'}>Products</Link>
+        <Link to={'/accounts'}>Account</Link>
         <Link to={'/cart'}><ShoppingCart size={32} /></Link>
         <button onClick={handleLogout}>Logout</button>
       </div>

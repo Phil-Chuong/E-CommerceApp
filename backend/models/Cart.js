@@ -2,7 +2,7 @@ const pool = require('../DB/db');
 
 class Cart {
   static async getAllCart() {
-    const pool = require('../DB/db');
+    // const pool = require('../DB/db');
     const query = 'SELECT * FROM cart';
     try {
       const result = await pool.query(query);
@@ -22,36 +22,33 @@ class Cart {
     }
   }
 
-  static async createCart(user_id) {
-    // Check if user exists
-    const userQuery = 'SELECT * FROM users WHERE id = $1';
-    const userResult = await pool.query(userQuery, [user_id]);
-    if (userResult.rows.length === 0) {
-      throw new Error('User not found');
-    }
+  static async createCart(userId) {
+      try {
+        console.log(`Creating cart for user id: ${userId}`);
+        const result = await pool.query(
+          'INSERT INTO cart (user_id, status) VALUES ($1, $2) RETURNING *',
+          [userId, 'active']
+        );
+        return result.rows[0];
+      } catch (error) {
+        console.error('Error creating cart for user:', error);
+        throw new Error('Error creating cart');
+      }
+  };
 
-    const query = 'INSERT INTO cart (user_id) VALUES ($1) RETURNING *';
+  static async getActiveCartByUserId(userId) {
+    const query = 'SELECT * FROM cart WHERE user_id = $1 AND status = $2';
     try {
-      const result = await pool.query(query, [user_id]);
+      const result = await pool.query(query, [userId, 'active']);
       return result.rows[0];
     } catch (error) {
-      throw error;
-    }
-  }
-
-  static async getCartByUserId(userId) {
-    const query = 'SELECT * FROM cart WHERE user_id = $1';
-    try {
-      const result = await pool.query(query, [userId]);
-      return result.rows[0];
-    } catch (error) {
+      console.error('Error retrieving active cart:', error);
       throw error;
     }
   }
 
   //get all cart_items
   static async getAllCartItems() {
-    const pool = require('../DB/db');
     const query = 'SELECT * FROM cart_items';
     try {
       const result = await pool.query(query);
@@ -78,6 +75,10 @@ class Cart {
       const productQuery = 'SELECT price FROM products WHERE id = $1';
       const productResult = await pool.query(productQuery, [productId]);
       const product = productResult.rows[0];
+      
+      if (!product) {
+        throw new Error('Product not found');
+      }
 
       // Check if the product already exists in the cart
       const existingCartItem = await pool.query(
@@ -101,6 +102,7 @@ class Cart {
         return rows[0];
       }
     } catch (error) {
+      console.error('Error adding product to cart:', error);
       throw error;
     }
   }

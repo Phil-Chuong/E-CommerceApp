@@ -2,8 +2,7 @@
 
 .loginBody {
     width: 100%;
-    height: 581px;
-    margin-top: 5%;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center; /* Center vertically */

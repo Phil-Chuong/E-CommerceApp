@@ -1,5 +1,3 @@
-// routes/product.js
-
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
@@ -43,25 +41,19 @@ function checkFileType(file, cb) {
 router.post('/upload', (req, res) => {
   upload(req, res, async (err) => {
     if (err) {
-      res.status(400).json({ error: err });
-    } else {
-      if (req.file == undefined) {
-        res.status(400).json({ error: 'No file selected!' });
-      } else {
-        const imagePath = `/uploads/${req.file.filename}`;
-        const productId = req.body.productId;
-
-        try {
-          await Product.updateProductImage(productId, imagePath);
-          res.json({
-            message: 'File uploaded and product image path updated!',
-            filePath: imagePath
-          });
-        } catch (error) {
-          console.error('Error updating product image path', error);
-          res.status(500).json({ error: 'Failed to update product image path.' });
-        }
-      }
+      return errorResponse(res, 400, err);
+    }
+    if (!req.file) {
+      return errorResponse(res, 400, 'No file selected!');
+    }
+    const imagePath = `/uploads/${req.file.filename}`;
+    const productId = req.body.productId;
+    try {
+      await Product.updateProductImage(productId, imagePath);
+      successResponse(res, 'File uploaded and product image path updated', { filePath: imagePath });
+    } catch (error) {
+      console.error('Error updating product image path', error);
+      errorResponse(res, 500, 'Failed to update product image path');
     }
   });
 });
@@ -117,15 +109,30 @@ router.get('/', async (req, res) => {
   }
 });
 
+
+// Example response format for success
+const successResponse = (res, message, data) => {
+  res.status(200).json({ message, data });
+};
+
+// Example response format for error
+const errorResponse = (res, status, message) => {
+  res.status(status).json({ error: message });
+};
+
 // Get product by id
 router.get('/:id', async (req, res) => {
   try {
-    const { id } = req.params;
-    const products = await Product.getProductById(id);
-    if (!products) {
+    const id = parseInt(req.params.id); // Convert id to integer
+    if (isNaN(id)) {
+      return res.status(400).json({ error: 'Product ID must be a number' });
+    }
+    
+    const product = await Product.getProductById(id);
+    if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
-    res.send(products);
+    res.json(product);
   } catch (error) {
     console.error('Error retrieving product', error);
     res.status(500).json({ error: 'Error retrieving product' });
@@ -139,12 +146,12 @@ router.get('/category/:category', async (req, res) => {
     const { category } = req.params;
     const products = await Product.getProductsByCategory(category);
     if (!products || products.length === 0) {
-      return res.status(404).json({ message: 'Products category not found' });
+      return errorResponse(res, 404, 'Products category not found');
     }
-    res.send(products)
+    successResponse(res, 'Products retrieved successfully', products);
   } catch (error) {
     console.error('Error retrieving products category', error);
-    res.status(500).json({ error: 'Error retrieving products category' });
+    errorResponse(res, 500, 'Error retrieving products category');
   }
 });
 

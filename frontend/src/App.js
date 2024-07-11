@@ -7,6 +7,7 @@ import RegisterPage from './components/register/RegisterPage';
 import PrivateRoutes from './Routes/PrivateRoutes';
 import CartPage from './Routes/cart/CartPage';
 import ProductList from './Routes/productlist/ProductList';
+import Accounts from './Routes/accounts/accounts';
 import AuthenticatedLayout from './Routes/AuthenticatedLayout';
 import axios from 'axios';
 
@@ -28,6 +29,7 @@ function App() {
               <Route element={<HomePage />} path='/HomePage' exact/>
               <Route element={<ProductList />} path='/products' exact/>
               <Route element={<ProductDetail />} path='/products/:id' exact/>
+              <Route element={<Accounts />} path='/accounts' exact/>
               <Route element={<CartPage />} path='/cart' exact/>  
             </Route>
           </Route>                    
