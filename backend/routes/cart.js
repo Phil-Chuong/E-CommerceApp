@@ -10,6 +10,7 @@ const CheckoutService = require('../services/CheckoutService');
 const Checkout = require('../models/Checkout');
 const Order = require('../models/Order');
 require('dotenv').config();
+// const pool = require('../DB/db');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -142,22 +143,6 @@ router.post('/cart_items', async (req, res) => {
   }
 });
 
-// router.post('/cart_items', async (req, res) => {
-//   try {
-//     const { userId } = req.body;
-
-//     if (!userId) {
-//       return res.status(400).json({ error: 'userId is required' });
-//     }
-
-//     // Example logic to create a cart for the user
-//     const newCart = await Cart.createCart(userId);
-//     return res.status(201).json({ cartId: newCart.id });
-//   } catch (error) {
-//     console.error('Error creating cart for user:', error);
-//     return res.status(500).json({ error: 'Internal server error' });
-//   }
-// });
 
 // Update product in cart
 router.put('/:cartId/cartItems/:productId', async (req, res) => {
@@ -203,6 +188,33 @@ router.delete('/cart_items/:id', async (req, res) => {
     res.status(500).json({ error: 'Error deleting cart item' });
   }
 });
+
+
+// PUT route to decrement cart item quantity
+router.put('/cart_items/:itemId/decrement', async (req, res) => {
+  const { itemId } = req.params;
+  try {
+    const item = await Cart.getCartItem(itemId);
+
+    if (!item) {
+      return res.status(404).json({ error: 'Item not found' });
+    }
+
+    const currentQty = item.qty;
+
+    if (currentQty === 1) {
+      await Cart.deleteCartItem(itemId);
+      return res.json({ message: 'Item removed successfully' });
+    } else {
+      const updatedItem = await Cart.updateCartItem(itemId, currentQty - 1);
+      return res.json(updatedItem);
+    }
+  } catch (error) {
+    console.error('Error updating item quantity:', error);
+    res.status(500).json({ error: 'Error updating item quantity' });
+  }
+});
+
 
 
 // CHECKOUT

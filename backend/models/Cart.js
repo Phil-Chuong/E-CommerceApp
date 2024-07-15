@@ -68,6 +68,17 @@ class Cart {
     }
   }
 
+  static async getCartItem(itemId) {
+    const query = 'SELECT qty, cart_id, product_id FROM cart_items WHERE id = $1';
+    try {
+      const result = await pool.query(query, [itemId]);
+      return result.rows[0];
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
   // POST REQUEST
   static async addProductToCart(cartId, productId, quantity) {
     try {
@@ -108,10 +119,19 @@ class Cart {
   }
 
   // PUT REQUEST
-  static async updateCartItem(cartId, productId, quantity) {
-    const query = 'UPDATE cart_items SET qty = $1 WHERE cart_id = $2 AND product_id = $3 RETURNING *';
+  // static async updateCartItem(cartId, productId, quantity) {
+  //   const query = 'UPDATE cart_items SET qty = $1 WHERE cart_id = $2 AND product_id = $3 RETURNING *';
+  //   try {
+  //     const result = await pool.query(query, [quantity, cartId, productId]);
+  //     return result.rows[0];
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
+  static async updateCartItem(cartItemId, quantity) {
+    const query = 'UPDATE cart_items SET qty = $1 WHERE id = $2 RETURNING *';
     try {
-      const result = await pool.query(query, [quantity, cartId, productId]);
+      const result = await pool.query(query, [quantity, cartItemId]);
       return result.rows[0];
     } catch (error) {
       throw error;
@@ -132,6 +152,15 @@ class Cart {
     }
   }
 
+//   static async deleteCartItem(cartItemId) {
+//     const query = 'DELETE FROM cart_items WHERE id = $1';
+//     try {
+//       const result = await pool.query(query, [cartItemId]);
+//       return result.rowCount;
+//     } catch (error) {
+//       throw error;
+//     }
+//   }
   static async deleteCartItem(cartItemId) {
     const query = 'DELETE FROM cart_items WHERE id = $1';
     try {
@@ -141,6 +170,7 @@ class Cart {
       throw error;
     }
   }
+
 }
 
 module.exports = Cart;
