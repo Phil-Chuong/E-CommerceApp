@@ -54,6 +54,25 @@ router.get('/cart_items', async (req, res) => {
   }
 });
 
+// Route to get all cart items by cart ID
+router.get('/cart_items/:cartId', async (req, res) => {
+  const { cartId } = req.params; // Extract cartId from request parameters
+  try {
+    // Fetch cart items specifically for the provided cartId
+    const cartItems = await Cart.getItemsByCartId(cartId); // Assuming Cart.getItemsByCartId() method takes cartId as an argument
+
+    if (!cartItems) {
+      return res.status(404).json({ error: 'Cart items not found' });
+    }
+
+    res.json(cartItems); // Send back the fetched cart items
+  } catch (error) {
+    console.error('Error retrieving cart items:', error);
+    res.status(500).json({ error: 'Error retrieving cart items' });
+  }
+});
+
+
 //get ACTIVE user by id
 router.get('/active/:userId', async (req, res) => {
   try {
@@ -72,12 +91,17 @@ router.get('/active/:userId', async (req, res) => {
 
 // Create or get active cart for the user
 router.post('/cart', authenticateToken, async (req, res) => {
+  const cartId = req.user.cartId;
   const userId = req.user.userId;
-  console.log('User ID from token:', userId); // Debugging log
+  console.log('User ID from token:', userId, 'Cart ID:', cartId); // Debugging log
 
   try {
-    let cart = await Cart.getActiveCartByUserId(userId);
-
+    let cart;
+    
+    if(cartId) {
+      cart = await Cart.getCartById(cartId);
+    }
+    
     if (!cart) {
       cart = await Cart.createCart(userId);
     }
@@ -94,7 +118,7 @@ router.post('/cart', authenticateToken, async (req, res) => {
 router.post('/cart_items', async (req, res) => {
   console.log('Request body:', req.body);
   try {
-    const { productId, quantity, cartId } = req.body;
+    const { productId, quantity, cartId, } = req.body;
 
     // Check if all required fields are provided
     if (!cartId || !productId || !quantity) {
@@ -104,23 +128,42 @@ router.post('/cart_items', async (req, res) => {
     // Check if cart exists, otherwise create a new cart
     let currentCartId = cartId;
     if (!currentCartId) {
-      const newCart = await Cart.createCart(user_id);
+      const newCart = await Cart.createCart();
       currentCartId = newCart.id;
     }
 
     // Add product to cart
     const addedProduct = await Cart.addProductToCart(currentCartId, productId, quantity);
     res.status(200).json(addedProduct);
+
   } catch (error) {
     console.error('Error adding product to cart', error);
     res.status(500).json({ error: 'Error adding product to cart' });
   }
 });
 
+// router.post('/cart_items', async (req, res) => {
+//   try {
+//     const { userId } = req.body;
+
+//     if (!userId) {
+//       return res.status(400).json({ error: 'userId is required' });
+//     }
+
+//     // Example logic to create a cart for the user
+//     const newCart = await Cart.createCart(userId);
+//     return res.status(201).json({ cartId: newCart.id });
+//   } catch (error) {
+//     console.error('Error creating cart for user:', error);
+//     return res.status(500).json({ error: 'Internal server error' });
+//   }
+// });
+
 // Update product in cart
 router.put('/:cartId/cartItems/:productId', async (req, res) => {
   const { cartId, productId } = req.params;
   const { quantity } = req.body;
+
   try {
     const cartItem = await Cart.updateCartItem(cartId, productId, quantity);
     res.status(200).json(cartItem);

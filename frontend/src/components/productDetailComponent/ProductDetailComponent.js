@@ -30,16 +30,20 @@ function ProductDetailComponent() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
+    console.log('Stored token:', token); // Check if token is present
+  
+    if (!token) {
       try {
-      const decodedToken = jwtDecode(token);
-      const userId = decodedToken.userId; // Extract userId for future use if needed
-      setUserId(userId); // Set userId state
-
-      axios.get(`/user/${userId}/cart`, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+        const decodedToken = jwtDecode(token);
+        console.log('Decoded token:', decodedToken); // Check if token can be decoded
+        const userId = decodedToken.userId; // Extract userId for future use if needed
+        setUserId(userId); // Set userId state
+  
+        axios.get(`/user/${userId}/cart`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
         .then(response => {
+          console.log('Cart data:', response.data); // Check if cart data is received
           if (response.data) {
             setCartId(response.data.id);
           }
@@ -47,21 +51,27 @@ function ProductDetailComponent() {
         .catch(error => {
           console.error('Error fetching cart:', error);
         });
-    } catch (error) {
-      console.error('Error decoding token:', error);
+      } catch (error) {
+        console.error('Error decoding token:', error);
       }
+    } else {
+      console.log('No token found in localStorage');
+      // Handle case where token is not present (e.g., redirect to login page)
     }
-  }, []);
+  }, []); // Empty dependency array ensures this effect runs only once on component mount
+  
 
   
   const handleAddToCart = async () => {
+    try{
     const token = localStorage.getItem('token');
-    if (!token) {
+    const cartId = localStorage.getItem('cartId');
+
+    if (!token || !cartId) {
       alert('You need to be logged in to add products to the cart');
       return;
     }
 
-    try{
       console.log('Attempting to add product to cart...');
       let currentCartId = cartId;
       if (!currentCartId) {
@@ -92,8 +102,14 @@ function ProductDetailComponent() {
 
         // Additional error information for debugging
         if (error.response) {
-          console.error('Server responded with status code:', error.response.status);
-          console.error('Response data:', error.response.data);
+          if (error.response.status === 403) {
+            console.error('Invalid token or unauthorized:', error.response.data);
+            // Handle unauthorized access or token expiration
+            // Redirect to login or refresh token
+          } else {
+            console.error('Server responded with status code:', error.response.status);
+            console.error('Response data:', error.response.data);
+          }
         } else if (error.request) {
           console.error('No response received:', error.request);
         } else {

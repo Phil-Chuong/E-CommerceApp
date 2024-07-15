@@ -37,7 +37,7 @@ router.post('/refresh', (req, res) => {
       return res.status(403).json({ error: 'Forbidden' });
     }
 
-    const accessToken = jwt.sign({ userId: user.userId }, JWT_SECRET, { expiresIn: '15m' });
+    const accessToken = jwt.sign({ userId: user.userId }, JWT_SECRET, { expiresIn: '1h' });
     res.json({ accessToken });
   });
 });
@@ -99,11 +99,9 @@ router.post('/login', checkNotAuthenticated, async (req, res) => {
     }
 
     // Check if the user has a cart, if not, create one
-    const cartResult = await pool.query('SELECT * FROM cart WHERE user_id = $1', [user.id]);
-    const cartId = cartResult.rows.length > 0 ? cartResult.rows[0].id : null;
-    // if (cartResult.rows.length === 0) {
-    //   await createCart(user.id); // Create cart if not already exists
-    // }
+    const cartResult = await pool.query('SELECT * FROM cart WHERE user_id = $1 AND status = $2', [user.id, 'active']);
+    const cartId = cartResult.rows.length > 0 ? cartResult.rows[0].id : (await createCart(user.id)).id;
+
 
     // Generate JWT token with userId
     const accessToken = jwt.sign({ userId: user.id, cartId }, JWT_SECRET, { expiresIn: '1h' });

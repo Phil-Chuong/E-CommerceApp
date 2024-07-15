@@ -19,7 +19,7 @@ const NavBar = () => {
         return;
       }
 
-      // Ensure the correct URL and headers
+      // Send logout request to the server
       await axios.post('/auth/logout', { token, cartId }, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -31,6 +31,7 @@ const NavBar = () => {
       localStorage.removeItem('token');
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('cartId');
+
       navigate('/login'); // Redirect to login page after logout
 
     } catch (error) {

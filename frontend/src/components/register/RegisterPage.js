@@ -15,16 +15,26 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('Form submitted');
+
     try {
       const response = await axios.post('/auth/register', { firstname, lastname, username, email, password });
-      const { token } = response.data;
+      console.log('Registration response:', response.data);
+      
+      const { accessToken, cartId } = response.data;
+      console.log('Received token:', accessToken);
+
       // Store token in local storage or cookie
-      localStorage.setItem('token', token);
+      localStorage.setItem('token', accessToken); // Make sure 'token' is the actual token string
+      console.log('Stored token:', accessToken);
+
+      localStorage.setItem('cartId', cartId);
+
       navigate('/HomePage');
     } catch (error) {
       if (error.response) {
+        console.error('Registration error:', error.response.data.error);
         setError(error.response.data.error);
-        // Update state with the error message
       } else {
         console.error('Error registering:', error);
         setError('Error registering user'); // Handle generic error message
