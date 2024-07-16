@@ -26,7 +26,7 @@ function CartItemComponent({product}) {
                 const cartResponse = await axios.get(`/cart/cart_items/${cartId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                console.log('Cart items fetched:', cartResponse.data); // Debugging log
+                // console.log('Cart items fetched:', cartResponse.data); // Debugging log
                 setCartItems(cartResponse.data); // Assuming response.data is an array
                 setLoading(false); // Set loading state to false on successful fetch
             } catch (error) {
@@ -44,7 +44,7 @@ function CartItemComponent({product}) {
         const fetchProducts = async () => {
             try {
                 const productResponse = await axios.get('/products');
-                console.log('Products fetched:', productResponse.data); // Debugging log
+                // console.log('Products fetched:', productResponse.data); // Debugging log
                 setProducts(productResponse.data);
             } catch (error) {
                 console.error('Error fetching products:', error);
@@ -85,12 +85,17 @@ function CartItemComponent({product}) {
 
     // Function to calculate total price
     const calculateTotalPrice = () => {
+
         return cartItems.reduce((total, item) => {
             const product = products.find(product => product.id === item.product_id);
             return total + (product ? product.price * item.qty : 0);
         }, 0);
-    };
+    }
 
+
+    const handlePayment = () => {
+        return 
+    }
 
     // Render loading state while fetching data
     if (loading) return <div>Loading...</div>;
@@ -108,7 +113,13 @@ function CartItemComponent({product}) {
         <div className='cartBody'>
             <div className='cartItemContainer'>               
                 <div className='itemContainer'>
-                    <h2>Your Cart</h2>
+                    <h2>Your Cart</h2>                 
+                    <div className='totalPrice'>
+                            <h3>Total Price: £{calculateTotalPrice().toFixed(2)}</h3>
+                    </div>
+                    <div className='paymentContainer'>
+                        <button onClick={handlePayment}>Payment Here</button>
+                    </div>
 
                     <div className='itemBox'>
                         <div className='itemBoxChild'>
@@ -131,11 +142,7 @@ function CartItemComponent({product}) {
                                 );                          
                             })}
                             </ul> 
-                        </div>
-                    
-                        <div className='totalPrice'>
-                            <h3>Total Price: £{calculateTotalPrice().toFixed(2)}</h3>
-                        </div>
+                        </div>                        
                     </div>
                 </div>
             </div>

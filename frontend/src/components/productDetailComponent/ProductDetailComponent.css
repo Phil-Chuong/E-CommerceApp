@@ -9,7 +9,7 @@
 
 /* Product Container */
 .productDetailContainer {
-    width: 60%;
+    width: 70%;
     height: auto;
     display: flex;
     flex-wrap: wrap;
@@ -17,7 +17,8 @@
     margin-top: 15em;  
     margin-bottom: 5em;
     border-radius: 10px;
-    background-color: #05174f; 
+    /* background-color: #05174f;  */
+    /* border: 2px solid #0b1841; */
 }
 
 .productDetailCard {
@@ -41,7 +42,7 @@
 }
 
 .productDetailInfo p {
-    font-weight: 500;
+    font-weight: 600;
     margin-top: 5px;
 }
 
@@ -66,6 +67,7 @@
     padding: 5px;
     border-radius: 10px;
     background-color: cornflowerblue; 
+    text-align: center;
 }
 
 .cartContainer button {

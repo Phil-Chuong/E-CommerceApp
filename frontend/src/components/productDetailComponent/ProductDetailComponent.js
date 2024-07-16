@@ -168,7 +168,7 @@ function ProductDetailComponent() {
           <h3>What are you waiting for?</h3>
 
           <div className='stock'>
-            <p>Availiable Stock {product.stock}</p>
+          <p><span style={{ color: 'red' }}>Available Stock:</span> {product.stock}</p>
           </div>
 
           <div className='addCart'>          

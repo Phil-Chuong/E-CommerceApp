@@ -15,6 +15,11 @@
 
 .itemContainer {
     margin-top: 180px;
+    width: 80%; /* Adjust width as needed */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
 }
 
 /*Component Container */
@@ -22,10 +27,15 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    border: 2px solid #0b1841;
+    /* border: 2px solid #0b1841; */
     border-radius: 10px;
     height: fit-content;
-    margin: 30px 20%;
+    margin: 20px 20px;
+    /* background-color: #05174f;  */
+}
+
+.itemTotalContainer{
+    display: flex;
 }
 
 /* Left side Container*/
@@ -75,7 +85,7 @@
 }
 
 li.items {
-    width: 100%;
+    width: 80%;
     height: fit-content;
     background-color: cornflowerblue;
     border-radius: 10px;
@@ -103,16 +113,16 @@ img {
 
 /* Right Side Total Price Container */
 .totalPrice {
-    width: 30%;
+    width: 60%;
     height: fit-content;
     display: flex;
     justify-content: center;  
     background-color: cornflowerblue;
     border-radius: 10px;
-    margin-top: 26px;
-    margin-bottom: 35px;
-    margin-left: 10px;
-    border: 1px solid cornflowerblue;
+    /* margin-top: px; */
+    /* margin-bottom: 35px; */
+    /* margin-left: 10px; */
+    /* border: 2px solid #0b1841; */
 }
 
 .totalPrice h3 {

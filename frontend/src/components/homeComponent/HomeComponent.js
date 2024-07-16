@@ -31,7 +31,7 @@ function HomeComponent() {
   return (
     <div className='homepageBody'>
         <div className='homeProductContainer'>
-            <h2>Highlights 2024</h2>
+            <h1>Highlights 2024</h1>
             <ul className='homeProductCard'>
                 {limitedProducts.map((product) => (
                     <li key={product.id} className='homeProductItems'>
