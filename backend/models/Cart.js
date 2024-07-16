@@ -91,6 +91,11 @@ class Cart {
         throw new Error('Product not found');
       }
 
+      // Check if there is enough stock
+      if (product.stock < quantity) {
+        return { message: 'Not enough stock available' };
+      }
+
       // Check if the product already exists in the cart
       const existingCartItem = await pool.query(
         'SELECT * FROM cart_items WHERE cart_id = $1 AND product_id = $2',
@@ -100,16 +105,35 @@ class Cart {
       if (existingCartItem.rows.length > 0) {
         // If the product exists in the cart, update the quantity
         const updatedQuantity = existingCartItem.rows[0].qty + parseInt(quantity);
+
+        // Ensure the updated quantity doesn't exceed the stock
+      if (updatedQuantity > product.stock) {
+        return { message: 'Not enough stock available' };
+      }
+
         await pool.query(
           'UPDATE cart_items SET qty = $1 WHERE cart_id = $2 AND product_id = $3',
           [updatedQuantity, cartId, productId]
         );
+
+        await pool.query(
+          'UPDATE products SET stock = stock - $1 WHERE id = $2',
+          [quantity, productId]
+        );
+
         return { message: 'Product quantity updated in cart' };
       } else {
         // If the product doesn't exist in the cart, create a new entry
         const query = 'INSERT INTO cart_items (cart_id, product_id, qty, price) VALUES ($1, $2, $3, $4) RETURNING *';
         const values = [cartId, productId, quantity, product.price];
         const { rows } = await pool.query(query, values);
+
+        // Update the stock for the product
+        await pool.query(
+          'UPDATE products SET stock = stock - $1 WHERE id = $2',
+          [quantity, productId]
+        );
+
         return rows[0];
       }
     } catch (error) {
@@ -119,15 +143,6 @@ class Cart {
   }
 
   // PUT REQUEST
-  // static async updateCartItem(cartId, productId, quantity) {
-  //   const query = 'UPDATE cart_items SET qty = $1 WHERE cart_id = $2 AND product_id = $3 RETURNING *';
-  //   try {
-  //     const result = await pool.query(query, [quantity, cartId, productId]);
-  //     return result.rows[0];
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
   static async updateCartItem(cartItemId, quantity) {
     const query = 'UPDATE cart_items SET qty = $1 WHERE id = $2 RETURNING *';
     try {
@@ -152,21 +167,50 @@ class Cart {
     }
   }
 
-//   static async deleteCartItem(cartItemId) {
-//     const query = 'DELETE FROM cart_items WHERE id = $1';
-//     try {
-//       const result = await pool.query(query, [cartItemId]);
-//       return result.rowCount;
-//     } catch (error) {
-//       throw error;
-//     }
-//   }
-  static async deleteCartItem(cartItemId) {
-    const query = 'DELETE FROM cart_items WHERE id = $1';
-    try {
-      const result = await pool.query(query, [cartItemId]);
-      return result.rowCount;
+
+  static async decrementCartItem(cartItemId) {
+  // Step 1: Fetch the cart item details
+  const cartItemQuery = 'SELECT product_id, qty FROM cart_items WHERE id = $1';
+  try {
+    console.log(`Fetching cart item details for id: ${cartItemId}`);
+    const cartItemResult = await pool.query(cartItemQuery, [cartItemId]);
+    const cartItem = cartItemResult.rows[0];
+
+    if (!cartItem) {
+      console.error('Cart item not found');
+      throw new Error('Cart item not found');
+    }
+
+    console.log(`Cart item details: ${JSON.stringify(cartItem)}`);
+
+    // Step 2: Check if the quantity is 1, if so delete the item, else decrement the quantity
+    if (cartItem.qty === 1) {
+      console.log(`Cart item quantity is 1, deleting item and updating stock`);
+      // Update the product stock
+      const updateStockQuery = 'UPDATE products SET stock = stock + 1 WHERE id = $1';
+      await pool.query(updateStockQuery, [cartItem.product_id]);
+
+    //Delete the cart item
+    const deleteQuery = 'DELETE FROM cart_items WHERE id = $1';
+    await pool.query(deleteQuery, [cartItemId]);
+
+    return { message: 'Cart item deleted and stock updated' };
+      } else {
+        console.log(`Decrementing cart item quantity`);
+        // Decrement the quantity
+        const decrementQuery = 'UPDATE cart_items SET qty = qty - 1 WHERE id = $1 RETURNING *';
+        const result = await pool.query(decrementQuery, [cartItemId]);
+
+        // Update the product stock
+        const updateStockQuery = 'UPDATE products SET stock = stock + 1 WHERE id = $1';
+        await pool.query(updateStockQuery, [cartItem.product_id]);
+
+
+        console.log(`Updated cart item: ${JSON.stringify(result.rows[0])}`);
+        return result.rows[0];
+      }
     } catch (error) {
+      console.error('Error deleting cart item:', error);
       throw error;
     }
   }

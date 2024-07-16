@@ -74,7 +74,7 @@ router.get('/cart_items/:cartId', async (req, res) => {
 });
 
 
-//get ACTIVE user by id
+//get ACTIVE cart user by id
 router.get('/active/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
@@ -158,6 +158,22 @@ router.put('/:cartId/cartItems/:productId', async (req, res) => {
   }
 });
 
+
+// Decrement cart item quantity or delete if quantity is 1
+router.put('/cart_items/:itemId/decrement', async (req, res) => {
+  const { itemId } = req.params;
+  console.log(`Received request to decrement cart item with id: ${itemId}`);
+  try {
+    const result = await Cart.decrementCartItem(itemId);
+    console.log(`Decrement result: ${JSON.stringify(result)}`);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Error decrementing cart item', error);
+    res.status(500).json({ error: 'Error decrementing cart item' });
+  }
+});
+
+
 // Delete cart by id
 router.delete('/:cartId', async (req, res) => {
   const { cartId } = req.params;
@@ -172,46 +188,35 @@ router.delete('/:cartId', async (req, res) => {
 
 
 //DELETE cart item by id
-router.delete('/cart_items/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    console.log(`Attempting to delete cart item with id: ${id}`);
-    const result = await Cart.deleteCartItem(id);
-    console.log(`Delete result: ${result}`);
-    if (result) {
-      res.status(200).json({ message: 'Cart item deleted successfully' });
-    } else {
-      res.status(404).json({ error: 'Cart item not found' });
-    }
-  } catch (error) {
-    console.error('Error deleting cart item:', error);
-    res.status(500).json({ error: 'Error deleting cart item' });
-  }
-});
+// router.delete('/cart_items/:id', async (req, res) => {
+//   const { id } = req.params;
+//   try {
+//     console.log(`Attempting to delete cart item with id: ${id}`);
+//     const result = await Cart.deleteCartItem(id);
+//     console.log(`Delete result: ${result}`);
+//     if (result) {
+//       res.status(200).json({ message: 'Cart item deleted successfully' });
+//     } else {
+//       res.status(404).json({ error: 'Cart item not found' });
+//     }
+//   } catch (error) {
+//     console.error('Error deleting cart item:', error);
+//     res.status(500).json({ error: 'Error deleting cart item' });
+//   }
+// });
 
-
-// PUT route to decrement cart item quantity
-router.put('/cart_items/:itemId/decrement', async (req, res) => {
+// Delete cart item and update product stock
+router.delete('/cart_items/:itemId', async (req, res) => {
   const { itemId } = req.params;
   try {
-    const item = await Cart.getCartItem(itemId);
-
-    if (!item) {
-      return res.status(404).json({ error: 'Item not found' });
+    const result = await Cart.decrementCartItem(itemId);
+    if (result === 0) {
+      return res.status(404).json({ error: 'Cart item not found' });
     }
-
-    const currentQty = item.qty;
-
-    if (currentQty === 1) {
-      await Cart.deleteCartItem(itemId);
-      return res.json({ message: 'Item removed successfully' });
-    } else {
-      const updatedItem = await Cart.updateCartItem(itemId, currentQty - 1);
-      return res.json(updatedItem);
-    }
+    res.status(200).json({ message: 'Cart item deleted and stock updated' });
   } catch (error) {
-    console.error('Error updating item quantity:', error);
-    res.status(500).json({ error: 'Error updating item quantity' });
+    console.error('Error deleting cart item', error);
+    res.status(500).json({ error: 'Error deleting cart item' });
   }
 });
 

@@ -59,28 +59,28 @@ function CartItemComponent({product}) {
         const handleRemove = async (itemId) => {
             try {
               console.log(`Attempting to decrement cart item with id: ${itemId}`);
-              const response = await axios.put(`/cart/cart_items/${itemId}/decrement`, null, {
+              const response = await axios.put(`/cart/cart_items/${itemId}/decrement`, {}, {
                 headers: { Authorization: `Bearer ${token}` },
               });
+              console.log(`Decrement response: ${JSON.stringify(response.data)}`);
               console.log(response.data.message);
-          
-              // Update the local state to reflect the quantity change
+        
               setCartItems(prevItems => {
-                const updatedItems = prevItems.map(item => {
+                return prevItems.map(item => {
                   if (item.id === itemId) {
-                    if (item.qty > 1) {
-                      return { ...item, qty: item.qty - 1 };
+                    if (item.qty === 1) {
+                      return null; // Remove the item if quantity is 1
                     }
-                    return null;
+                    return { ...item, qty: item.qty - 1 }; // Decrement the quantity
                   }
                   return item;
-                }).filter(item => item !== null);
-                return updatedItems;
+                }).filter(Boolean); // Filter out null values
               });
             } catch (error) {
-              console.error('Error removing item from cart:', error.response ? error.response.data : error.message);
+              console.error('Error decrementing item from cart:', error.response ? error.response.data : error.message);
             }
           };
+          
           
 
     // Function to calculate total price

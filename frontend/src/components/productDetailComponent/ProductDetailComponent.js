@@ -62,10 +62,20 @@ function ProductDetailComponent() {
   
 
   
-  const handleAddToCart = async () => {
+  const handleAddToCart = async (product) => {
     try{
+      console.log('Product:', product); // Log the product object
+      
+    if (!product || !product.id) {
+      console.log('Attempting to add product to cart...');
+      console.error('Invalid product:', product);
+      alert('Invalid product. Please try again.');
+      return;
+    }
+
     const token = localStorage.getItem('token');
     const cartId = localStorage.getItem('cartId');
+
 
     if (!token || !cartId) {
       alert('You need to be logged in to add products to the cart');
@@ -73,8 +83,12 @@ function ProductDetailComponent() {
     }
 
       console.log('Attempting to add product to cart...');
+      console.log('Product ID:', product.id);
+
       let currentCartId = cartId;
-      if (!currentCartId) {
+
+    if (!currentCartId) {
+          // If cartId is not found in localStorage, create a new cart
           const newCartResponse = await axios.post('/cart/cart', { user_id: userId }, {
             headers: { Authorization: `Bearer ${token}` }
           });
@@ -83,13 +97,24 @@ function ProductDetailComponent() {
           setCartId(currentCartId);
           localStorage.setItem('cartId', currentCartId);
           console.log('New cart created:', currentCartId);
-        }
+      }
 
+        
+      // Fetch product details including stock
+      const productResponse = await axios.get(`/products/${product.id}`);
+      const currentStock = productResponse.data.stock;
+        
+      // Check if there is enough stock to add to cart
+    if (currentStock <= 0) {
+        alert('Product is out of stock');
+        return;
+      }
+        
         console.log('Adding product to cart with cartId:', currentCartId);
 
-        const addToCartResponse = axios.post('/cart/cart_items', {
+        const addToCartResponse = await axios.post('/cart/cart_items', {
           cartId: currentCartId,
-          productId: product.id,
+          productId: parseInt(product.id),
           quantity: 1
         }, {
           headers: { Authorization: `Bearer ${token}` }
@@ -147,7 +172,7 @@ function ProductDetailComponent() {
           </div>
 
           <div className='addCart'>          
-            <button onClick={handleAddToCart}><p>Add to cart</p></button>
+            <button onClick={() => handleAddToCart(product)}><p>Add to cart</p></button>
           </div>           
         </div>
 
