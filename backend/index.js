@@ -3,6 +3,8 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const express = require('express');
+const Stripe = require('stripe');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 const session = require('express-session');
 const passport = require('passport');
@@ -10,9 +12,9 @@ const flash = require('express-flash');
 const methodOverride = require('method-override');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
-// const bodyParser = require('body-parser');
 const path = require('path');
 
+// Import routes
 const authRoutes = require('./routes/authRoutes');
 const authRouter = require('./routes/auth');
 const productRouter = require('./routes/products');
@@ -20,12 +22,18 @@ const productRoutes = require('./routes/products');
 const cartRouter = require('./routes/cart');
 const usersRouter = require('./routes/users');
 const ordersRouter = require('./routes/order');
+const checkoutRouter = require('./routes/checkout');
+
+// Import config and services
 const config = require('./config');
 const pool = require('./DB/db');
 const { initializePassport } = require('./services/authService');
-// const upload = require('./routes/products');
+
 
 const app = express();
+
+// Initialize Stripe
+const stripe = Stripe(process.env.STRIPE_KEY);
 
 //Enable CORS
 app.use(cors());
@@ -36,7 +44,7 @@ app.use(methodOverride('_method'));
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-// app.use(bodyParser.json());
+app.use(bodyParser.json());
 
 // Initialize Passport
 initializePassport(passport, pool);
@@ -69,11 +77,9 @@ app.use('/products', productRouter);
 app.use('/products', productRoutes);
 app.use('/auth', authRoutes);
 app.use('/cart', cartRouter);
+app.use('/checkout', checkoutRouter);
 app.use('/users', usersRouter);
 app.use('/orders', ordersRouter);
-
-const cartRoutes = require('./routes/cart');
-app.use('/cart', cartRoutes);
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../frontend/build')));
@@ -83,7 +89,6 @@ app.use(express.static(path.join(__dirname, '../frontend/build')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
-
 
 
 // Swagger options

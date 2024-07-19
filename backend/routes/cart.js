@@ -1,4 +1,5 @@
 // routes/cart.js
+require('dotenv').config();
 
 const express = require('express');
 const router = express.Router();
@@ -6,13 +7,11 @@ const Cart = require('../models/Cart');
 const User = require('../models/User');
 const authService = require('../services/authService');
 const { authenticateToken } = require('../services/authenticateToken');
-const CheckoutService = require('../services/CheckoutService');
-const Checkout = require('../models/Checkout');
 const Order = require('../models/Order');
-require('dotenv').config();
-// const pool = require('../DB/db');
+
 
 const JWT_SECRET = process.env.JWT_SECRET;
+
 
 // Get all cart
 router.get('/', async (req, res) => {
@@ -116,7 +115,7 @@ router.post('/cart', authenticateToken, async (req, res) => {
 
 
 // Add product to cart or create cart if it doesn't exist
-router.post('/cart_items', async (req, res) => {
+router.post('/cart_items', authenticateToken, async (req, res) => {
   console.log('Request body:', req.body);
   try {
     const { productId, quantity, cartId, } = req.body;
@@ -145,7 +144,7 @@ router.post('/cart_items', async (req, res) => {
 
 
 // Update product in cart
-router.put('/:cartId/cartItems/:productId', async (req, res) => {
+router.put('/:cartId/cartItems/:productId', authenticateToken, async (req, res) => {
   const { cartId, productId } = req.params;
   const { quantity } = req.body;
 
@@ -187,26 +186,8 @@ router.delete('/:cartId', async (req, res) => {
 });
 
 
-//DELETE cart item by id
-// router.delete('/cart_items/:id', async (req, res) => {
-//   const { id } = req.params;
-//   try {
-//     console.log(`Attempting to delete cart item with id: ${id}`);
-//     const result = await Cart.deleteCartItem(id);
-//     console.log(`Delete result: ${result}`);
-//     if (result) {
-//       res.status(200).json({ message: 'Cart item deleted successfully' });
-//     } else {
-//       res.status(404).json({ error: 'Cart item not found' });
-//     }
-//   } catch (error) {
-//     console.error('Error deleting cart item:', error);
-//     res.status(500).json({ error: 'Error deleting cart item' });
-//   }
-// });
-
 // Delete cart item and update product stock
-router.delete('/cart_items/:itemId', async (req, res) => {
+router.delete('/cart_items/:itemId', authenticateToken, async (req, res) => {
   const { itemId } = req.params;
   try {
     const result = await Cart.decrementCartItem(itemId);
@@ -220,40 +201,5 @@ router.delete('/cart_items/:itemId', async (req, res) => {
   }
 });
 
-
-
-// CHECKOUT
-router.post('/:cartId/checkout', async (req, res) => {
-  try {
-    const { cartId } = req.params;
-
-    // Fetch cart items from the database
-    const cartItems = await Cart.getItemsByCartId(cartId);
-
-    // Calculate total quantity and price using CheckoutService
-    const { totalQuantity, totalPrice } = CheckoutService.calculateTotal(cartItems);
-
-    // Validate the cart
-    const cart = await Cart.getCartById(cartId);
-    if (!cart) {
-      return res.status(404).json({ error: 'Cart not found' });
-    }
-
-    // Process the payment (Assuming all charges succeed)
-    // You can add payment processing logic here
-
-    // Get user_id from the cart
-    const userId = cart.user_id;
-
-    // Create an order
-    const order = await Checkout.checkout(cartId, totalPrice, userId);
-
-    // Return response with total quantity, total price, and checkout result
-    res.status(200).json({ totalQuantity, totalPrice, cartId, checkoutResult: order });
-  } catch (error) {
-    console.error('Error checking out', error);
-    res.status(500).json({ error: 'Error checking out' });
-  }
-});
 
 module.exports = router;

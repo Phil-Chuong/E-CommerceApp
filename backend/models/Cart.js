@@ -18,6 +18,7 @@ class Cart {
       const result = await pool.query(query, [cartId]);
       return result.rows[0];
     } catch (error) {
+      console.error('Error fetching cart:', err.message);
       throw error;
     }
   }

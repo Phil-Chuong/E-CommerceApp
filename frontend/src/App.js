@@ -10,6 +10,7 @@ import ProductList from './Routes/productlist/ProductList';
 import Accounts from './Routes/accounts/accounts';
 import AuthenticatedLayout from './Routes/AuthenticatedLayout';
 import axios from 'axios';
+import CheckoutPage from './Routes/checkout/CheckoutPage';
 
 axios.defaults.baseURL = 'http://localhost:4000';
 
@@ -31,6 +32,7 @@ function App() {
               <Route element={<ProductDetail />} path='/products/:id' exact/>
               <Route element={<Accounts />} path='/accounts' exact/>
               <Route element={<CartPage />} path='/cart' exact/>  
+              <Route element={<CheckoutPage />} path='/checkout' exact/>
             </Route>
           </Route>                    
       </Routes>

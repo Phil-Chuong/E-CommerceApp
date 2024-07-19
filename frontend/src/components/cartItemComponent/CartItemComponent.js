@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './CartItemComponent.css';
+import { useNavigate } from 'react-router-dom';
 
-function CartItemComponent({product}) {
+function CartItemComponent() {
     
     const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(true); // Add loading state
@@ -14,10 +15,10 @@ function CartItemComponent({product}) {
     const cartId = localStorage.getItem('cartId'); // Assuming you store cart_id after login
     // console.log('Token:', token); // Debugging log
     // console.log('cartId', cartId);
+    const navigate = useNavigate(); // To programmatically navigate to another route
 
     useEffect(() => {
         const fetchCartItems = async () => {
-
             try {
                 if (!token || !cartId) {
                     throw new Error('Token or cart_id not found.'); // Handle case where token or cart_id is missing
@@ -26,6 +27,7 @@ function CartItemComponent({product}) {
                 const cartResponse = await axios.get(`/cart/cart_items/${cartId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
+
                 // console.log('Cart items fetched:', cartResponse.data); // Debugging log
                 setCartItems(cartResponse.data); // Assuming response.data is an array
                 setLoading(false); // Set loading state to false on successful fetch
@@ -56,8 +58,8 @@ function CartItemComponent({product}) {
         }, []);
 
 
-        const handleRemove = async (itemId) => {
-            try {
+    const handleRemove = async (itemId) => {
+        try {
               console.log(`Attempting to decrement cart item with id: ${itemId}`);
               const response = await axios.put(`/cart/cart_items/${itemId}/decrement`, {}, {
                 headers: { Authorization: `Bearer ${token}` },
@@ -76,12 +78,16 @@ function CartItemComponent({product}) {
                   return item;
                 }).filter(Boolean); // Filter out null values
               });
-            } catch (error) {
-              console.error('Error decrementing item from cart:', error.response ? error.response.data : error.message);
-            }
-          };
+        } catch (error) {
+            console.error('Error decrementing item from cart:', error.response ? error.response.data : error.message);
+        }
+    };
           
           
+    const handlePayment = () => {
+        navigate('/checkout');
+    };
+
 
     // Function to calculate total price
     const calculateTotalPrice = () => {
@@ -93,9 +99,6 @@ function CartItemComponent({product}) {
     }
 
 
-    const handlePayment = () => {
-        return 
-    }
 
     // Render loading state while fetching data
     if (loading) return <div>Loading...</div>;
@@ -108,6 +111,9 @@ function CartItemComponent({product}) {
         return <div>Error: Failed to load cart items.</div>;
     }
 
+    if (cartItems.length === 0) return <div>Your cart is empty.</div>;
+
+
 
     return (
         <div className='cartBody'>
@@ -118,7 +124,7 @@ function CartItemComponent({product}) {
                             <h3>Total Price: £{calculateTotalPrice().toFixed(2)}</h3>
                     </div>
                     <div className='paymentContainer'>
-                        <button onClick={handlePayment}>Payment Here</button>
+                        <button onClick={handlePayment}>Procced to payment</button>
                     </div>
 
                     <div className='itemBox'>

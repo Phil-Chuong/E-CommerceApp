@@ -21,23 +21,24 @@ class Order {
 
   static async getOrderByUser(userId) {
     try {
-      const result = await pool.query('SELECT * FROM orders WHERE user.id = $1', [userId]);
-      return result.rows[0];
+      const result = await pool.query('SELECT * FROM orders WHERE user_id = $1', [userId]);
+      return result.rows;
     } catch (error) {
       throw error;
     }
   }
 
-  static async createOrder(cartId) {
+  static async createOrder(userId, cartId, totalPrice) {
     try {
-      const query = 'INSERT INTO orders (cart_id) VALUES ($1) RETURNING *';
-      const values = [cartId];
+      const query = 'INSERT INTO orders (user_id, cart_id, "totalPrice", status) VALUES ($1, $2, $3, $4) RETURNING *';
+      const values = [userId, cartId, totalPrice, 'completed']; // Assuming 'completed' status for a new order
       const { rows } = await pool.query(query, values);
       return rows[0];
     } catch (error) {
       throw error;
     }
   }
+
 }
 
 module.exports = Order;
