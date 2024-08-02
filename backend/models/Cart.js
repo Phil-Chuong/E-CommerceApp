@@ -2,12 +2,12 @@ const pool = require('../DB/db');
 
 class Cart {
   static async getAllCart() {
-    // const pool = require('../DB/db');
     const query = 'SELECT * FROM cart';
     try {
       const result = await pool.query(query);
       return result.rows;
     } catch (error) {
+      console.error('Error fetching all carts:', error.message);
       throw error;
     }
   }
@@ -36,45 +36,6 @@ class Cart {
         throw new Error('Error creating cart');
       }
   };
-
-  // static async createOrFetchCart(userId, currentCartId) {
-  //   try {
-  //       // Check the status of the current cart
-  //       if (currentCartId) {
-  //           const cartStatusResult = await pool.query(
-  //               'SELECT status FROM cart WHERE id = $1 AND user_id = $2',
-  //               [currentCartId, userId]
-  //           );
-            
-  //           const currentCart = cartStatusResult.rows[0];
-            
-  //           // If the current cart exists and is completed, create a new cart
-  //           if (currentCart && currentCart.status === 'completed') {
-  //               console.log('Current cart is completed. Creating a new cart...');
-  //               const result = await pool.query(
-  //                   'INSERT INTO cart (user_id, status) VALUES ($1, $2) RETURNING *',
-  //                   [userId, 'active']
-  //               );
-  //               return result.rows[0];
-  //           } else if (currentCart && currentCart.status !== 'completed') {
-  //               // If the current cart is not completed, return it
-  //               return { id: currentCartId, ...currentCart };
-  //           }
-  //       }
-
-  //       // If there's no current cart ID or the cart does not exist, create a new cart
-  //       console.log(`No current cart or new cart required. Creating cart for user id: ${userId}`);
-  //       const result = await pool.query(
-  //           'INSERT INTO cart (user_id, status) VALUES ($1, $2) RETURNING *',
-  //           [userId, 'active']
-  //       );
-  //       return result.rows[0];
-
-  //   } catch (error) {
-  //       console.error('Error creating or fetching cart for user:', error);
-  //       throw new Error('Error creating or fetching cart');
-  //   }
-  // }
 
 
   static async getActiveCartByUserId(userId) {
@@ -105,6 +66,7 @@ class Cart {
       const result = await pool.query(query, [cartId]);
       return result.rows;
     } catch (error) {
+      console.error('Error fetching items by cart ID:', error.message);
       throw error;
     }
   }
@@ -115,6 +77,7 @@ class Cart {
       const result = await pool.query(query, [itemId]);
       return result.rows[0];
     } catch (error) {
+      console.error('Error fetching cart item:', error.message);
       throw error;
     }
   }

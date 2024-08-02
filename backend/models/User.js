@@ -17,35 +17,15 @@ class User {
     }
   }
 
-  // // Fetch a user by ID
-  // static async getUserById(userId) {
-  //   const query = 'SELECT id, firstname, lastname, email, username FROM users WHERE id = $1';
-  //   try {
-  //     const result = await pool.query(query, [userId]);
-  //     return result.rows[0];
-  //   } catch (error) {
-  //     console.error('Error fetching user by ID:', error.message); // Log error details
-  //     throw error;
-  //   }
-  // }
-
   // Fetch a user by ID
 static async getUserById(userId) {
   if (!userId) {
     throw new Error('User ID is required');
   }
   
-  const query = 'SELECT id, firstname, lastname, email, username FROM users WHERE id = $1';
-  try {
-    const result = await pool.query(query, [userId]);
-    if (result.rows.length === 0) {
-      throw new Error(`No user found with ID: ${userId}`);
-    }
-    return result.rows[0];
-  } catch (error) {
-    console.error('Error fetching user by ID:', error.message); // Log error details
-    throw error; 
-  }
+   // Ensure userId is a valid integer if your database expects an integer
+  const result = await pool.query('SELECT * FROM users WHERE id = $1', [userId]);
+  return result.rows[0]; // Assuming you expect a single user object
 }
 
   // Compare hashed password

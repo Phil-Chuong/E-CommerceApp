@@ -2,30 +2,39 @@ import React, { useState, useEffect } from 'react'
 import './AccountsComponent.css'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import {jwtDecode} from 'jwt-decode';
 
 function AccountsComponent() {
   
   const [user, setUser] = useState(null);
-  //const [orders, setOrders] = useState([]);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   
   useEffect(() => { 
     const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId');
 
     if(!token) {
+      console.log('No token found, redirecting to login');
       navigate('/login');
       return;
     }
 
+    try {
+      // Decode the token to get the userId
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.userId;
+
+      console.log('Token:', token);
+      console.log('User ID from token:', userId);
+
     if (!userId) {
       console.error('User ID is not set in localStorage.');
-      setError('User ID is not available.');
+      //navigate('/login');
       return;
     }
 
+    
     const fetchUser = async () => {
       try {
         const response = await axios.get(`/users/${userId}`, {
@@ -33,23 +42,27 @@ function AccountsComponent() {
             Authorization: `Bearer ${token}`
           }
         });
+        console.log('API response:', response.data);
         setUser(response.data);
       } catch (error) {
         console.error('Error fetching user:', error);
-        setError('Failed to load user data');
+        setError('Failed to fetch user data');
       }
     };
-
+  
     fetchUser();
+  } catch (error) {
+    console.error('Error decoding token:', error);
+    navigate('/login');
+  }
   }, [navigate]);
 
-
   if (error) {
-    return <div>Error: {error}</div>; // Show error if there's an issue
+    return <div>Error: {error}</div>;
   }
-
+  
   if (!user) {
-    return <div>Loading...</div>; // Render a loading state until the user data is fetched
+    return <div>Loading...</div>;
   }
 
   return (
@@ -60,6 +73,8 @@ function AccountsComponent() {
             <ul className='userSection'>
                 <li className='usersDetail'>
                   <div className='personalInfo'>                    
+                  {user ? (
+                <>
                   <p>
                     <span style={{ color: 'red' }}>First Name:</span> {user.firstname}
                   </p>
@@ -72,6 +87,10 @@ function AccountsComponent() {
                   <p>
                     <span style={{ color: 'red' }}>Email:</span> {user.email}
                   </p>
+                </>
+              ) : (
+                <p>Loading user information...</p>
+              )}
                   </div>
                 </li>               
             </ul>
@@ -81,20 +100,7 @@ function AccountsComponent() {
         <div className='orderHistoryContainer'>
           <h2>Order History</h2>
           <div className='orderHistoryList'>
-          {/* {orders.length === 0 ? (
-            <p>No orders found.</p>
-          ) : (
-            <ul>
-              {orders.map((order) => (
-                <li key={order.cart_id}>
-                  <p><span style={{ color: 'red' }}>Cart ID:</span> {order.cart_id}</p>
-                  <p><span style={{ color: 'red' }}>Created:</span> {new Date(order.created).toLocaleDateString()}</p>
-                  <p><span style={{ color: 'red' }}>Total Price:</span> ${order.totalPrice.toFixed(2)}</p>
-                  <p><span style={{ color: 'red' }}>Status:</span> {order.status}</p>
-                </li>
-              ))}
-            </ul>
-          )} */}
+          
           </div>
         </div>
     </div>

@@ -4,10 +4,10 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const Cart = require('../models/Cart');
-const User = require('../models/User');
+//const User = require('../models/User');
 const authService = require('../services/authService');
 const { authenticateToken } = require('../services/authenticateToken');
-const Order = require('../models/Order');
+//const Order = require('../models/Order');
 
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -69,39 +69,24 @@ router.get('/cart_items/:cartId', async (req, res) => {
       res.status(500).json({ error: 'Failed to retrieve cart items' });
   }
 });
-// router.get('/cart_items/:cartId', async (req, res) => {
-//   //const { cartId } = req.params; // Extract cartId from request parameters
-//   const cartId = parseInt(req.params.cartId, 10); // Convert cartId to integer
-//     if (isNaN(cartId)) {
-//         return res.status(400).json({ error: 'Invalid cartId' });
-//     }
-//   try {
-//     // Fetch cart items specifically for the provided cartId
-//     const cartItems = await Cart.getItemsByCartId(cartId); // Assuming Cart.getItemsByCartId() method takes cartId as an argument
-
-//     if (!cartItems) {
-//       return res.status(404).json({ error: 'Cart items not found' });
-//     }
-
-//     res.json(cartItems); // Send back the fetched cart items
-//   } catch (error) {
-//     console.error('Error retrieving cart items:', error);
-//     res.status(500).json({ error: 'Error retrieving cart items' });
-//   }
-// });
 
 
 //get ACTIVE cart user by id
 router.get('/active/:userId', authenticateToken, async (req, res) => {
+  const userId = parseInt(req.params.userId, 10);
+
+  if (isNaN(userId)) {
+    return res.status(400).json({ error: 'Invalid user ID' });
+  }
+
   try {
-    const { userId } = req.params;
     const activeCart = await Cart.getActiveCartByUserId(userId);
     if (!activeCart) {
       return res.status(404).json({ message: 'Active cart not found' });
     }
     res.json(activeCart);
   } catch (error) {
-    console.error('Error fetching active cart:', error);
+    console.error('Error fetching active cart:', error.message);
     res.status(500).json({ error: 'Error fetching active cart' });
   }
 });
@@ -109,9 +94,13 @@ router.get('/active/:userId', authenticateToken, async (req, res) => {
 
 // Create or get active cart for the user
 router.post('/cart', authenticateToken, async (req, res) => {
-  const cartId = req.cartId;
-  const userId = req.user.userId;
+  const {cartId} = req.cartId;
+  const userId = req.userId;
   console.log('User ID from token:', userId, 'Cart ID:', cartId); // Debugging log
+
+  if (!userId) {
+    return res.status(400).json({ error: 'User ID not found' });
+  }
 
   try {
     let cart;

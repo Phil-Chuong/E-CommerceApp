@@ -23,9 +23,9 @@ function authenticateToken(req, res, next) {
     }
 
     // Ensure userId is correctly extracted from the token
+    req.userId = decodedToken.userId; // Ensure user object is correctly assigned
     console.log('Token payload:', decodedToken); // Debugging log - remove or limit in production
     
-    req.userId = decodedToken.userId; // Ensure user object is correctly assigned
     next();
   });
 }

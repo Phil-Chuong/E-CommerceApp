@@ -7,7 +7,7 @@ const User = require('../models/User');
 const { authenticateToken } = require('../services/authenticateToken');
 
 //GET all users 
-router.get('/', async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
     try {
       const users = await User.getAllUsers();
       res.send(users);
@@ -20,10 +20,10 @@ router.get('/', async (req, res) => {
 
 
 //GET users by id
-router.get('/:id', async (req, res) => {
+router.get('/:id', authenticateToken, async (req, res) => {
   const userId = parseInt(req.params.id, 10);
 
-  if (isNaN(userId)) {
+  if (!userId) {
     return res.status(400).json({ error: 'Invalid user ID' });
   }
 

@@ -12,19 +12,22 @@ const LoginPage = () => {
   const navigate = useNavigate();
   
 
-  const handleLoginSuccess = async (accessToken, refreshToken, cartId) => {
+  const handleLoginSuccess = async (accessToken, refreshToken, cartId, userId) => {
+    console.log('Received data:', { accessToken, refreshToken, userId, cartId });
     //console.log('Received accessToken:', accessToken);
     //console.log('Received refreshToken:', refreshToken);
-    console.log('Received cartId:', cartId);
+    //console.log('Received cartId:', cartId);
+    //console.log('Received userId:', userId);
 
     if (!accessToken || !refreshToken || !cartId) {
-      throw new Error('Invalid token');
+      throw new Error('Invalid token or missing data');
     }
 
     // Store tokens and cartId in localStorage
     localStorage.setItem('token', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
     localStorage.setItem('cartId', cartId);
+    localStorage.setItem('userId', userId);
 
     try {
       await fetchOrCreateCart(); // Fetch and update cart items
@@ -127,7 +130,9 @@ const LoginPage = () => {
       console.log('Login response:', response.data);
 
       // Extract the token from the response data and store it in localStorage
-      const { accessToken, refreshToken, cartId } = response.data;
+      const { accessToken, refreshToken, cartId} = response.data;
+
+      console.log('Extracted Data:', { accessToken, refreshToken, cartId });
 
       // Store tokens and cartId in localStorage
       if (accessToken && refreshToken && cartId) {
@@ -168,6 +173,7 @@ const LoginPage = () => {
       console.log('Received accessToken:', accessToken);
       console.log('Received refreshToken:', refreshToken);
       console.log('Received cartId:', cartId);
+      //console.log('Received userId:', userId);
 
       if (accessToken && refreshToken && cartId) {
         handleLoginSuccess(accessToken, refreshToken, cartId);
