@@ -43,7 +43,7 @@ function ProductDetailComponent() {
           headers: { Authorization: `Bearer ${token}` }
         })
         .then(response => {
-          console.log('Cart data:', response.data); // Check if cart data is received
+          //console.log('Cart data:', response.data); // Check if cart data is received
           if (response.data) {
             setCartId(response.data.id);
           }
@@ -63,87 +63,95 @@ function ProductDetailComponent() {
 
   
   const handleAddToCart = async (product) => {
-    try{
-      console.log('Product:', product); // Log the product object
-      
-    if (!product || !product.id) {
-      console.log('Attempting to add product to cart...');
-      console.error('Invalid product:', product);
-      alert('Invalid product. Please try again.');
-      return;
-    }
 
-    const token = localStorage.getItem('token');
-    const cartId = localStorage.getItem('cartId');
+    try {
+        // Log the product object for debugging
+        console.log('Product:', product);
 
+        // Check if product is valid
+        if (!product || !product.id) {
+            console.error('Invalid product:', product);
+            alert('Invalid product. Please try again.');
+            return;
+        }
 
-    if (!token || !cartId) {
-      alert('You need to be logged in to add products to the cart');
-      return;
-    }
+        // Retrieve token and cartId from localStorage
+        const accessToken = localStorage.getItem('accessToken');
+        const token = localStorage.getItem('token');
+        let cartId = localStorage.getItem('cartId');
 
-      console.log('Attempting to add product to cart...');
-      console.log('Product ID:', product.id);
+        if (!token || !accessToken) {
+            alert('You need to be logged in to add products to the cart');
+            return;
+        }
 
-      let currentCartId = cartId;
+        // If cartId is not found in localStorage, create a new cart
+        if (!cartId) {
+            console.log('No cartId found. Creating a new cart...');
 
-    if (!currentCartId) {
-          // If cartId is not found in localStorage, create a new cart
-          const newCartResponse = await axios.post('/cart/cart', { user_id: userId }, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
+            const newCartResponse = await axios.post('/cart/cart', { user_id: userId }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
 
-          currentCartId = newCartResponse.data.cartId;
-          setCartId(currentCartId);
-          localStorage.setItem('cartId', currentCartId);
-          console.log('New cart created:', currentCartId);
-      }
+            if (newCartResponse.data && newCartResponse.data.cartId) {
+                let cartId = newCartResponse.data.cartId;
+                localStorage.setItem('cartId', cartId);
+                console.log('New cart created with ID:', cartId);
+            } else {
+                console.error('Failed to create a new cart:', newCartResponse.data);
+                alert('Failed to create a new cart. Please try again.');
+                return;
+            }
+            
+          }
+          
 
-        
-      // Fetch product details including stock
-      const productResponse = await axios.get(`/products/${product.id}`);
-      const currentStock = productResponse.data.stock;
-        
-      // Check if there is enough stock to add to cart
-    if (currentStock <= 0) {
-        alert('Product is out of stock');
-        return;
-      }
-        
-        console.log('Adding product to cart with cartId:', currentCartId);
+        // Fetch product details including stock
+        const productResponse = await axios.get(`/products/${product.id}`);
+        const currentStock = productResponse.data.stock;
 
+        // Check if there is enough stock to add to cart
+        if (currentStock <= 0) {
+            alert('Product is out of stock');
+            return;
+        }
+
+        console.log('Adding product to cart with cartId:', cartId);
+
+        // Add product to cart
         const addToCartResponse = await axios.post('/cart/cart_items', {
-          cartId: currentCartId,
-          productId: parseInt(product.id),
-          quantity: 1
+            cartId: parseInt(cartId), // Ensure cartId is an integer
+            productId: parseInt(product.id),
+            quantity: 1
         }, {
-          headers: { Authorization: `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` }
         });
 
         console.log('Product added to cart:', addToCartResponse.data);
         alert('Product added to cart successfully!');
-      } catch (error) {
+    } catch (error) {
         console.error('Error adding product to cart:', error);
 
-        // Additional error information for debugging
+        // Additional error handling for debugging
         if (error.response) {
-          if (error.response.status === 403) {
-            console.error('Invalid token or unauthorized:', error.response.data);
-            // Handle unauthorized access or token expiration
-            // Redirect to login or refresh token
-          } else {
-            console.error('Server responded with status code:', error.response.status);
-            console.error('Response data:', error.response.data);
-          }
+            if (error.response.status === 403) {
+                console.error('Invalid token or unauthorized:', error.response.data);
+                // Handle unauthorized access or token expiration
+                // Redirect to login or refresh token
+            } else {
+                console.error('Server responded with status code:', error.response.status);
+                console.error('Response data:', error.response.data);
+            }
         } else if (error.request) {
-          console.error('No response received:', error.request);
+            console.error('No response received:', error.request);
         } else {
-          console.error('Error setting up request:', error.message);
+            console.error('Error setting up request:', error.message);
         }
 
         alert('Error adding product to cart. Please try again.');
-      }
-    };
+    }
+};
+
   
     if (loading) return <div>Loading...</div>; // Render loading state
 

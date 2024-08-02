@@ -10,16 +10,14 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  // const [cartItems, setCartItems] = useState([]); // State for cart items
-
   
 
   const handleLoginSuccess = async (accessToken, refreshToken, cartId) => {
-    console.log('Received accessToken:', accessToken);
-    console.log('Received refreshToken:', refreshToken);
+    //console.log('Received accessToken:', accessToken);
+    //console.log('Received refreshToken:', refreshToken);
     console.log('Received cartId:', cartId);
 
-    if (!accessToken || !refreshToken) {
+    if (!accessToken || !refreshToken || !cartId) {
       throw new Error('Invalid token');
     }
 
@@ -30,8 +28,6 @@ const LoginPage = () => {
 
     try {
       await fetchOrCreateCart(); // Fetch and update cart items
-      // setCartItems(cartItems);
-      // Update cart items in state or context if needed
       navigate('/HomePage');
     } catch (error) {
       console.error('Error handling login success:', error);
@@ -44,28 +40,38 @@ const LoginPage = () => {
     }
   };
 
-
   const fetchOrCreateCart = async () => {
     let accessToken = localStorage.getItem('token');
     let refreshToken = localStorage.getItem('refreshToken');
-    console.log('token', accessToken);
+    //let cartId = localStorage.getItem('cartId')
   
     if (accessToken || refreshToken) {
       console.error('No token found.');
-      // Redirect to login or handle no token scenario
+      
       navigate('/login');
-      // window.location.href = '/login';
       return;
     }
   
     try {
-      const response = await axios.post('/cart/cart/', {}, {
+      const response = await axios.get('/cart/cart/', {}, {
         headers: { Authorization: `Bearer ${accessToken}` }
       });
   
       console.log('Cart response:', response.data);
+
+      let cart = response.data.cart;
+
+      // If the cart exists and is completed, create a new cart
+      if (cart && cart.status === 'completed') {
+        const newCartResponse = await axios.post('/cart/cart', {}, {
+          headers: { Authorization: `Bearer ${accessToken}` }
+        });
+
+        cart = newCartResponse.data.cart;
+        console.log('New cart created:', cart);
+      }
   
-      const cartId = response.data.cartId;
+      const cartId = cart.id;
       localStorage.setItem('cartId', cartId);
       return cartId;
     } catch (error) {
@@ -79,13 +85,25 @@ const LoginPage = () => {
           localStorage.setItem('token', accessToken);
   
           // Retry the request with the new token
-          const response = await axios.post('/cart/cart', {}, {
+          const response = await axios.post('/cart/cart', {}, {// 
             headers: { Authorization: `Bearer ${accessToken}` }
           });
   
           console.log('Cart response:', response.data);
+
+          let cart = response.data.cart;
+
+          // If the cart exists and is completed, create a new cart
+        if (cart && cart.status === 'completed') {
+          const newCartResponse = await axios.post('/cart/cart', {}, {
+            headers: { Authorization: `Bearer ${accessToken}` }
+          });
+
+          cart = newCartResponse.data.cart;
+          console.log('New cart created:', cart);
+        }
   
-          const cartId = response.data.cartId;
+          const cartId = cart.id;
           localStorage.setItem('cartId', cartId);
           return cartId;
         } catch (refreshError) {
@@ -93,7 +111,6 @@ const LoginPage = () => {
           localStorage.removeItem('token');
           localStorage.removeItem('refreshToken');
           navigate('/login');
-          // window.location.href = '/login';
         }
       } else {
         throw error;
@@ -110,15 +127,16 @@ const LoginPage = () => {
       console.log('Login response:', response.data);
 
       // Extract the token from the response data and store it in localStorage
-      const { token } = response.data;
-      localStorage.setItem('token', token); // Store the token in localStorage
-
-       // If your server responds with additional data like accessToken, refreshToken, and cartId
       const { accessToken, refreshToken, cartId } = response.data;
 
+      // Store tokens and cartId in localStorage
+      if (accessToken && refreshToken && cartId) {
+
       // Example function to handle further actions after successful login
-      handleLoginSuccess(accessToken, refreshToken, cartId); // Handle post-login actions
-    
+        handleLoginSuccess(accessToken, refreshToken, cartId); // Handle post-login actions
+      } else {
+        throw new Error('Missing data from server response');
+      }
     } catch (error) {
       console.error('Login error:', error);
 
@@ -137,21 +155,25 @@ const LoginPage = () => {
     try {
       console.log('Credential response:', credentialResponse); // Log the full credential response
       const { credential } = credentialResponse;
-      
-      const response = await axios.post('/auth/google-login', { token: credential });
+
+      if (!credential) {
+        throw new Error('Missing credential');
+      }
+  
+      // Sending token to backend
+      const response = await axios.post('/authRoutes/google-login', { token: credential });
       console.log('Backend response:', response.data); // Log the backend response
 
       const { accessToken, refreshToken, cartId } = response.data;
       console.log('Received accessToken:', accessToken);
       console.log('Received refreshToken:', refreshToken);
       console.log('Received cartId:', cartId);
-      
-       // Store tokens and cartId in localStorage
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
-      localStorage.setItem('cartId', cartId);
 
-      handleLoginSuccess(accessToken, refreshToken, cartId);
+      if (accessToken && refreshToken && cartId) {
+        handleLoginSuccess(accessToken, refreshToken, cartId);
+      } else {
+        setError('Missing data from server response');
+      }
     } catch (error) {
       setError('Google login failed.');
     }

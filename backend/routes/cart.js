@@ -36,6 +36,7 @@ router.get('/cart/:id', authenticateToken, async (req, res) => {
 
   try {
     const cart = await Cart.getCartById(cartId);
+    console.log('Fetched cart:', cart);
     res.status(200).json(cart);
   } catch (error) {
     console.error('Error retrieving cart', error);
@@ -56,25 +57,42 @@ router.get('/cart_items', async (req, res) => {
 
 // Route to get all cart items by cart ID
 router.get('/cart_items/:cartId', async (req, res) => {
-  const { cartId } = req.params; // Extract cartId from request parameters
+  const cartId = parseInt(req.params.cartId, 10);
+  if (isNaN(cartId)) {
+      return res.status(400).json({ error: 'Invalid cartId' });
+  }
   try {
-    // Fetch cart items specifically for the provided cartId
-    const cartItems = await Cart.getItemsByCartId(cartId); // Assuming Cart.getItemsByCartId() method takes cartId as an argument
-
-    if (!cartItems) {
-      return res.status(404).json({ error: 'Cart items not found' });
-    }
-
-    res.json(cartItems); // Send back the fetched cart items
+      const items = await Cart.getItemsByCartId(cartId);
+      res.json(items);
   } catch (error) {
-    console.error('Error retrieving cart items:', error);
-    res.status(500).json({ error: 'Error retrieving cart items' });
+      console.error('Error retrieving cart items:', error);
+      res.status(500).json({ error: 'Failed to retrieve cart items' });
   }
 });
+// router.get('/cart_items/:cartId', async (req, res) => {
+//   //const { cartId } = req.params; // Extract cartId from request parameters
+//   const cartId = parseInt(req.params.cartId, 10); // Convert cartId to integer
+//     if (isNaN(cartId)) {
+//         return res.status(400).json({ error: 'Invalid cartId' });
+//     }
+//   try {
+//     // Fetch cart items specifically for the provided cartId
+//     const cartItems = await Cart.getItemsByCartId(cartId); // Assuming Cart.getItemsByCartId() method takes cartId as an argument
+
+//     if (!cartItems) {
+//       return res.status(404).json({ error: 'Cart items not found' });
+//     }
+
+//     res.json(cartItems); // Send back the fetched cart items
+//   } catch (error) {
+//     console.error('Error retrieving cart items:', error);
+//     res.status(500).json({ error: 'Error retrieving cart items' });
+//   }
+// });
 
 
 //get ACTIVE cart user by id
-router.get('/active/:userId', async (req, res) => {
+router.get('/active/:userId', authenticateToken, async (req, res) => {
   try {
     const { userId } = req.params;
     const activeCart = await Cart.getActiveCartByUserId(userId);
@@ -91,7 +109,7 @@ router.get('/active/:userId', async (req, res) => {
 
 // Create or get active cart for the user
 router.post('/cart', authenticateToken, async (req, res) => {
-  const cartId = req.user.cartId;
+  const cartId = req.cartId;
   const userId = req.user.userId;
   console.log('User ID from token:', userId, 'Cart ID:', cartId); // Debugging log
 
@@ -105,7 +123,6 @@ router.post('/cart', authenticateToken, async (req, res) => {
     if (!cart) {
       cart = await Cart.createCart(userId);
     }
-
     res.status(200).json({ cartId: cart.id });
   } catch (error) {
     console.error('Error fetching or creating cart', error);
@@ -119,6 +136,13 @@ router.post('/cart_items', authenticateToken, async (req, res) => {
   console.log('Request body:', req.body);
   try {
     const { productId, quantity, cartId, } = req.body;
+    const userId = req.userId; // Ensure you get the userId from the authenticated user context
+
+    console.log('User ID:', userId);
+
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID not found in request' });
+  }
 
     // Check if all required fields are provided
     if (!cartId || !productId || !quantity) {
@@ -133,7 +157,7 @@ router.post('/cart_items', authenticateToken, async (req, res) => {
     }
 
     // Add product to cart
-    const addedProduct = await Cart.addProductToCart(currentCartId, productId, quantity);
+    const addedProduct = await Cart.addProductToCart(currentCartId, productId, quantity, userId);
     res.status(200).json(addedProduct);
 
   } catch (error) {

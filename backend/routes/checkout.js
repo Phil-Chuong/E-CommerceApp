@@ -9,11 +9,24 @@ const Checkout = require('../models/Checkout');
 router.post('/checkout', authenticateToken, async (req, res) => {
     // Extract values from the request body
     const { totalPrice, paymentMethodId, cartId} = req.body;
+    const userId = req.userId; // Ensure this is correctly populated by authenticateToken middleware
 
+    // Log values to debug
+    console.log('Request body:', req.body);
+    console.log('User ID:', userId);
+    
     // Check if all required fields are provided
-    if (!totalPrice || !paymentMethodId || !cartId) {
-        return res.status(400).send({ error: 'totalPrice, paymentMethodId and cartId are required' });
+    if (!totalPrice || !paymentMethodId || !cartId || !userId) {
+        return res.status(400).send({ error: 'totalPrice, paymentMethodId, userId and cartId are required' });
     }
+
+    // Convert totalPrice to a number
+    const numericTotalPrice = parseFloat(totalPrice);
+
+    if (isNaN(numericTotalPrice)) {
+        return res.status(400).send({ error: 'Invalid totalPrice format' });
+    }
+
 
     try {
         const paymentIntent = await stripe.paymentIntents.create({
@@ -28,13 +41,13 @@ router.post('/checkout', authenticateToken, async (req, res) => {
         console.log('Payment Intent created successfully:', paymentIntent);
 
         // Update the checkout status and create the order
-        await Checkout.checkout(cartId, totalPrice, paymentMethodId);
-
+        await Checkout.checkout(cartId, paymentMethodId, totalPrice, userId);
+        
         res.status(200).json({
             client_secret: paymentIntent.client_secret,
             status: paymentIntent.status
         });
-        
+
     } catch (error) {
         console.error('Error creating payment intent:', error);
        

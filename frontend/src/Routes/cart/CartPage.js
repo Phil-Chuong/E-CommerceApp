@@ -3,7 +3,6 @@ import HeaderTitle from '../../components/headerLogo/HeaderTitle';
 import CartItemComponent from '../../components/cartItemComponent/CartItemComponent';
 
 const CartPage = () => { 
-  // console.log('CartPage rendered'); // Debugging log
   return (
     <div>
       <HeaderTitle />

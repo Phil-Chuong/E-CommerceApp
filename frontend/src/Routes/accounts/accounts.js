@@ -3,7 +3,7 @@ import HeaderTitle from '../../components/headerLogo/HeaderTitle';
 import AccountsComponent from '../../components/accountsComponent/AccountsComponent';
 
 
-function Accounts() {
+const Accounts = () => {
   return (
     <div>
       <HeaderTitle />

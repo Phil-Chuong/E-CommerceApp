@@ -34,13 +34,14 @@ router.post('/google-login', async (req, res) => {
     const { sub, email, name } = payload;
     const userId = sub;
     const fullName = name.split(' '); // Assuming name is a full name
+    const [firstname, lastname] = fullName.length > 1 ? [fullName[0], fullName.slice(1).join(' ')] : [fullName[0], null];
 
     // Check if user already exists in your database
     let userResult = await pool.query('SELECT * FROM users WHERE google_id = $1', [userId]);
 
     if (userResult.rows.length === 0) {
       // If user doesn't exist, create a new user
-      const [firstname, lastname] = fullName.length > 1 ? [fullName[0], fullName.slice(1).join(' ')] : [fullName[0], null];
+      //const [firstname, lastname] = fullName.length > 1 ? [fullName[0], fullName.slice(1).join(' ')] : [fullName[0], null];
       const defaultPassword = await bcrypt.hash('defaultpassword', 10);
 
       userResult = await pool.query(
@@ -52,9 +53,9 @@ router.post('/google-login', async (req, res) => {
     const userIdInDb = userResult.rows[0].id;
 
     // // Check if a cart already exists for the user
-    let cartResult = await pool.query('SELECT id FROM cart WHERE user_id = $1', [userIdInDb]);
-
-    if (cartResult.rows.length === 0) {
+    let cartResult = await pool.query('SELECT id, status FROM cart WHERE user_id = $1 ORDER BY created_at DESC LIMIT 1', [userIdInDb]);
+    
+    if (cartResult.rows.length === 0 || cartResult.rows[0].status === 'completed') {
       // Create a new cart for the user
       cartResult = await pool.query('INSERT INTO cart (user_id) VALUES ($1) RETURNING id', [userIdInDb]);
     }
@@ -69,9 +70,6 @@ router.post('/google-login', async (req, res) => {
     const refreshToken = jwt.sign({ userId: userIdInDb }, JWT_SECRET, {
       expiresIn: '7d',
     });
-
-    // Assuming cartId is available, otherwise set it accordingly
-    // const cartId = 48; // Example value, replace it with actual logic
 
     res.json({ accessToken, refreshToken, cartId });
   } catch (error) {

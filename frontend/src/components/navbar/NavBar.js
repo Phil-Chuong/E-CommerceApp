@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { ShoppingCart, House } from 'phosphor-react'
+import { ShoppingCart, House, ArrowsOut, UserList, SignOut } from 'phosphor-react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import '../navbar/NavBar.css'
@@ -43,13 +43,13 @@ const NavBar = () => {
   return (
     <div className='navbar'>
       <div className='home'>
-        <Link to={'/HomePage'}><House size={32} /></Link>
+        <Link to={'/HomePage'}><House size={32} alt='Home'/></Link>
       </div>
       <div className='links'>
-        <Link to={'/products'}>Products</Link>
-        <Link to={'/accounts'}>Account</Link>
-        <Link to={'/cart'}><ShoppingCart size={32} /></Link>
-        <button onClick={handleLogout}>Logout</button>
+        <Link to={'/products'}><ArrowsOut size={32} alt='Products'/></Link>
+        <Link to={'/cart'}  ><ShoppingCart size={32} alt='Cart'/></Link>
+        <Link to={'/accounts'}><UserList size={32} alt='Accounts'/></Link>
+        <button onClick={handleLogout}><SignOut size={32} alt='SignOut'/></button>
       </div>
     </div>
   )

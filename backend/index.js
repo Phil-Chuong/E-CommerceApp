@@ -15,7 +15,7 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const path = require('path');
 
 // Import routes
-const authRoutes = require('./routes/authRoutes');
+const authGoogleRouter = require('./routes/authRoutes');
 const authRouter = require('./routes/auth');
 const productRouter = require('./routes/products');
 const productRoutes = require('./routes/products');
@@ -23,6 +23,7 @@ const cartRouter = require('./routes/cart');
 const usersRouter = require('./routes/users');
 const ordersRouter = require('./routes/order');
 const checkoutRouter = require('./routes/checkout');
+
 
 // Import config and services
 const config = require('./config');
@@ -75,7 +76,7 @@ app.use('/uploads', express.static('uploads'));
 app.use('/auth', authRouter);
 app.use('/products', productRouter);
 app.use('/products', productRoutes);
-app.use('/auth', authRoutes);
+app.use('/authRoutes', authGoogleRouter);
 app.use('/cart', cartRouter);
 app.use('/checkout', checkoutRouter);
 app.use('/users', usersRouter);

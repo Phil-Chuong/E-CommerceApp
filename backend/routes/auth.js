@@ -85,7 +85,7 @@ router.post('/register', checkNotAuthenticated, async (req, res) => {
 // Login route
 router.post('/login', checkNotAuthenticated, async (req, res) => {
   const { email, password } = req.body;
-
+   
   try {
     const userResult = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
     if (userResult.rows.length === 0) {
@@ -129,10 +129,9 @@ router.post('/logout', async (req, res) => {
   }
 
   try {
-    // Remove all cart items associated with cartId
-    // await pool.query('DELETE FROM cart_items WHERE cart_id = $1', [cartId]);
-
     // Optionally, implement token invalidation logic
+    // For example, you could add the token to a blacklist in your database
+    
     res.json({ message: 'Logged out successfully' });
   } catch (error) {
     console.error('Error during logout:', error);

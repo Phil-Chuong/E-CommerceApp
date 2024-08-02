@@ -9,27 +9,32 @@ function CartItemComponent() {
     const [loading, setLoading] = useState(true); // Add loading state
     const [products, setProducts] = useState([]);
     const [error, setError] = useState(null); // Add error state
+    const [cartId, setCartId] = useState(localStorage.getItem('cartId'));
 
-    // Retrieve token (assume you have a way to get the token, e.g., from context or localStorage)
-    const token = localStorage.getItem('token'); // Replace with actual token retrieval logic
-    const cartId = localStorage.getItem('cartId'); // Assuming you store cart_id after login
-    // console.log('Token:', token); // Debugging log
-    // console.log('cartId', cartId);
     const navigate = useNavigate(); // To programmatically navigate to another route
+    const token = localStorage.getItem('token');
 
     useEffect(() => {
-        const fetchCartItems = async () => {
-            try {
-                if (!token || !cartId) {
-                    throw new Error('Token or cart_id not found.'); // Handle case where token or cart_id is missing
-                }
+        
+        const fetchCartItems = async () => {  
+            console.log('fetching update cartId', cartId);   
 
+            if (!token || !cartId) {
+                setError('Token or cart_id not found.'); // Handle case where token or cart_id is missing
+                setLoading(false);
+                return;
+            }
+            
+            try {
+                // Add a log to verify cartId value
+                console.log('Fetching cart items with cartId:', cartId);
                 const cartResponse = await axios.get(`/cart/cart_items/${cartId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
-                // console.log('Cart items fetched:', cartResponse.data); // Debugging log
-                setCartItems(cartResponse.data); // Assuming response.data is an array
+
+                console.log('Cart items fetched:', cartResponse.data); // Debugging log
+                setCartItems(cartResponse.data.items || cartResponse.data); // Assuming response.data is an array
                 setLoading(false); // Set loading state to false on successful fetch
             } catch (error) {
                 console.error('Error fetching cart items:', error);
@@ -39,14 +44,14 @@ function CartItemComponent() {
         };
 
         fetchCartItems();
-    }, [token, cartId]); // Include token in the dependency array
+    }, [token, cartId]); // Include token in the dependency array //cardId
 
 
     useEffect(() => {
         const fetchProducts = async () => {
             try {
                 const productResponse = await axios.get('/products');
-                // console.log('Products fetched:', productResponse.data); // Debugging log
+                //console.log('Products fetched:', productResponse.data); // Debugging log
                 setProducts(productResponse.data);
             } catch (error) {
                 console.error('Error fetching products:', error);
@@ -111,47 +116,58 @@ function CartItemComponent() {
         return <div>Error: Failed to load cart items.</div>;
     }
 
-    if (cartItems.length === 0) return <div>Your cart is empty.</div>;
+    // if (cartItems.length === 0) return <div>Your cart is empty.</div>;
 
 
 
     return (
         <div className='cartBody'>
-            <div className='cartItemContainer'>               
-                <div className='itemContainer'>
-                    <h2>Your Cart</h2>                 
-                    <div className='totalPrice'>
-                            <h3>Total Price: £{calculateTotalPrice().toFixed(2)}</h3>
-                    </div>
-                    <div className='paymentContainer'>
-                        <button onClick={handlePayment}>Procced to payment</button>
+            {cartItems.length === 0 ? (
+                <p className='emptyCart'>Add something to your cart.</p>
+            ) : (
+               <div className='cartItemContainer'>
+                    <h2 className='cartTitle'>Your Cart</h2>
+
+                    <div className='bothContainer'>
+                        <div className='itemContainer'>
+                            <div className='itemBox'>
+                                <ul className='cartItemUL'>
+                                {cartItems.map((item) => {
+                                    const product = products.find(product => product.id === item.product_id);
+                                        if (!product) return null; // Skip if product not found
+                                        return (
+                                        <li key={item.id} className='items'>
+                                                <div className='itemProduct'>
+                                                    <h3>{product.name}</h3>
+                                                    <img src={product.image_path} alt={product.name} />
+                                                    <p>£{product.price} X {item.qty}</p>                                           
+                                                </div>
+
+                                                <div className='addRemove'>
+                                                    <button onClick={() => handleRemove(item.id)}>Remove</button>
+                                                </div> 
+                                        </li>                            
+                                    );                          
+                                })}
+                                </ul> 
+                            </div>
+                        </div>
+
+                        <div className='paymentContainer'>
+                            <div className='bothPayment'>
+                                <div className='totalPrice'>
+                                    <h3>Total Price: £{calculateTotalPrice().toFixed(2)}</h3>
+                                </div>
+
+                                <div className='paymentBox'>
+                                    <button onClick={handlePayment}>Procced to payment</button>
+                                </div>   
+                            </div>  
+                        </div>
                     </div>
 
-                    <div className='itemBox'>
-                        <div className='itemBoxChild'>
-                            <ul className='cartItemUL'>
-                            {cartItems.map((item) => {
-                                const product = products.find(product => product.id === item.product_id);
-                                if (!product) return null; // Skip if product not found
-                                return (
-                                    <li key={item.id} className='items'>
-                                        <div className='itemProduct'>
-                                            <h3>{product.name}</h3>
-                                            <img src={product.image_path} alt={product.name} />
-                                            <p>£{product.price} X {item.qty}</p>                                           
-                                        </div>
-
-                                        <div className='addRemove'>
-                                            <button onClick={() => handleRemove(item.id)}>Remove</button>
-                                        </div> 
-                                    </li>                            
-                                );                          
-                            })}
-                            </ul> 
-                        </div>                        
-                    </div>
-                </div>
-            </div>
+                </div> 
+            )}          
         </div>        
     );
 }
