@@ -27,7 +27,7 @@ class Checkout {
 
         await Order.createOrder(userId, cartId, parseFloat(totalPrice));
 
-        await Checkout.clearCartItems(cartId);
+        //await Checkout.clearCartItems(cartId);
 
         console.log('Checkout completed successfully');
 

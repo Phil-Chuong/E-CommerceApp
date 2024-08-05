@@ -3,10 +3,14 @@ import './AccountsComponent.css'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {jwtDecode} from 'jwt-decode';
+import { format } from 'date-fns';
+import { Link } from 'react-router-dom';
+
 
 function AccountsComponent() {
   
   const [user, setUser] = useState(null);
+  const [orders, setOrders] = useState([]);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -30,7 +34,6 @@ function AccountsComponent() {
 
     if (!userId) {
       console.error('User ID is not set in localStorage.');
-      //navigate('/login');
       return;
     }
 
@@ -49,8 +52,25 @@ function AccountsComponent() {
         setError('Failed to fetch user data');
       }
     };
+
+    const fetchOrders = async () => {
+      try {
+        const response = await axios.get(`/orders/user/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        console.log('API response:', response.data)
+        setOrders(response.data);
+      } catch (error) {
+        console.log('Error fetching orders:', error);
+        setError('Failed to fetch order list data');
+      }
+    };
+    
   
     fetchUser();
+    fetchOrders();
   } catch (error) {
     console.error('Error decoding token:', error);
     navigate('/login');
@@ -67,6 +87,7 @@ function AccountsComponent() {
 
   return (
     <div className='accountBody'>
+     
         <div className='accountContainer'>          
           <h2>Account Details</h2>
           <div className='accountInfoSection'>
@@ -76,16 +97,16 @@ function AccountsComponent() {
                   {user ? (
                 <>
                   <p>
-                    <span style={{ color: 'red' }}>First Name:</span> {user.firstname}
+                    First Name: {user.firstname}
                   </p>
                   <p>
-                    <span style={{ color: 'red' }}>Last Name:</span> {user.lastname}
+                    Last Name: {user.lastname}
                   </p>
                   <p>
-                    <span style={{ color: 'red' }}>Username:</span> {user.username}
+                    Username: {user.username}
                   </p>
                   <p>
-                    <span style={{ color: 'red' }}>Email:</span> {user.email}
+                    Email: {user.email}
                   </p>
                 </>
               ) : (
@@ -100,9 +121,34 @@ function AccountsComponent() {
         <div className='orderHistoryContainer'>
           <h2>Order History</h2>
           <div className='orderHistoryList'>
-          
+            <ul className='orderlistContainer'>
+              { orders.length === 0 ? (
+                <p>You have no history of purchases.</p>
+              ) : (   
+              <>
+                {orders.map((order) => (
+                  <li key={order.id} className='orderlist'>
+                    <Link to={`/orders/${order.cart_id}`}>             
+                      <p>
+                        Cart Number:  {order.cart_id}
+                      </p>
+                      <p>
+                        Purchase date:  {format(new Date(order.created), 'dd-MM-yyyy')}
+                      </p>
+                      <p>
+                        Total Price: £ {order.totalPrice}
+                      </p>
+                      <p>
+                        Order Status:  {order.status}
+                      </p>
+                    </Link>
+                  </li>
+                ))}
+              </>            
+              )}             
+            </ul>
           </div>
-        </div>
+        </div>            
     </div>
   )
 }

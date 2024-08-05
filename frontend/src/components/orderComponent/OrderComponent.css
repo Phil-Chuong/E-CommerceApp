@@ -1,0 +1,73 @@
+.orderHistoryBody {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+}
+
+.orderHistoryContainer {
+    width: 80%;
+    height: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+    margin-top: 15em;  
+    margin-bottom: 5em;
+    border-radius: 10px;
+    background-color: cornflowerblue;
+}
+
+.orderItems {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    list-style-type: none;
+    margin-top: -10px;
+    /* background-color: aqua; */
+
+}
+
+.orderlistBox {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 15px;
+    margin-left: -15px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: royalblue;
+}
+
+.orderCard {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-wrap: wrap;
+    /* background-color: blueviolet; */
+}
+
+.orderImg {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: brown;
+}
+
+.orderImg img {
+    max-width: 100px;
+    min-height: 100px;
+}
+
+.orderDetail {
+    width: 50%;
+    margin-left: 10%;
+
+}
+
+.orderDetail p {
+    color: black;
+    font-size: 1.1em;
+    font-weight: 700;
+}

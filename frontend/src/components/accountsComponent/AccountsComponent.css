@@ -15,8 +15,9 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin-top: 220px;  
-    background-color: blueviolet;
+    margin-top: 220px; 
+    margin-bottom: -170px; 
+    background-color: cornflowerblue;
     border-radius: 10px;
 }
 
@@ -26,9 +27,9 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;  
-    margin: 20px;
+    margin: 15px;
     margin-top: -8px;
-    background-color:chartreuse;
+    background-color: royalblue;
     border-radius: 10px;
 }
 
@@ -36,34 +37,66 @@
     width: 100%;
     height: auto;
     list-style-type: none;
-    font-size: 1.2rem;
-    background-color: aqua;
+    
+    background-color: royalblue;
+    margin: 0;
+    border-radius: 10px;
+}
+
+.userSection p {
+    color: black;
+    font-weight: 700;
+    font-size: 1.1rem;
 }
 
 
-
-
 /*Order History List Section */
-.orderHistoryContainer {
-    width: 80%;
+/* .orderHistoryContainer {
+    width: 100%;
     height: fit-content;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin-top: 100px; 
+    margin-top: 50px;
     margin-bottom: 100px; 
-    background-color: blueviolet;
+    background-color: cornflowerblue;
     border-radius: 10px;
-}
+} */
 
 .orderHistoryList {
     width: 100%;
-    height: 400px;
+    height: fit-content;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;  
-    margin: 20px;
-    margin-top: -8px;
-    background-color:chartreuse;
+    margin: 0;
+    margin-top: -35px;
+    /* background-color: royalblue; */
     border-radius: 10px;
+}
+
+.orderlistContainer {
+    width: 100%;
+    height: fit-content;
+    display: inline-flex;
+    flex-wrap: wrap;
+    background-color: cornflowerblue;
+    list-style-type: none;
+
+}
+
+.orderlist {
+    width: 100%;
+    height: fit-content;
+    margin: 10px;
+    margin-left: -25px;
+    padding-left: 10px;
+    background-color: royalblue;
+    border-radius: 10px;
+}
+
+.orderlist p {
+    color: black;
+    font-size: 1.1em;
+    font-weight: 700;
 }
