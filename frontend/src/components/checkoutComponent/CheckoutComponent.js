@@ -40,17 +40,17 @@ const CheckoutComponent = () => {
                 });
 
                 console.log('Cart items fetched:', cartResponse.data); // Debugging log
-                setCartItems(cartResponse.data); // Assuming response.data is an array
+                setCartItems(cartResponse.data);
             } catch (error) {
                 console.error('Error fetching cart items:', error);
                 setError('Failed to load cart items');
             } finally {
-                setLoading(false); // Set loading state to false on error
+                setLoading(false); 
             }
         };
 
         fetchCartItems();
-    }, [token, cartId]); // Include token in the dependency array
+    }, [token, cartId]);
 
 
     useEffect(() => {
@@ -113,7 +113,7 @@ const CheckoutComponent = () => {
             }
 
             console.log('Calling stripeService.handlePayment with cartId:', cartId);
-            const result = await stripeService.handlePayment(totalAmount, paymentMethod.id, cartId); //paymentMethod. Removed
+            const result = await stripeService.handlePayment(totalAmount, paymentMethod.id, cartId);
 
             console.log('handlePayment result:', result);
             
@@ -128,7 +128,7 @@ const CheckoutComponent = () => {
                 setPaymentSuccess(true);
 
                 setTimeout(() => {
-                    navigate('/login'); // Corrected redirect function
+                    navigate('/login');
                 }, 5000);
                 
                 } else {

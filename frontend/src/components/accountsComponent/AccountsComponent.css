@@ -10,15 +10,16 @@
 
 /* Personal Detail Section */
 .accountContainer {
-    width: 80%;
+    width: 40%;
     height: fit-content;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     margin-top: 220px; 
-    margin-bottom: -170px; 
+    margin-bottom: -170px;
     background-color: cornflowerblue;
     border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
 }
 
 .accountInfoSection {
@@ -37,7 +38,7 @@
     width: 100%;
     height: auto;
     list-style-type: none;
-    
+    padding-left: 30px;
     background-color: royalblue;
     margin: 0;
     border-radius: 10px;
@@ -47,21 +48,23 @@
     color: black;
     font-weight: 700;
     font-size: 1.1rem;
+    margin: 8px 0;
 }
 
 
 /*Order History List Section */
-/* .orderHistoryContainer {
-    width: 100%;
+.orderHistoryContainer {
+    width: 80%;
     height: fit-content;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin-top: 50px;
+    margin-top: 20px;
     margin-bottom: 100px; 
     background-color: cornflowerblue;
     border-radius: 10px;
-} */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+}
 
 .orderHistoryList {
     width: 100%;
@@ -69,34 +72,36 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;  
-    margin: 0;
-    margin-top: -35px;
-    /* background-color: royalblue; */
+    margin-top: -30px;
     border-radius: 10px;
 }
 
 .orderlistContainer {
     width: 100%;
     height: fit-content;
-    display: inline-flex;
+    display: flex;
     flex-wrap: wrap;
-    background-color: cornflowerblue;
     list-style-type: none;
-
+    padding: 10px;
+    margin: 0;
 }
 
 .orderlist {
     width: 100%;
     height: fit-content;
-    margin: 10px;
-    margin-left: -25px;
-    padding-left: 10px;
+    margin: 10px 0;
     background-color: royalblue;
     border-radius: 10px;
+    transition: box-shadow 0.3s ease;
+}
+
+.orderlist:hover {
+    box-shadow: 0 0 8px 4px #1c16cd; /* Enhanced hover effect */
 }
 
 .orderlist p {
     color: black;
     font-size: 1.1em;
     font-weight: 700;
+    margin: 5px 0;
 }

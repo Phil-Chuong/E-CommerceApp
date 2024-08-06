@@ -11,7 +11,7 @@ function CartItemComponent() {
     const [error, setError] = useState(null); // Add error state
     const [cartId, setCartId] = useState(localStorage.getItem('cartId'));
 
-    const navigate = useNavigate(); // To programmatically navigate to another route
+    const navigate = useNavigate();
     const token = localStorage.getItem('token');
 
     useEffect(() => {
@@ -33,8 +33,8 @@ function CartItemComponent() {
                 });
 
 
-                console.log('Cart items fetched:', cartResponse.data); // Debugging log
-                setCartItems(cartResponse.data.items || cartResponse.data); // Assuming response.data is an array
+                //console.log('Cart items fetched:', cartResponse.data); // Debugging log
+                setCartItems(cartResponse.data.items || cartResponse.data);
                 setLoading(false); // Set loading state to false on successful fetch
             } catch (error) {
                 console.error('Error fetching cart items:', error);
@@ -44,7 +44,7 @@ function CartItemComponent() {
         };
 
         fetchCartItems();
-    }, [token, cartId]); // Include token in the dependency array //cardId
+    }, [token, cartId]);
 
 
     useEffect(() => {
@@ -104,21 +104,14 @@ function CartItemComponent() {
     }
 
 
-
-    // Render loading state while fetching data
     if (loading) return <div>Loading...</div>;
 
-    // Handle case where there is an error
     if (error) return <div>Error: {error}</div>;
 
     // Handle case where cartItems is not an array
     if (!Array.isArray(cartItems) || !Array.isArray(products)) {
         return <div>Error: Failed to load cart items.</div>;
     }
-
-    // if (cartItems.length === 0) return <div>Your cart is empty.</div>;
-
-
 
     return (
         <div className='cartBody'>

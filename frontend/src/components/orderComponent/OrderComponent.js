@@ -14,7 +14,6 @@ function OrderComponent() {
     const token = localStorage.getItem('token');
 
     useEffect(() => {
-       
         const fetchOrders = async () => {
             console.log('fetching update order by cart id', cartId);
 
@@ -63,13 +62,12 @@ function OrderComponent() {
 
     // Handle case where there is an error
     if (error) return <div>Error: {error}</div>;
-    
 
 
-  return (
-    <div className='orderHistoryBody'>
-        <div className='orderHistoryContainer'>
-            <h2 className='orderTitle'>Cart number: {cartId}</h2>
+    return (
+        <div className='orderHistoryBody'>
+            <div className='orderHistoryContainer'>
+                <h2 className='orderTitle'>Order number: {cartId}</h2>
             
                 <ul className='orderItems'>
                     {cartItems.map((item) => {
@@ -91,9 +89,9 @@ function OrderComponent() {
                             );                          
                     })}
                 </ul>
+            </div>
         </div>
-    </div>
-  )
+    )
 }
 
 export default OrderComponent;

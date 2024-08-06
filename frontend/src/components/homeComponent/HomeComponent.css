@@ -1,13 +1,10 @@
-
 .homepageBody {
     width: 100%;
     min-height: 100vh;
-    /* background-color: white; */
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-
 
 /* Product Container */
 .homeProductContainer {
@@ -38,11 +35,11 @@
     flex-direction: column;
     align-items: center;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
 }
 
 .homeProductItems:hover {
-    box-shadow: 0 0 4px 4px #0b1841;
+    box-shadow: 0 0 4px 4px #1c16cd;
 }
 
 .homeProductItems img {
@@ -66,3 +63,4 @@
     margin: 5px 0;
     font-weight: 700;
 }
+

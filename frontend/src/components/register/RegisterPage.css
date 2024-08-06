@@ -4,64 +4,64 @@
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center; /* Center vertically */
+    align-items: center;
     text-align: center;
 }
 
 .registerForm {
     width: 50%;
     margin-bottom: 5%;
-    padding: 20px; /* Add padding for better spacing */
+    padding: 20px;
     background-color:rgb(26, 149, 143);
     display: flex;
-    flex-direction: column; /* Arrange items in a column */
-    align-items: center; /* Center items horizontally */
-    border-radius: 8px; /* Optional: Add rounded corners */
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
+    flex-direction: column; 
+    align-items: center; 
+    border-radius: 8px; 
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.8);
 }
 
 .registerForm h2 {
-    margin-bottom: 20px; /* Add spacing below the heading */
+    margin-bottom: 20px;
     font-family: "Bebas Neue", sans-serif;
-    font-weight: 400;
+    font-weight: 500;
     font-style: normal;
     font-size: 32px;
 }
 
 .registerForm input {
-    width: 80%; /* Make inputs take most of the form width */
-    padding: 10px; /* Add padding for better appearance */
-    margin-bottom: 10px; /* Add spacing between inputs */
-    border: 1px solid #ccc; /* Add border */
-    border-radius: 4px; /* Add rounded corners */
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
 .registerForm button {
-    width: 85%; /* Make button take most of the form width */
+    width: 85%;
     padding: 10px;
-    background-color: #026fe4; /* Button background color */
-    color: white; /* Button text color */
-    border: none; /* Remove border */
-    border-radius: 4px; /* Add rounded corners */
-    cursor: pointer; /* Pointer cursor on hover */
-    margin-top: 10px; /* Add spacing above button */
+    background-color: #026fe4; 
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
 }
 
 .registerForm button:hover {
-    background-color: #0056b3; /* Darken button on hover */
+    background-color: #0056b3;
 }
 
 .registerForm p {
-    margin-top: 20px; /* Add spacing above the paragraph */
+    margin-top: 20px;
 }
 
 .registerForm a {
-    color: #082039; /* Link color */
-    text-decoration: none; /* Remove underline from link */
+    color: #082039;
+    text-decoration: none;
 }
 
 .registerForm a:hover {
-    text-decoration: underline; /* Underline link on hover */
+    text-decoration: underline;
 }
 
 .logo {

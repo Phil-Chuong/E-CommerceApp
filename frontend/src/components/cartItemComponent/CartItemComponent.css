@@ -10,7 +10,7 @@
 .cartItemContainer {
     max-width: 80%;
     height: fit-content;
-    margin-top: 200px;
+    margin-top: 180px;
     margin-bottom: 100px;
     display: inline;
     justify-content: center;
@@ -33,8 +33,7 @@
     width: 80%; 
     display: flex;
     flex-direction: column;
-    align-items: center;
-    
+    align-items: center;   
 }
 
 .itemBox {
@@ -50,7 +49,7 @@
     flex-wrap: wrap;
     justify-content: center;
     max-width: 100%;
-    border-radius: 10px;
+    border-radius: 10px;   
 }
 
 .itemProduct {
@@ -58,7 +57,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    text-align: left;
+    text-align: left;  
 }
 
 .itemProduct h3 {
@@ -72,7 +71,7 @@
 }
 
 .itemProduct p {
-    font-weight: 300;
+    font-weight: 700;
 }
 
 .items {
@@ -84,6 +83,7 @@
     flex-direction: column;
     align-items: center;
     border-radius: 8px;   
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
 }
 
 .itemProduct img{
@@ -91,7 +91,6 @@
     height: 150px;
     object-fit: fill;
     border-radius: 8px;
-    
 }
 
 /* Add and Remove quantity button */
@@ -107,11 +106,15 @@
     border-radius: 5px;
 }
 
+.addRemove button:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
 
 /* Right Side Total Price Container */
 .paymentContainer {
     display: flex;
-    justify-content: center;
+    justify-content: center; 
 }
 
 .bothPayment {
@@ -129,7 +132,8 @@
     background-color: cornflowerblue;
     border-radius: 5px;
     margin-top: 5%;
-    margin-bottom: 5%;
+    margin-bottom: 15%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
 }
 
 .totalPrice h3 {
@@ -138,16 +142,19 @@
     display: flex;
     justify-content: center;
     text-align: center;
-    
 }
 
 .paymentBox {
     width: 100%;
 }
 
+.paymentBox button:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+}
+
 /*EMPTY CART CONTAINER*/
 .emptyCart {
-    margin-top: -300px;
+    margin-top: -200px;
     font-size: 1.5rem;
     font-weight: bold;
 }

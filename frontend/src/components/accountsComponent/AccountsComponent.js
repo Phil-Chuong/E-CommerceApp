@@ -13,7 +13,6 @@ function AccountsComponent() {
   const [orders, setOrders] = useState([]);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-
   
   useEffect(() => { 
     const token = localStorage.getItem('token');
@@ -130,7 +129,7 @@ function AccountsComponent() {
                   <li key={order.id} className='orderlist'>
                     <Link to={`/orders/${order.cart_id}`}>             
                       <p>
-                        Cart Number:  {order.cart_id}
+                        Order Number:  {order.cart_id}
                       </p>
                       <p>
                         Purchase date:  {format(new Date(order.created), 'dd-MM-yyyy')}
@@ -153,4 +152,4 @@ function AccountsComponent() {
   )
 }
 
-export default AccountsComponent
+export default AccountsComponent;

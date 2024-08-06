@@ -11,7 +11,7 @@
 .checkout-container {
     width: 90%;
     height: fit-content;
-    margin-top: 220px;
+    margin-top: 190px;
     margin-bottom: 100px;
     display: inline;
     justify-content: center;
@@ -35,7 +35,6 @@
     display: flex;
     flex-wrap: wrap;
     width: 100%;
-    
 }
 
 .checkout-items {
@@ -43,9 +42,10 @@
     height: fit-content;
     display: flex;
     padding: 5px;
-    margin-bottom: 5px; 
+    margin-bottom: 10px; 
     border-radius: 10px;
     background-color: cornflowerblue;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
 }
 
 .checkout-itemProduct {
@@ -60,7 +60,7 @@
 
 .checkout-itemProduct p {
     padding-top: 10%;
-    font-weight: 500;
+    font-weight: 700;
 }
 
 .checkout-payment-section {
@@ -69,7 +69,6 @@
     text-align: left;
     padding-left: 10px;
 }
-
 
 
 /* CARD PAYMENT container */
@@ -81,10 +80,11 @@
     margin-right: 5%;
     border-radius: 10px;
     background-color: cornflowerblue;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
 }
 
 .cardPaymentContainer p {
-    font-weight: 500;
+    font-weight: 700;
 }
 
 
@@ -93,9 +93,8 @@
 }
 
 .payment-form label {
-    font-weight: 500;
+    font-weight: 700;
 }
-
 
 .card-element {
     padding: 10px;
@@ -107,6 +106,7 @@
 
 .error-message {
     color: red;
+    font-weight: 700;
 }
 
 .payment-success {
@@ -122,7 +122,12 @@ button {
     cursor: pointer;
 }
 
+button:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
 button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
 }
+

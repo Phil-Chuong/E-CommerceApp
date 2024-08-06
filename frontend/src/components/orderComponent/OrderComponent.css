@@ -26,8 +26,6 @@
     flex-wrap: wrap;
     list-style-type: none;
     margin-top: -10px;
-    /* background-color: aqua; */
-
 }
 
 .orderlistBox {
@@ -46,7 +44,6 @@
     height: fit-content;
     display: flex;
     flex-wrap: wrap;
-    /* background-color: blueviolet; */
 }
 
 .orderImg {
@@ -63,7 +60,6 @@
 .orderDetail {
     width: 50%;
     margin-left: 10%;
-
 }
 
 .orderDetail p {

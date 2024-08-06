@@ -17,8 +17,6 @@
     margin-top: 15em;  
     margin-bottom: 5em;
     border-radius: 10px;
-    /* background-color: #05174f;  */
-    /* border: 2px solid #0b1841; */
 }
 
 .productDetailCard {
@@ -31,6 +29,7 @@
     border-radius: 10px;
     background-color: cornflowerblue;
     padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
 }
 
 .productDetailInfo {
@@ -68,12 +67,24 @@
     border-radius: 10px;
     background-color: cornflowerblue; 
     text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
 }
 
 .cartContainer button {
     border-radius: 10px;
+    margin: 5px;
+    padding: 10px;
+}
+
+.cartContainer button:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 .cartContainer p {
     font-weight: 500;
+    margin: 5px 0;
+}
+
+.cartContainer h3 {
+    padding: 5px;
 }
