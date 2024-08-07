@@ -23,6 +23,7 @@ const cartRouter = require('./routes/cart');
 const usersRouter = require('./routes/users');
 const ordersRouter = require('./routes/order');
 const checkoutRouter = require('./routes/checkout');
+const searchRouter = require('./routes/search');
 
 
 // Import config and services
@@ -81,6 +82,7 @@ app.use('/cart', cartRouter);
 app.use('/checkout', checkoutRouter);
 app.use('/users', usersRouter);
 app.use('/orders', ordersRouter);
+app.use('/search', searchRouter);
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../frontend/build')));

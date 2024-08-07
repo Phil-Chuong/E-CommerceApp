@@ -1,6 +1,7 @@
 import React from 'react';
 import HeaderTitle from '../../components/headerLogo/HeaderTitle';
 import HomeComponent from '../../components/homeComponent/HomeComponent';
+import Footer from '../../components/footer/Footer';
 
 const HomePage = () => {
 
@@ -8,6 +9,7 @@ const HomePage = () => {
     <div>
       <HeaderTitle />
       <HomeComponent />
+      <Footer />
     </div>
   );
 };

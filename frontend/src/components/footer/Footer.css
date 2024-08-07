@@ -1,0 +1,46 @@
+.footerContainer {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    justify-content:space-around;
+    align-items: center;
+    background-color: rgb(45, 84, 158);
+}
+
+.footerBoxes {
+    width: 100%;
+    display: inline;
+    height: fit-content;
+    justify-content: center;
+    text-align: center;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    /* background-color: cornflowerblue; */
+}
+
+.footerBoxes p {
+    font-size: 1.1em;
+    font-weight: 500;
+    color: cornflowerblue;
+}
+
+.footerSection {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.footerBoxes h3 {
+    margin: 5px 0;
+}
+
+.socialSection {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.socialSection p {
+    margin: 10px 7px 5px;
+}

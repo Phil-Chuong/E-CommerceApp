@@ -1,6 +1,7 @@
 import React from 'react'
 import HeaderTitle from '../../components/headerLogo/HeaderTitle';
 import ProductDetailComponent from '../../components/productDetailComponent/ProductDetailComponent';
+import Footer from '../../components/footer/Footer';
 
 
 const ProductDetail = () => {
@@ -8,7 +9,8 @@ const ProductDetail = () => {
   return (
     <div>
       <HeaderTitle />
-      <ProductDetailComponent />      
+      <ProductDetailComponent />
+      <Footer />  
     </div>    
   );
 };

@@ -115,7 +115,8 @@ function CartItemComponent() {
 
     return (
         <div className='cartBody'>
-            {cartItems.length === 0 ? (
+            <div className='cart-main'>
+             {cartItems.length === 0 ? (
                 <p className='emptyCart'>Add something to your cart.</p>
             ) : (
                <div className='cartItemContainer'>
@@ -160,7 +161,9 @@ function CartItemComponent() {
                     </div>
 
                 </div> 
-            )}          
+            )}      
+            </div>
+                   
         </div>        
     );
 }

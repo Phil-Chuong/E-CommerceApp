@@ -117,10 +117,10 @@ function AccountsComponent() {
           </div>
         </div>
 
-        <div className='orderHistoryContainer'>
+        <div className='orderContainer'>
           <h2>Order History</h2>
-          <div className='orderHistoryList'>
-            <ul className='orderlistContainer'>
+          <div className='orderListContainer'>
+            <ul className='orderListBox'>
               { orders.length === 0 ? (
                 <p>You have no history of purchases.</p>
               ) : (   

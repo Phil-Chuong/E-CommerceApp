@@ -4,6 +4,7 @@ import CheckoutComponent from '../../components/checkoutComponent/CheckoutCompon
 
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
+import Footer from '../../components/footer/Footer';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_KEY);
 
@@ -15,6 +16,7 @@ const CheckoutPage = ({ cartItems}) => {
         <Elements stripe={stripePromise}>
             <CheckoutComponent cartItems={cartItems} />
         </Elements>
+        <Footer />
     </div>
   )
 }

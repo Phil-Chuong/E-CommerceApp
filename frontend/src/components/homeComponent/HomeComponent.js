@@ -29,6 +29,7 @@ function HomeComponent() {
     return (
         <div className='homepageBody'>
             <div className='homeProductContainer'>
+                <p className='intro'>Welcome to Tech Titan online store, your one-stop shop for high-quality tech gadgets, stylish apparel, home essentials, and unique accessories. Designed for a seamless shopping experience on any device, we offer the best products at competitive prices. Explore our collections and enjoy exceptional service with every purchase.</p>
                 <h2>Highlights 2024</h2>
 
                 <ul className='homeProductCard'>
