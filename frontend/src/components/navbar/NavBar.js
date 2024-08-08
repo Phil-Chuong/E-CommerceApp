@@ -14,6 +14,7 @@ const NavBar = () => {
   const [mobileMenuActive, setMobileMenuActive] = useState(false);
   const navigate = useNavigate();
 
+  //Handle navbar on fixed when scroll down
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY >= 100) { // Adjust this value based on your layout
@@ -30,6 +31,8 @@ const NavBar = () => {
     };
   }, []);
 
+
+  //handle search
   const handleSearchChange = async (e) => {
     const query = e.target.value;
     setSearchQuery(query);

@@ -57,14 +57,15 @@
 
 /* SEARCH BAR */
 .searchbar {
-  width: 60%;
+  width: 65%;
+  margin: 0;
 }
 
 .navbar-search {
   display: flex;
-  justify-content: end;
+  justify-content: start;
   position: relative;
-  margin: 0 20px;
+  margin-left: 40%;
   flex-grow: 1;
 }
   
@@ -95,7 +96,7 @@
   position: absolute;
   top: 100%;
   left: 0;
-  /* right: 0; */
+  right: 0;
   background: white;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -105,6 +106,7 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  max-width: 280px;
 }
   
 .search-dropdown-item {

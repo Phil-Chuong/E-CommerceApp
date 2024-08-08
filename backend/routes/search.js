@@ -10,10 +10,13 @@ router.get('/search', async (req, res) => {
     return res.status(400).json({ error: 'Search query is required' });
   }
 
+  // Only use the first letter for the search
+  const firstLetter = searchQuery.charAt(0);
+
   try {
     const results = await pool.query(
-      'SELECT id, name FROM products WHERE name ILIKE $1 OR description ILIKE $1',
-      [`%${searchQuery}%`]
+      'SELECT id, name FROM products WHERE name ILIKE $1 ORDER BY name ASC',
+      [`${firstLetter}%`]  // Match only names starting with the first letter
     );
     res.json(results.rows);
   } catch (error) {
