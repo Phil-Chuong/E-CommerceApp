@@ -4,10 +4,10 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 
-const { authenticateToken } = require('../services/authenticateToken');
+// const { authenticateToken } = require('../services/authenticateToken');
 
 //GET all users 
-router.get('/', authenticateToken, async (req, res) => {
+router.get('/', async (req, res) => {
     try {
       const users = await User.getAllUsers();
       res.send(users);
@@ -20,7 +20,7 @@ router.get('/', authenticateToken, async (req, res) => {
 
 
 //GET users by id
-router.get('/:id', authenticateToken, async (req, res) => {
+router.get('/:id', async (req, res) => {
   const userId = parseInt(req.params.id, 10);
 
   if (!userId) {
