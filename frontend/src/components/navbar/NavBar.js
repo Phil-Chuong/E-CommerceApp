@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import { Link } from 'react-router-dom'
 import { ShoppingCart, House, ArrowsOut, UserList, SignOut, List } from 'phosphor-react'
 import axios from 'axios'
@@ -12,7 +12,14 @@ const NavBar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isFixed, setIsFixed] = useState(false);
   const [mobileMenuActive, setMobileMenuActive] = useState(false);
+  const [focusedIndex, setFocusedIndex] = useState(-1); // Track focused result
   const navigate = useNavigate();
+
+  // Refs for dropdown and search wrapper
+  const dropdownRef = useRef(null);
+  const searchWrapperRef = useRef(null);
+  const mobileMenuRef = useRef(null);
+  const searchInputRef = useRef(null);
 
   //Handle navbar on fixed when scroll down
   useEffect(() => {
@@ -32,16 +39,51 @@ const NavBar = () => {
   }, []);
 
 
+  // Handle clicks outside the search dropdown
+  useEffect(() => {
+    const handleClickOutsideSearch = (event) => {
+      if (
+        dropdownRef.current && !dropdownRef.current.contains(event.target) &&
+        searchWrapperRef.current && !searchWrapperRef.current.contains(event.target)
+      ) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutsideSearch);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutsideSearch);
+    };
+  }, []);
+  
+  // Handle clicks outside the mobile menu
+  useEffect(() => {
+    const handleClickOutsideMobileMenu = (event) => {
+      if (
+        mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)
+      ) {
+        setMobileMenuActive(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutsideMobileMenu);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutsideMobileMenu);
+    };
+  }, []);
+  
+  
   //handle search
   const handleSearchChange = async (e) => {
-    const query = e.target.value;
+    const query = e ? e.target.value : searchQuery; // Default to current searchQuery if e is not provided
     setSearchQuery(query);
-
+    
     if (query.trim()) {
       try {
         const response = await axios.get(`/search/search?query=${query}`);
         setSearchResults(response.data);
         setShowDropdown(true);
+        setFocusedIndex(-1); // Reset focus index
       } catch (error) {
         console.error('Error fetching search results:', error);
       }
@@ -50,20 +92,42 @@ const NavBar = () => {
       setShowDropdown(false);
     }
   };
-
+  
+  
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
+      handleSearchChange(); // Ensure we fetch the search results before navigating
       navigate(`/search?query=${searchQuery}`);
       setShowDropdown(false);
     }
   };
 
+  // Handle result click
   const handleResultClick = (productId) => {
     navigate(`/products/${productId}`);
     setShowDropdown(false);
   };
 
+  // Handle keydown events in the search input
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (focusedIndex >= 0 && searchResults[focusedIndex]) {
+        handleResultClick(searchResults[focusedIndex].id);
+      } else {
+        handleSearchSubmit(e);  // Trigger search on Enter key
+      }
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setFocusedIndex((prevIndex) => (prevIndex + 1) % searchResults.length);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setFocusedIndex((prevIndex) => (prevIndex - 1 + searchResults.length) % searchResults.length);
+    }
+  };
+
+  // Handle logout
   const handleLogout = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -105,22 +169,24 @@ const NavBar = () => {
         <Link to={'/HomePage'}><House size={32} alt='Home'/></Link>
       </div>
 
-      <div className='searchbar'>
+      <div className='searchbar' ref={searchWrapperRef}>
       <form className='navbar-search' onSubmit={handleSearchSubmit}>
         <input
           type='text'
           placeholder='Search...'
           value={searchQuery}
           onChange={handleSearchChange}
+          onKeyDown={handleKeyDown} // Add keydown handler here
+          ref={searchInputRef} // Ref for focusing input
         />
         <button type='submit'>Search</button>
         {showDropdown && (
-          <ul className='search-dropdown'>
-            {searchResults.map((result) => (
+          <ul className='search-dropdown' ref={dropdownRef}>
+            {searchResults.map((result, index) => (
               <li
                 key={result.id}
                 onClick={() => handleResultClick(result.id)}
-                className='search-dropdown-item'
+                className={`search-dropdown-item ${index === focusedIndex ? 'focused' : ''}`}
               >
                 {result.name}
               </li>
@@ -136,10 +202,12 @@ const NavBar = () => {
         <Link to={'/accounts'}><UserList size={32} alt='Accounts'/></Link>
         <button onClick={handleLogout}><SignOut size={32} alt='SignOut'/></button>
       </div>
+
       <div className='mobile-menu-icon' onClick={toggleMobileMenu}>
         <List size={32} />
       </div>
-      <div className={`mobile-menu ${mobileMenuActive ? 'active' : ''}`}>
+      
+      <div className={`mobile-menu ${mobileMenuActive ? 'active' : ''}`} ref={mobileMenuRef}>
         <ul className='mobile-dropdown'>
           <li className='mobile-dropdown-item' onClick={() => navigate('/products')}>
             <ArrowsOut size={24} /> Products

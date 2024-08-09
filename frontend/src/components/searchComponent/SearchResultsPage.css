@@ -1,0 +1,39 @@
+.searchBody {
+    width: 100%;
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.searchContainer {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 50px;  
+    margin-bottom: 50px;
+    /* background-color: brown; */
+}
+.searchBox {
+    width: 90%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 50px;
+    border-radius: 10px;
+    /* background-color: blueviolet; */
+}
+
+.searchCard {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    /* background-color: chartreuse; */
+    list-style: none;
+    margin: 10px 10px;
+    padding: 0;
+}

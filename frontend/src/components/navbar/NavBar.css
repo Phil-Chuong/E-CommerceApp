@@ -32,10 +32,18 @@
   color: cornflowerblue;
 }
 
+.home svg:hover {
+  color: #0b1841;
+}
+
 .links {
     display: flex;
     align-items: center;
     margin-left: auto;
+}
+
+.links svg:hover {
+  color: cornflowerblue;
 }
 
 .links a, .links button {
@@ -47,7 +55,6 @@
     cursor: pointer;
     color: inherit; /* Inherit color from parent */
     padding: 0;
-
 }
 
 .links button {
@@ -65,11 +72,14 @@
   display: flex;
   justify-content: start;
   position: relative;
-  margin-left: 40%;
+  margin-left: 30%;
   flex-grow: 1;
+  width: 50%;
+  z-index: 1000;
 }
   
 .navbar-search input {
+  padding: 5px;
   width: 200px;
   padding: 5px;
   font-size: 1em;
@@ -83,13 +93,13 @@
   font-size: 1em;
   border: none;
   border-radius: 3px;
-  background-color: #555;
+  background-color: #0b1841;
   color: white;
   cursor: pointer;
 }
   
 .navbar-search button:hover {
-  background-color: #777;
+  background-color: cornflowerblue;
 }
 
 .search-dropdown {
@@ -97,7 +107,7 @@
   top: 100%;
   left: 0;
   right: 0;
-  background: white;
+  background: #0b1841;
   border: 1px solid #ccc;
   border-radius: 4px;
   max-height: 200px;
@@ -107,6 +117,7 @@
   margin: 0;
   padding: 0;
   max-width: 280px;
+  color: royalblue;
 }
   
 .search-dropdown-item {
@@ -115,7 +126,11 @@
 }
   
 .search-dropdown-item:hover {
-  background-color: #f0f0f0;
+  background-color: whitesmoke;
+}
+
+.search-dropdown-item.focused {
+  background-color: #e0e0e0; /* Or any color you prefer */
 }
 
 /* Mobile menu styles */
@@ -144,14 +159,14 @@
 
 .mobile-dropdown-item {
   padding: 10px;
-  color: white;
+  color: royalblue;
   text-decoration: none;
   display: flex;
   align-items: center;
 }
 
 .mobile-dropdown-item:hover {
-  background-color: royalblue;
+  background-color: whitesmoke;
 }
 
 .mobile-dropdown-item svg {

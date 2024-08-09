@@ -14,12 +14,13 @@
     justify-content: center;
     text-align: center;
     flex-wrap: wrap;
-    margin-top: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
     /* background-color: cornflowerblue; */
 }
 
 .footerBoxes p {
-    font-size: 1.1em;
+    font-size: 1em;
     font-weight: 500;
     color: cornflowerblue;
 }
@@ -28,6 +29,10 @@
     width: 100%;
     display: flex;
     justify-content: center;
+}
+
+.footerBoxes p {
+    margin: 5px 7px 5px;
 }
 
 .footerBoxes h3 {
@@ -39,8 +44,4 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-}
-
-.socialSection p {
-    margin: 10px 7px 5px;
 }

@@ -88,3 +88,34 @@
 .cartContainer h3 {
     padding: 5px;
 }
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+    .productDetailContainer {
+        width: 90%;
+        margin-top: 80px;
+        margin-bottom: 20px;
+        align-items: center;
+        /* background-color: brown; */
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+
+    .productDetailCard {
+        width: 40%;
+        padding: 10px;
+    }
+
+    .cartContainer {
+        max-width: 40%;
+        margin-bottom: 200px;
+        padding: 10px;
+    }
+
+    .cartContainer button {
+        width: 50%;
+        padding: 10px;
+    }
+    
+}

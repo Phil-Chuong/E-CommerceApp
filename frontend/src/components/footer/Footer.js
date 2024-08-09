@@ -14,7 +14,7 @@ function Footer() {
             </div>
             </div>
             <div className='footerBoxes'>
-            <h3>social Links</h3>
+            <h3>Social Links</h3>
             <div className='socialSection'>
                 <p><InstagramLogo size={32} /></p>
                 <p><FacebookLogo size={32} /></p>

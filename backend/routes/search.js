@@ -15,7 +15,7 @@ router.get('/search', async (req, res) => {
 
   try {
     const results = await pool.query(
-      'SELECT id, name FROM products WHERE name ILIKE $1 ORDER BY name ASC',
+      'SELECT id, name, image_path, price FROM products WHERE name ILIKE $1 ORDER BY name ASC',
       [`${firstLetter}%`]  // Match only names starting with the first letter
     );
     res.json(results.rows);

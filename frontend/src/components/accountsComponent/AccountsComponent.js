@@ -122,7 +122,7 @@ function AccountsComponent() {
           <div className='orderListContainer'>
             <ul className='orderListBox'>
               { orders.length === 0 ? (
-                <p>You have no history of purchases.</p>
+                <p className='emptyCartMessage'>You have no history of purchases.</p>
               ) : (   
               <>
                 {orders.map((order) => (
