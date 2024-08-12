@@ -21,6 +21,9 @@ const path = require('path');
 // Load the database URL from the environment variable
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false, // Set to true if you have a valid SSL certificate
+  },
 });
 
 // Connect to the database
