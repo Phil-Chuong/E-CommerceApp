@@ -2,6 +2,8 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
+const { Client } = require('pg');
+
 const express = require('express');
 const Stripe = require('stripe');
 const bodyParser = require('body-parser');
@@ -13,6 +15,17 @@ const methodOverride = require('method-override');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 const path = require('path');
+
+
+// Load the database URL from the environment variable
+const client = new Client({
+  connectionString: process.env.DATABASE_URL,
+});
+
+// Connect to the database
+client.connect()
+.then(() => console.log('Connected to PostgreSQL database'))
+.catch(err => console.error('Connection error', err.stack));
 
 // Import routes
 const authGoogleRouter = require('./routes/authRoutes');
