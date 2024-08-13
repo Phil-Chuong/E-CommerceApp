@@ -43,7 +43,7 @@ router.post('/refresh', (req, res) => {
 });
 
 // Register route
-router.post('/register', checkNotAuthenticated, async (req, res) => {
+router.post('/register', async (req, res) => {
   try {
       const { firstname, lastname, username, email, password } = req.body;
 
@@ -83,7 +83,7 @@ router.post('/register', checkNotAuthenticated, async (req, res) => {
 
 
 // Login route
-router.post('/login', checkNotAuthenticated, async (req, res) => {
+router.post('/login', async (req, res) => {
   const { email, password } = req.body;
    
   try {

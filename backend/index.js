@@ -106,7 +106,7 @@ app.use('/orders', ordersRouter);
 app.use('/search', searchRouter);
 
 // Serve static files from the React app
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../frontend/build')));
 
 
 // The "catchall" handler: for any request that doesn't
