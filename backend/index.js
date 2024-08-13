@@ -22,7 +22,7 @@ const path = require('path');
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false, // Set to true if you have a valid SSL certificate
+    rejectUnauthorized: true, // Set to true if you have a valid SSL certificate
   },
 });
 
@@ -102,8 +102,8 @@ app.use('/orders', ordersRouter);
 app.use('/search', searchRouter);
 
 // Serve static files from the React app
-// app.use(express.static(path.join(__dirname, '../frontend/build')));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+//app.use(express.static(path.join(__dirname, 'public')));
 
 // The "catchall" handler: for any request that doesn't
 // match one above, send back React's index.html file.
