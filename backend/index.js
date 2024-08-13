@@ -3,7 +3,8 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const { Client } = require('pg');
-
+const path = require('path');
+const fs = require('fs');
 
 const express = require('express');
 const Stripe = require('stripe');
@@ -15,15 +16,18 @@ const flash = require('express-flash');
 const methodOverride = require('method-override');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
-const path = require('path');
+
 
 
 // Load the database URL from the environment variable
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: true, // Set to true if you have a valid SSL certificate
+    rejectUnauthorized: false, // Set to true if you have a valid SSL certificate
   },
+  // ssl: {
+  //   ca: fs.readFileSync(path.join(__dirname, 'path/to/ca-certificate.crt')),
+  // },
 });
 
 // Connect to the database
