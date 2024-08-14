@@ -8,8 +8,10 @@ const User = require('../models/User');
 
 //GET all users 
 router.get('/', async (req, res) => {
+  console.log('Fetching users...');
     try {
       const users = await User.getAllUsers();
+      console.log('Users fetched:', users.rows);
       res.send(users);
     } catch (error) {
       console.error('Error retrieving users', error);
