@@ -34,6 +34,9 @@ pool.connect()
 .then(() => console.log('Connected to PostgreSQL database'))
 .catch(err => console.error('Connection error', err.stack));
 
+
+
+
 // Import routes
 const authGoogleRouter = require('./routes/authRoutes');
 const authRouter = require('./routes/auth');
@@ -102,6 +105,16 @@ app.use('/checkout', checkoutRouter);
 app.use('/users', usersRouter);
 app.use('/orders', ordersRouter);
 app.use('/search', searchRouter);
+
+app.get('/test-db', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT NOW()');
+    res.json({ message: 'Database is connected', time: result.rows[0].now });
+  } catch (err) {
+    console.error('Database connection error:', err);
+    res.status(500).json({ error: 'Database connection error' });
+  }
+});
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '/public')));
