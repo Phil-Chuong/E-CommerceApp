@@ -2,7 +2,7 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
-const { Client } = require('pg');
+const { Pool } = require('pg');
 const path = require('path');
 
 const express = require('express');
@@ -19,17 +19,18 @@ const swaggerJsdoc = require('swagger-jsdoc');
 
 
 // Load the database URL from the environment variable
-const client = new Client({
+const pool = new Pool({
   
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false, // Set to true if you have a valid SSL certificate
   },
 });
-console.log('Connecting to database with password:', process.env.DATABASE_URL);
+
+console.log('Connecting to database with URL:', process.env.DATABASE_URL);
 
 // Connect to the database
-client.connect()
+pool.connect()
 .then(() => console.log('Connected to PostgreSQL database'))
 .catch(err => console.error('Connection error', err.stack));
 
@@ -47,9 +48,8 @@ const searchRouter = require('./routes/search');
 
 // Import config and services
 const config = require('./config');
-const pool = require('./DB/db');
+// const pool = require('./DB/db');
 const { initializePassport } = require('./services/authService');
-
 
 const app = express();
 
