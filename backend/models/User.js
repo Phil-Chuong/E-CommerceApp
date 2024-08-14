@@ -3,13 +3,14 @@
 const pool = require('../DB/db');
 const bcrypt = require('bcrypt');
 
+// Fetch all users
 class User {
-  // Fetch all users
   static async getAllUsers() {
-    const pool = require('../DB/db');
     const query = 'SELECT * FROM users';
     try {
+      console.log('Executing query:', query);
       const result = await pool.query(query);
+      console.log('Query result:', result.rows);
       return result.rows;
     } catch (error) {
       console.error('Error fetching all users:', error.message); // Log error details
@@ -23,9 +24,15 @@ static async getUserById(userId) {
     throw new Error('User ID is required');
   }
   
+  try {
    // Ensure userId is a valid integer if your database expects an integer
-  const result = await pool.query('SELECT * FROM users WHERE id = $1', [userId]);
-  return result.rows[0]; // Assuming you expect a single user object
+    const result = await pool.query('SELECT * FROM users WHERE id = $1', [userId]);
+    console.log('User fetched by ID:', result.rows[0]);
+    return result.rows[0]; // Assuming you expect a single user object
+  } catch (error) {
+    console.error('Error fetching user by ID:', error.message);
+    throw error;
+  }
 }
 
   // Compare hashed password
