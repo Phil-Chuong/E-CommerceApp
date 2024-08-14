@@ -4,7 +4,6 @@ dotenv.config();
 
 const { Client } = require('pg');
 const path = require('path');
-const fs = require('fs');
 
 const express = require('express');
 const Stripe = require('stripe');
@@ -21,14 +20,13 @@ const swaggerJsdoc = require('swagger-jsdoc');
 
 // Load the database URL from the environment variable
 const client = new Client({
+  
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false, // Set to true if you have a valid SSL certificate
   },
-  // ssl: {
-  //   ca: fs.readFileSync(path.join(__dirname, 'path/to/ca-certificate.crt')),
-  // },
 });
+console.log('Connecting to database with password:', process.env.DATABASE_URL);
 
 // Connect to the database
 client.connect()
