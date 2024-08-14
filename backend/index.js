@@ -2,7 +2,7 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
-const pool = require('pg');
+const { Pool }= require('pg');
 const path = require('path');
 
 const express = require('express');
@@ -19,22 +19,20 @@ const swaggerJsdoc = require('swagger-jsdoc');
 
 
 // Load the database URL from the environment variable
-// const pool = new Pool({
+const pool = new Pool({
   
-//   connectionString: process.env.DATABASE_URL,
-//   ssl: {
-//     rejectUnauthorized: false, // Set to true if you have a valid SSL certificate
-//   },
-// });
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false, // Set to true if you have a valid SSL certificate
+  },
+});
 
-// console.log('Connecting to database with URL:', process.env.DATABASE_URL);
+console.log('Connecting to database with URL:', process.env.DATABASE_URL);
 
-// // Connect to the database
-// pool.connect()
-// .then(() => console.log('Connected to PostgreSQL database'))
-// .catch(err => console.error('Connection error', err.stack));
-
-
+// Connect to the database
+pool.connect()
+.then(() => console.log('Connected to PostgreSQL database'))
+.catch(err => console.error('Connection error', err.stack));
 
 
 // Import routes
