@@ -20,10 +20,9 @@ const swaggerJsdoc = require('swagger-jsdoc');
 
 // Load the database URL from the environment variable
 const pool = new Pool({
-  
-  connectionString: process.env.DATABASE_URL,
+  connectionString: String(process.env.DATABASE_URL),
   ssl: {
-    rejectUnauthorized: false, // Set to true if you have a valid SSL certificate
+    rejectUnauthorized: false,
   },
 });
 
