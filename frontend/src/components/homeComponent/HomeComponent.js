@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './HomeComponent.css';
 
+const imageURL = `https://techtitan.onrender.com/uploads/`;
+
 function HomeComponent() {
 
     const [products, setProducts] = useState([]);
@@ -37,7 +39,7 @@ function HomeComponent() {
                     <li key={product.id} className='homeProductItems'>
                         <Link to={`/products/${product.id}`}>
                             <h3>{product.name}</h3>
-                            <img src={product.image_path} alt={product.name} />
+                            <img src={imageURL.product.image_path} alt={product.name} />
                             <p>£{product.price}</p>
                         </Link>
                     </li>
