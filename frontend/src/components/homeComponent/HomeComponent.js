@@ -17,7 +17,7 @@ function HomeComponent() {
          return;
         }
 
-        axios.get('/products', {
+        axios.get(`${imageURL}/products`, {
             headers: {
             Authorization: `Bearer ${token}`,
             },
@@ -39,7 +39,7 @@ function HomeComponent() {
                     <li key={product.id} className='homeProductItems'>
                         <Link to={`/products/${product.id}`}>
                             <h3>{product.name}</h3>
-                            <img src={`${imageURL}${product.image_path}`} alt={product.name} />
+                            <img src={product.image_path} alt={product.name} />
                             <p>£{product.price}</p>
                         </Link>
                     </li>
