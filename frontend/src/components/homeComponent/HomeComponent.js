@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './HomeComponent.css';
 
-const imageURL = `https://techtitan.onrender.com/uploads/`;
+const imageURL = `https://techtitan.onrender.com/uploads`;
 
 function HomeComponent() {
 
