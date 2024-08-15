@@ -19,19 +19,19 @@ const swaggerJsdoc = require('swagger-jsdoc');
 
 
 // Load the database URL from the environment variable
-const pool = new Pool({
-  connectionString: String(process.env.DATABASE_URL),
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
+// const pool = new Pool({
+//   connectionString: String(process.env.DATABASE_URL),
+//   ssl: {
+//     rejectUnauthorized: false,
+//   },
+// });
 
-console.log('Connecting to database with URL:', process.env.DATABASE_URL);
+// console.log('Connecting to database with URL:', process.env.DATABASE_URL);
 
-// Connect to the database
-pool.connect()
-.then(() => console.log('Connected to PostgreSQL database'))
-.catch(err => console.error('Connection error', err.stack));
+// // Connect to the database
+// pool.connect()
+// .then(() => console.log('Connected to PostgreSQL database'))
+// .catch(err => console.error('Connection error', err.stack));
 
 
 // Import routes
@@ -48,7 +48,7 @@ const searchRouter = require('./routes/search');
 
 // Import config and services
 const config = require('./config');
-// const pool = require('./DB/db');
+const pool = require('./DB/db');
 const { initializePassport } = require('./services/authService');
 
 const app = express();
@@ -68,7 +68,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 // Initialize Passport
-initializePassport(passport, pool);
+initializePassport(passport, new Pool(config.DB_CONFIG));
 
 // Session middleware
 app.use(session({ 
