@@ -1,9 +1,9 @@
-// const dotenv = require('dotenv');
 const dotenv = require('dotenv');
 dotenv.config();
 const config = require('./config');
+require('dotenv').config();
 
-const { Pool }= require('pg');
+const {Pool} = require('pg');
 const path = require('path');
 
 const express = require('express');
@@ -17,51 +17,6 @@ const methodOverride = require('method-override');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 
-
-//Load the database URL from the environment variable
-const pool = new Pool({
-  connectionString: config.DB_CONFIG.connectionString,  // Use the DATABASE_URL
-  ssl: config.DB_CONFIG.ssl
-});
-
-console.log('Connecting to database with URL:', process.env.DATABASE_URL);
-
-const testConnection = async () => {
-  try {
-    const client = await pool.connect();
-    console.log('Connected to the database');
-
-    const tables = await client.query(`
-      SELECT table_name
-      FROM information_schema.tables
-      WHERE table_schema = 'public'
-    `);
-    console.log('Tables:', tables.rows);
-
-    client.release();
-  } catch (error) {
-    console.error('Error:', error);
-  }
-};
-
-testConnection();
-
-
-// Connect to the database
-pool.connect()
-  .then(() => console.log('Connected to PostgreSQL database'))
-  .catch(err => console.error('Connection error', err.stack));
-
-  // console.log('Connecting with:', config.DB.PGUSER, config.DB.PGHOST);
-  console.log('Connection string:', config.DB_CONFIG.connectionString);
-  pool.query('SELECT table_name FROM information_schema.tables WHERE table_schema = \'public\'', (err, result) => {
-    if (err) {
-      console.error('Error fetching tables:', err);
-    } else {
-      console.log('Tables:', result.rows);
-    }
-  });
-  
 
 // Import routes
 const authGoogleRouter = require('./routes/authRoutes');
@@ -132,7 +87,7 @@ app.use('/users', usersRouter);
 app.use('/orders', ordersRouter);
 app.use('/search', searchRouter);
 
-app.get('/test-db', async (req, res) => {
+app.get('/users/users', async (req, res) => {
   try {
     const result = await pool.query('SELECT NOW()');
     res.json({ message: 'Database is connected', time: result.rows[0].now });
