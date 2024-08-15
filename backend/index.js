@@ -63,8 +63,9 @@ app.use((req, res, next) => {
 });
 
 // Serve static files from the "uploads" directory
-app.use('https://techtitan.onrender.com/uploads', express.static('uploads'));
-console.log(path.join(__dirname, 'uploads', 'your-image-file.jpg'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+//console.log(path.join(__dirname, 'uploads', 'your-image-file.jpg'));
 
 // Initialize Stripe
 const stripe = Stripe(process.env.STRIPE_KEY);
