@@ -1,9 +1,8 @@
 const dotenv = require('dotenv');
 dotenv.config();
-const config = require('./config');
 require('dotenv').config();
 
-const {Pool} = require('pg');
+const { Pool } = require('pg');
 const path = require('path');
 
 const express = require('express');
@@ -16,6 +15,15 @@ const flash = require('express-flash');
 const methodOverride = require('method-override');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
+
+
+// Create a new Pool instance using the DATABASE_URL environment variable
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false // Required for some PostgreSQL hosts
+  }
+});
 
 
 // Import routes
@@ -31,11 +39,23 @@ const searchRouter = require('./routes/search');
 
 
 // Import config and services
+const config = require('./config');
+
 
 //const pool = require('./DB/db');
 const { initializePassport } = require('./services/authService');
 
 const app = express();
+
+app.get('/users', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM users');
+    res.json({ users: result.rows });
+  } catch (err) {
+    console.error('Error fetching users:', err.message);
+    res.status(500).json({ error: 'Error fetching users' });
+  }
+});
 
 // Initialize Stripe
 const stripe = Stripe(process.env.STRIPE_KEY);
@@ -87,12 +107,13 @@ app.use('/users', usersRouter);
 app.use('/orders', ordersRouter);
 app.use('/search', searchRouter);
 
-app.get('/users/users', async (req, res) => {
+
+app.get('/test-db', async (req, res) => {
   try {
     const result = await pool.query('SELECT NOW()');
-    res.json({ message: 'Database is connected', time: result.rows[0].now });
+    res.json({ message: 'Database connection is working', time: result.rows[0].now });
   } catch (err) {
-    console.error('Database connection error:', err);
+    console.error('Database connection error:', err.message);
     res.status(500).json({ error: 'Database connection error' });
   }
 });
