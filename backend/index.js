@@ -1,6 +1,7 @@
 // const dotenv = require('dotenv');
 const dotenv = require('dotenv');
 dotenv.config();
+const config = require('./config');
 
 const { Pool }= require('pg');
 const path = require('path');
@@ -17,23 +18,23 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 
 
+//Load the database URL from the environment variable
+const pool = new Pool({
+  connectionString: config.DB_CONFIG.connectionString,  // Use the DATABASE_URL
+  ssl: config.DB_CONFIG.ssl
+});
 
-// Load the database URL from the environment variable
-// const pool = new Pool({
-//   connectionString: String(process.env.DATABASE_URL),
-//   ssl: {
-//     rejectUnauthorized: false,
-//   },
-// });
+console.log('Connecting to database with URL:', process.env.DATABASE_URL);
 
-// console.log('Connecting to database with URL:', process.env.DATABASE_URL);
+// Connect to the database
+pool.connect()
+  .then(() => console.log('Connected to PostgreSQL database'))
+  .catch(err => console.error('Connection error', err.stack));
 
-// // Connect to the database
-// pool.connect()
-// .then(() => console.log('Connected to PostgreSQL database'))
-// .catch(err => console.error('Connection error', err.stack));
+  console.log('Connecting with:', config.DB.PGUSER, config.DB.PGHOST);
+  console.log('Connection string:', config.DB_CONFIG.connectionString);
 
-
+  
 // Import routes
 const authGoogleRouter = require('./routes/authRoutes');
 const authRouter = require('./routes/auth');
@@ -47,8 +48,8 @@ const searchRouter = require('./routes/search');
 
 
 // Import config and services
-const config = require('./config');
-const pool = require('./DB/db');
+
+//const pool = require('./DB/db');
 const { initializePassport } = require('./services/authService');
 
 const app = express();
