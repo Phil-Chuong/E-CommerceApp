@@ -93,15 +93,15 @@ app.use('/orders', ordersRouter);
 app.use('/search', searchRouter);
 
 //testing ROUTES
-app.get('/users', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM users');
-    res.json({ users: result.rows });
-  } catch (err) {
-    console.error('Error fetching users:', err.message);
-    res.status(500).json({ error: 'Error fetching users' });
-  }
-});
+// app.get('/users', async (req, res) => {
+//   try {
+//     const result = await pool.query('SELECT * FROM users');
+//     res.json({ users: result.rows });
+//   } catch (err) {
+//     console.error('Error fetching users:', err.message);
+//     res.status(500).json({ error: 'Error fetching users' });
+//   }
+// });
 
 
 // Serve static files from the React app
@@ -138,15 +138,15 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 
 //testing ROUTES
-app.get('/test-db', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT NOW()');
-    res.json({ message: 'Database connection is working', time: result.rows[0].now });
-  } catch (err) {
-    console.error('Database connection error:', err.message);
-    res.status(500).json({ error: 'Database connection error' });
-  }
-});
+// app.get('/test-db', async (req, res) => {
+//   try {
+//     const result = await pool.query('SELECT NOW()');
+//     res.json({ message: 'Database connection is working', time: result.rows[0].now });
+//   } catch (err) {
+//     console.error('Database connection error:', err.message);
+//     res.status(500).json({ error: 'Database connection error' });
+//   }
+// });
 
 
 // Redirect root URL to login page

@@ -129,9 +129,7 @@ router.post('/logout', async (req, res) => {
   }
 
   try {
-    // Optionally, implement token invalidation logic
-    // For example, you could add the token to a blacklist in your database
-    
+    // Implement token invalidation if required
     res.json({ message: 'Logged out successfully' });
   } catch (error) {
     console.error('Error during logout:', error);
@@ -139,7 +137,7 @@ router.post('/logout', async (req, res) => {
   }
 });
 
-//Redirect Route if not authenticated
+// Routes for authenticated and non-authenticated users
 router.get('/HomePage', checkAuthenticated, (req, res) => {
   res.render('HomePage');
 });
