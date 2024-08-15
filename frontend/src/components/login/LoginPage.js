@@ -126,7 +126,7 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       // Send a POST request to the server with user credentials
-      const response = await axios.post('/auth/login', { email, password });
+      const response = await axios.post('https://techtitan.onrender.com/auth/login', { email, password });
       console.log('Login response:', response.data);
 
       // Extract the token from the response data and store it in localStorage

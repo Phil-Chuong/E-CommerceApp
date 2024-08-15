@@ -85,16 +85,20 @@ router.post('/register', checkNotAuthenticated, async (req, res) => {
 // Login route
 router.post('/login', checkNotAuthenticated, async (req, res) => {
   const { email, password } = req.body;
+
+  console.log('Login request received with:', { email, password });
    
   try {
     const userResult = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
     if (userResult.rows.length === 0) {
+      console.log('Invalid email or password');
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
     const user = userResult.rows[0];
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
+      console.log('Invalid email or password');
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
@@ -109,7 +113,6 @@ router.post('/login', checkNotAuthenticated, async (req, res) => {
 
     console.log(`User ${user.id} logged in successfully. Token accepted.`);
     console.log(`User ${user.id} logged in successfully. Refresh token accepted.`);
-
 
     res.json({ accessToken, refreshToken, cartId });
   } catch (error) {

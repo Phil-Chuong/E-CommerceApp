@@ -138,15 +138,15 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 
 //testing ROUTES
-// app.get('/test-db', async (req, res) => {
-//   try {
-//     const result = await pool.query('SELECT NOW()');
-//     res.json({ message: 'Database connection is working', time: result.rows[0].now });
-//   } catch (err) {
-//     console.error('Database connection error:', err.message);
-//     res.status(500).json({ error: 'Database connection error' });
-//   }
-// });
+app.get('/test-db', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT NOW()');
+    res.json({ message: 'Database connection is working', time: result.rows[0].now });
+  } catch (err) {
+    console.error('Database connection error:', err.message);
+    res.status(500).json({ error: 'Database connection error' });
+  }
+});
 
 
 // Redirect root URL to login page
