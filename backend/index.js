@@ -1,11 +1,9 @@
 const dotenv = require('dotenv');
 dotenv.config();
-require('dotenv').config();
-
-const { Pool } = require('pg');
-const path = require('path');
 
 const express = require('express');
+const path = require('path');
+const { Pool } = require('pg');
 const Stripe = require('stripe');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -16,8 +14,14 @@ const methodOverride = require('method-override');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 
+// Import config and services
+const config = require('./config');
+require('dotenv').config();
 
-// Create a new Pool instance using the DATABASE_URL environment variable
+// Initialize the app
+const app = express();
+
+// Database connection
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
@@ -25,6 +29,45 @@ const pool = new Pool({
   }
 });
 
+//Enable CORS
+app.use(cors({
+  origin: 'https://tech-titan.onrender.com', // Frontend URL
+  methods: 'GET,POST,PUT,DELETE',
+  allowedHeaders: 'Content-Type,Authorization'
+}));
+
+// Middleware
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(bodyParser.json());
+app.use(methodOverride('_method'));
+
+// Session middleware
+app.use(session({ 
+  secret: config.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false
+}));
+
+// Initialize Passport
+const { initializePassport } = require('./services/authService');
+initializePassport(passport, new Pool(config.DB_CONFIG));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+
+// Global variables
+app.use((req, res, next) => {
+  res.locals.currentUser = req.user;
+  next();
+});
+
+// Serve static files from the "uploads" directory
+app.use('/uploads', express.static('uploads'));
+console.log(path.join(__dirname, 'uploads', 'your-image-file.jpg'));
+
+// Initialize Stripe
+const stripe = Stripe(process.env.STRIPE_KEY);
 
 // Import routes
 const authGoogleRouter = require('./routes/authRoutes');
@@ -38,65 +81,7 @@ const checkoutRouter = require('./routes/checkout');
 const searchRouter = require('./routes/search');
 
 
-// Import config and services
-const config = require('./config');
-
-
-//const pool = require('./DB/db');
-const { initializePassport } = require('./services/authService');
-
-const app = express();
-
-app.get('/users', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM users');
-    res.json({ users: result.rows });
-  } catch (err) {
-    console.error('Error fetching users:', err.message);
-    res.status(500).json({ error: 'Error fetching users' });
-  }
-});
-
-// Initialize Stripe
-const stripe = Stripe(process.env.STRIPE_KEY);
-
-//Enable CORS
-app.use(cors());
-
-//Method Override
-app.use(methodOverride('_method'));
-
-// Middleware
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(bodyParser.json());
-
-// Initialize Passport
-initializePassport(passport, new Pool(config.DB_CONFIG));
-
-// Session middleware
-app.use(session({ 
-  secret: config.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false
-}));
-
-// Passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(flash());
-
-// Global variables
-app.use((req, res, next) => {
-  res.locals.currentUser = req.user;
-  next();
-});
-
-// Serve static files from the "uploads" directory
-app.use('/uploads', express.static('uploads'));
-
-
-// Routes
+// Routes halders
 app.use('/auth', authRouter);
 app.use('/products', productRouter);
 app.use('/products', productRoutes);
@@ -107,16 +92,17 @@ app.use('/users', usersRouter);
 app.use('/orders', ordersRouter);
 app.use('/search', searchRouter);
 
-
-app.get('/test-db', async (req, res) => {
+//testing ROUTES
+app.get('/users', async (req, res) => {
   try {
-    const result = await pool.query('SELECT NOW()');
-    res.json({ message: 'Database connection is working', time: result.rows[0].now });
+    const result = await pool.query('SELECT * FROM users');
+    res.json({ users: result.rows });
   } catch (err) {
-    console.error('Database connection error:', err.message);
-    res.status(500).json({ error: 'Database connection error' });
+    console.error('Error fetching users:', err.message);
+    res.status(500).json({ error: 'Error fetching users' });
   }
 });
+
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '/public')));
@@ -149,6 +135,18 @@ const options = {
 
 const specs = swaggerJsdoc(options);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+
+
+//testing ROUTES
+app.get('/test-db', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT NOW()');
+    res.json({ message: 'Database connection is working', time: result.rows[0].now });
+  } catch (err) {
+    console.error('Database connection error:', err.message);
+    res.status(500).json({ error: 'Database connection error' });
+  }
+});
 
 
 // Redirect root URL to login page
