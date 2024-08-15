@@ -26,15 +26,43 @@ const pool = new Pool({
 
 console.log('Connecting to database with URL:', process.env.DATABASE_URL);
 
+const testConnection = async () => {
+  try {
+    const client = await pool.connect();
+    console.log('Connected to the database');
+
+    const tables = await client.query(`
+      SELECT table_name
+      FROM information_schema.tables
+      WHERE table_schema = 'public'
+    `);
+    console.log('Tables:', tables.rows);
+
+    client.release();
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
+
+testConnection();
+
+
 // Connect to the database
 pool.connect()
   .then(() => console.log('Connected to PostgreSQL database'))
   .catch(err => console.error('Connection error', err.stack));
 
-  console.log('Connecting with:', config.DB.PGUSER, config.DB.PGHOST);
+  // console.log('Connecting with:', config.DB.PGUSER, config.DB.PGHOST);
   console.log('Connection string:', config.DB_CONFIG.connectionString);
-
+  pool.query('SELECT table_name FROM information_schema.tables WHERE table_schema = \'public\'', (err, result) => {
+    if (err) {
+      console.error('Error fetching tables:', err);
+    } else {
+      console.log('Tables:', result.rows);
+    }
+  });
   
+
 // Import routes
 const authGoogleRouter = require('./routes/authRoutes');
 const authRouter = require('./routes/auth');
