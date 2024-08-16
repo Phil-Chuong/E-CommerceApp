@@ -4,11 +4,9 @@ const multer = require('multer');
 const path = require('path');
 const Product = require('../models/Product');
 
-const imageURL = `https://techtitan.onrender.com`;
-
 // Set storage engine
 const storage = multer.diskStorage({
-  destination: `${imageURL}/uploads`,
+  destination: './uploads',
   filename: function (req, file, cb) {
     const originalname = path.basename(file.originalname); // Ensure original name is preserved
     cb(null, originalname.split(' ').join('-')); // Replace spaces with hyphens
@@ -100,7 +98,7 @@ router.put('/:id/image', (req, res) => {
 });
 
 // Get all products
-router.get('/', async (req, res) => {
+router.get('https://techtitan.onrender.com/', async (req, res) => {
   try {
     const products = await Product.getAllProducts(); 
     //POSTMAN TESTING TO FETCH products DATA
