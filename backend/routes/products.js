@@ -46,7 +46,7 @@ router.post('/upload', (req, res) => {
     if (!req.file) {
       return errorResponse(res, 400, 'No file selected!');
     }
-    const imagePath = `/uploads/${req.file.filename}`;
+    const imagePath = `https://techtitan.onrender.com/uploads/${req.file.filename}`;
     const productId = req.body.productId;
     try {
       await Product.updateProductImage(productId, imagePath);
@@ -77,7 +77,7 @@ router.put('/:id/image', (req, res) => {
       }
 
       const { id } = req.params;
-      const imagePath = `/uploads/${req.file.filename}`;
+      const imagePath = `https://techtitan.onrender.com/uploads/${req.file.filename}`;
 
       // Update the product in the database with the new image path
       const updatedProduct = await Product.updateProductImage(id, imagePath);
