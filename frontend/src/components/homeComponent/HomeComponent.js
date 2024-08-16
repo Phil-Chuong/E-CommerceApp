@@ -16,7 +16,7 @@ function HomeComponent() {
          return;
         }
 
-        axios.get('https://techtitan.onrender.com/products', {
+        axios.get('/products', {
             headers: {
             Authorization: `Bearer ${token}`,
             },
