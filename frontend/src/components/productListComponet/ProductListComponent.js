@@ -4,8 +4,6 @@ import './ProductListComponent.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
-const imageURL = `https://techtitan.onrender.com${product.image_path}`;
-
 function ProductListComponent({product}) {
     const [products, setProducts] = useState([]);
     const navigate = useNavigate();
@@ -36,7 +34,7 @@ function ProductListComponent({product}) {
               <Link to={`/products/${product.id}`} key={product.id}>
                 <li className='productItems'>
                   <h3>{product.name}</h3>
-                  <img src={imageURL} alt={product.name} />
+                  <img src={product.image_path} alt={product.name} />
                 <p>£{product.price}</p>
                 </li>
               </Link>
