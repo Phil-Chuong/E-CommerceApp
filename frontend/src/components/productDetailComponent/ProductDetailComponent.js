@@ -77,8 +77,9 @@ function ProductDetailComponent() {
         const accessToken = localStorage.getItem('accessToken');
         const token = localStorage.getItem('token');
         let cartId = localStorage.getItem('cartId');
+        const userId = localStorage.getItem('userId');
 
-        if (!token || !accessToken) {
+        if (!token || !accessToken || !userId) {
             alert('You need to be logged in to add products to the cart');
             console.log('You need to be logged in to add products to the cart')
             return;
