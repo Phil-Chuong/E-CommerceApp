@@ -16,6 +16,7 @@ import SearchPage from './Routes/search/SearchPage';
 
 
 axios.defaults.baseURL = 'https://techtitan.onrender.com';
+//axios.defaults.baseURL = 'http://localhost:3000';
 
 
 function App() {

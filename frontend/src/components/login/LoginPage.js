@@ -19,7 +19,7 @@ const LoginPage = () => {
     //console.log('Received cartId:', cartId);
     //console.log('Received userId:', userId);
 
-    if (!accessToken || !refreshToken || !cartId) {
+    if (!accessToken || !refreshToken || !cartId || !userId) {
       throw new Error('Invalid token or missing data');
     }
 
