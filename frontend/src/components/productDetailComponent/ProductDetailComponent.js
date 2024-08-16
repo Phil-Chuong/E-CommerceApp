@@ -4,7 +4,7 @@ import './ProductDetailComponent.css';
 import { useParams } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
-
+const imageURL = `https://techtitan.onrender.com`;
 
 function ProductDetailComponent() {
 
@@ -163,7 +163,7 @@ function ProductDetailComponent() {
       <div className='productDetailContainer'>
 
         <div className="productDetailCard">
-          <img src={product.image_path} alt={product.name} className="product-image" />
+          <img src={`${imageURL}${product.image_path}`} alt={product.name} className="product-image" />
           
           <div className='productDetailInfo'>
             <h2>{product.name}</h2>
