@@ -116,7 +116,7 @@ router.post('/login', checkNotAuthenticated, async (req, res) => {
     // console.log(`User ${user.id} logged in successfully. Token accepted.`);
     // console.log(`User ${user.id} logged in successfully. Refresh token accepted.`);
 
-    res.json({ accessToken, refreshToken, cartId });
+    res.json({ accessToken, refreshToken, cartId, userId: user.id});
   } catch (error) {
     console.error('Error during login:', error);
     res.status(500).json({ message: 'Internal server error' });
