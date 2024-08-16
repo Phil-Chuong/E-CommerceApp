@@ -80,7 +80,7 @@ function ProductDetailComponent() {
 
         if (!token || !accessToken) {
             alert('You need to be logged in to add products to the cart');
-            console.log(alert)
+            console.log('You need to be logged in to add products to the cart')
             return;
         }
 
