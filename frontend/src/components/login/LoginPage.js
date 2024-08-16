@@ -13,7 +13,7 @@ const LoginPage = () => {
   
 
   const handleLoginSuccess = async (accessToken, refreshToken, cartId, userId) => {
-    console.log('Received data:', { accessToken, refreshToken, userId, cartId });
+    console.log('Received data:', { accessToken, refreshToken, cartId, userId });
     //console.log('Received accessToken:', accessToken);
     //console.log('Received refreshToken:', refreshToken);
     //console.log('Received cartId:', cartId);
@@ -48,9 +48,8 @@ const LoginPage = () => {
     let refreshToken = localStorage.getItem('refreshToken');
     //let cartId = localStorage.getItem('cartId')
   
-    if (accessToken || refreshToken) {
+    if (!accessToken) {
       console.error('No token found.');
-      
       navigate('/login');
       return;
     }
@@ -169,14 +168,14 @@ const LoginPage = () => {
       const response = await axios.post('/authRoutes/google-login', { token: credential });
       console.log('Backend response:', response.data); // Log the backend response
 
-      const { accessToken, refreshToken, cartId } = response.data;
+      const { accessToken, refreshToken, cartId, userId } = response.data;
       console.log('Received accessToken:', accessToken);
       console.log('Received refreshToken:', refreshToken);
       console.log('Received cartId:', cartId);
-      //console.log('Received userId:', userId);
+      console.log('Received userId:', userId );
 
-      if (accessToken && refreshToken && cartId) {
-        handleLoginSuccess(accessToken, refreshToken, cartId);
+      if (accessToken && refreshToken && cartId && userId) {
+        handleLoginSuccess(accessToken, refreshToken, cartId, userId);
       } else {
         setError('Missing data from server response');
       }
