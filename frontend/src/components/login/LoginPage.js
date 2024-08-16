@@ -130,15 +130,15 @@ const LoginPage = () => {
       console.log('Login response:', response.data);
 
       // Extract the token from the response data and store it in localStorage
-      const { accessToken, refreshToken, cartId} = response.data;
+      const { accessToken, refreshToken, cartId, userId} = response.data;
 
-      console.log('Extracted Data:', { accessToken, refreshToken, cartId });
+      console.log('Extracted Data:', { accessToken, refreshToken, cartId, userId });
 
       // Store tokens and cartId in localStorage
-      if (accessToken && refreshToken && cartId) {
+      if (accessToken && refreshToken && cartId && userId) {
 
       // Example function to handle further actions after successful login
-        handleLoginSuccess(accessToken, refreshToken, cartId); // Handle post-login actions
+        handleLoginSuccess(accessToken, refreshToken, cartId, userId); // Handle post-login actions
       } else {
         throw new Error('Missing data from server response');
       }
