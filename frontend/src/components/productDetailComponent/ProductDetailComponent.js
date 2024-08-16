@@ -155,13 +155,15 @@ function ProductDetailComponent() {
 
     if (!product) return <div>No product found.</div>; // Handle case where product is not found
 
-
-  return (
-    <div className='productDetailBody'>
+    const imageURL = `https://techtitan.onrender.com${product.image_path}`;
+    
+    
+    return (
+      <div className='productDetailBody'>
       <div className='productDetailContainer'>
 
         <div className="productDetailCard">
-          <img src={product.image_path} alt={product.name} className="product-image" />
+          <img src={imageURL} alt={product.name} className="product-image" />
           
           <div className='productDetailInfo'>
             <h2>{product.name}</h2>

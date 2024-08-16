@@ -33,23 +33,26 @@ const SearchResultsPage = () => {
 
         <div className='searchBox'>
           <ul className='searchCard'>
-            {results.map((product) => (
+            {results.map((product) => {
+              const imageURL = `https://techtitan.onrender.com${product.image_path}`;
+
               <Link to={`/products/${product.id}`} key={product.id}>
-              <li className='productItems'>
-                <h3>{product.name}</h3>
-                {product.image_path ? (
-                  <img src={product.image_path} alt={product.name} />
-                ) : (
-                  <div className="placeholder-image">No Image Available</div>
-                )}
-                {product.price ? (
-                  <p>£{product.price}</p>
-                ) : (
-                  <p>Price not available</p>
-                )}
-              </li>
-            </Link>
-            ))}
+                <li className='productItems'>
+                  <h3>{product.name}</h3>
+                    {product.image_path ? (
+                    <img src={imageURL} alt={product.name} />
+                    ) : (
+
+                    <div className="placeholder-image">No Image Available</div>
+                    )}
+                  {product.price ? (
+                    <p>£{product.price}</p>
+                    ) : (
+                    <p>Price not available</p>
+                  )}
+                </li>
+              </Link>
+            })}
           </ul>
         </div>
       </div>

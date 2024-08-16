@@ -37,13 +37,13 @@ function HomeComponent() {
                         const imageURL = `https://techtitan.onrender.com${product.image_path}`;
 
                         return (
-                            <li key={product.id} className='homeProductItems'>
-                                <Link to={`/products/${product.id}`}>
+                            <Link key={product.id} to={`/products/${product.id}`}>
+                                <li className='homeProductItems'>
                                     <h3>{product.name}</h3>
                                     <img src={imageURL} alt={product.name} />
                                     <p>£{product.price}</p>
-                                </Link>
-                            </li>
+                                </li>
+                            </Link>
                         );
                     })}
                 </ul>

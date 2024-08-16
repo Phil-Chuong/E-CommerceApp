@@ -128,12 +128,14 @@ function CartItemComponent() {
                                 <ul className='cartItemUL'>
                                 {cartItems.map((item) => {
                                     const product = products.find(product => product.id === item.product_id);
+                                    const imageURL = `https://techtitan.onrender.com${product.image_path}`;
+                                    
                                         if (!product) return null; // Skip if product not found
                                         return (
                                         <li key={item.id} className='items'>
                                                 <div className='itemProduct'>
                                                     <h3>{product.name}</h3>
-                                                    <img src={product.image_path} alt={product.name} />
+                                                    <img src={imageURL} alt={product.name} />
                                                     <p>£{product.price} X {item.qty}</p>                                           
                                                 </div>
 

@@ -156,12 +156,14 @@ const CheckoutComponent = () => {
                     <div className="checkout-items-box">
                         {cartItems.map((item) => {
                                 const product = products.find(product => product.id === item.product_id);
+                                const imageURL = `https://techtitan.onrender.com${product.image_path}`;
+
                                 if (!product) return null; // Skip if product not found
                                 return (
                                     <li key={item.id} className='checkout-items'>
                                         <div className='checkout-itemProduct'>
                                             <div className='checkout-img'>
-                                                <img src={product.image_path} alt={product.name} />
+                                                <img src={imageURL} alt={product.name} />
                                             </div>
 
                                             <div className='checkout-payment-section'>                                 
