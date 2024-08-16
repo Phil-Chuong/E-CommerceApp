@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './HomeComponent.css';
 
-const imageURL = `https://techtitan.onrender.com/uploads`;
 
 function HomeComponent() {
 
@@ -17,7 +16,7 @@ function HomeComponent() {
          return;
         }
 
-        axios.get(`${imageURL}/products`, {
+        axios.get('/products', {
             headers: {
             Authorization: `Bearer ${token}`,
             },
