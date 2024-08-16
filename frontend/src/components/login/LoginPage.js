@@ -20,7 +20,8 @@ const LoginPage = () => {
     //console.log('Received userId:', userId);
 
     if (!accessToken || !refreshToken || !cartId || !userId) {
-      throw new Error('Invalid token or missing data');
+      console.error('Missing required data from server response.');
+      setError('Incomplete login data received.');
     }
 
     // Store tokens and cartId in localStorage
@@ -198,12 +199,14 @@ const LoginPage = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
+          required
         />
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
+          required
         />
         <br />
         <button type="submit">Login</button>

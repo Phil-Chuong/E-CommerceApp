@@ -111,8 +111,10 @@ router.post('/login', checkNotAuthenticated, async (req, res) => {
     const accessToken = jwt.sign({ userId: user.id, cartId }, JWT_SECRET, { expiresIn: '1h' });
     const refreshToken = jwt.sign({ userId: user.id }, REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
 
-    console.log(`User ${user.id} logged in successfully. Token accepted.`);
-    console.log(`User ${user.id} logged in successfully. Refresh token accepted.`);
+    console.log(`User ${user.id} logged in successfully. Tokens generated.`);
+
+    // console.log(`User ${user.id} logged in successfully. Token accepted.`);
+    // console.log(`User ${user.id} logged in successfully. Refresh token accepted.`);
 
     res.json({ accessToken, refreshToken, cartId });
   } catch (error) {
