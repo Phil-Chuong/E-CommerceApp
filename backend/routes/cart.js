@@ -56,7 +56,7 @@ router.get('/cart_items', async (req, res) => {
 });
 
 // Route to get all cart items by cart ID
-router.get('/cart_items/:cartId', authenticateToken, async (req, res) => {
+router.get('/cart_items/:cartId', async (req, res) => {
   const cartId = parseInt(req.params.cartId, 10);
 
   if (isNaN(cartId)) {
@@ -74,7 +74,7 @@ router.get('/cart_items/:cartId', authenticateToken, async (req, res) => {
 
 
 //get ACTIVE cart user by id
-router.get('/active/:userId', authenticateToken, async (req, res) => {
+router.get('/active/:userId', async (req, res) => {
   const userId = parseInt(req.params.userId, 10);
 
   if (isNaN(userId)) {
@@ -96,7 +96,7 @@ router.get('/active/:userId', authenticateToken, async (req, res) => {
 
 
 // Create or get active cart for the user
-router.post('/cart', authenticateToken, async (req, res) => {
+router.post('/cart', async (req, res) => {
   const {cartId} = req.cartId;
   const userId = req.userId;
   console.log('User ID from token:', userId, 'Cart ID:', cartId); // Debugging log
@@ -121,7 +121,7 @@ router.post('/cart', authenticateToken, async (req, res) => {
 
 
 // Add product to cart or create cart if it doesn't exist
-router.post('/cart_items', authenticateToken, async (req, res) => {
+router.post('/cart_items', async (req, res) => {
   console.log('Request body:', req.body);
   try {
     const { productId, quantity, cartId } = req.body;
@@ -158,7 +158,7 @@ router.post('/cart_items', authenticateToken, async (req, res) => {
 
 
 // Update product in cart
-router.put('/:cartId/cartItems/:productId', authenticateToken, async (req, res) => {
+router.put('/:cartId/cartItems/:productId', async (req, res) => {
   const cartId = parseInt(req.params.cartId, 10);
   const productId = parseInt(req.params.productId, 10);
   const { quantity } = req.body;
