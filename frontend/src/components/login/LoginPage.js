@@ -49,7 +49,7 @@ const LoginPage = () => {
     let refreshToken = localStorage.getItem('refreshToken');
     //let cartId = localStorage.getItem('cartId')
   
-    if (!accessToken || refreshToken) {
+    if (!accessToken || !refreshToken) {
       console.error('No token found.');
       navigate('/login');
       return;
