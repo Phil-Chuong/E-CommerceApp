@@ -48,9 +48,9 @@ const LoginPage = () => {
   const fetchOrCreateCart = async () => {
     let accessToken = localStorage.getItem('token');
     const refreshToken = localStorage.getItem('refreshToken');
-    let cartId = localStorage.getItem('cartId');
+    //let cartId = localStorage.getItem('cartId');
   
-    if (!accessToken) {
+    if (!accessToken || !refreshToken) {
       console.error('No token found.');
       navigate('/login');
       return;
@@ -64,7 +64,8 @@ const LoginPage = () => {
   
       console.log('Cart response:', response.data);
   
-      let cart = response.data.cart;
+      let cart = response.data.cart; // Assuming response.data.cart contains the cart object
+      console.log('Cart object:', cart); // Log the cart object to verify its structure
   
       // Check if cart is defined and has the necessary properties
       if (!cart || !cart.id) {
@@ -74,7 +75,7 @@ const LoginPage = () => {
   
       // If the cart exists and is completed, create a new cart
       if (cart.status === 'completed') {
-        response = await axios.post('/cart/cart', {}, {
+        response = await axios.post('/cart', {}, {
           headers: { Authorization: `Bearer ${accessToken}` }
         });
   
@@ -82,17 +83,19 @@ const LoginPage = () => {
         cart = response.data.cart;
   
         // Check if new cart has an id
-        if (!cartId || !cartId.id) {
+        if (!cart || !cart.id) {
           console.error('New cart is missing or has no id.');
           throw new Error('New cart data is missing.');
         }
       }
-  
-      const cartId = cart.id;
+      
+      // Update local storage with the cart ID
+      cartId = cart.id;
       localStorage.setItem('cartId', cartId);
       return cartId;
     } catch (error) {
-      console.error('Error fetching or creating cart:', error);
+      console.error('Error fetching or creating cart:', error.message);
+      console.error('Error details:', error);
   
       if (error.response?.status === 401) {  // Token expired or invalid
         try {

@@ -96,7 +96,7 @@ router.get('/active/:userId', async (req, res) => {
 
 
 // Create or get active cart for the user
-router.post('/cart', async (req, res) => {
+router.post('/', async (req, res) => {
   const {cartId} = req.cartId;
   const userId = req.userId;
   console.log('User ID from token:', userId, 'Cart ID:', cartId); // Debugging log
