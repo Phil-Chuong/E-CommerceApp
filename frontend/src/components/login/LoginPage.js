@@ -49,14 +49,14 @@ const LoginPage = () => {
     let refreshToken = localStorage.getItem('refreshToken');
     //let cartId = localStorage.getItem('cartId')
   
-    if (!accessToken || !refreshToken) {
+    if (!accessToken) {
       console.error('No token found.');
       navigate('/login');
       return;
     }
   
     try {
-      const response = await axios.get('/cart/cart/', {}, {
+      const response = await axios.get('/cart', {}, {
         headers: { Authorization: `Bearer ${accessToken}` }
       });
   
@@ -66,7 +66,7 @@ const LoginPage = () => {
 
       // If the cart exists and is completed, create a new cart
       if (cart && cart.status === 'completed') {
-        const newCartResponse = await axios.post('/cart/cart', {}, {
+        const newCartResponse = await axios.post('/cart', {}, {
           headers: { Authorization: `Bearer ${accessToken}` }
         });
 
@@ -88,7 +88,7 @@ const LoginPage = () => {
           localStorage.setItem('token', accessToken);
   
           // Retry the request with the new token
-          const response = await axios.post('/cart/cart', {}, {// 
+          const response = await axios.post('/cart', {}, {// 
             headers: { Authorization: `Bearer ${accessToken}` }
           });
   
@@ -98,7 +98,7 @@ const LoginPage = () => {
 
           // If the cart exists and is completed, create a new cart
         if (cart && cart.status === 'completed') {
-          const newCartResponse = await axios.post('/cart/cart', {}, {
+          const newCartResponse = await axios.post('/cart', {}, {
             headers: { Authorization: `Bearer ${accessToken}` }
           });
 

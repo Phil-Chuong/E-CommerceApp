@@ -13,9 +13,12 @@ class Cart {
   }
 
   static async getCartById(cartId) {
-    const query = 'SELECT * FROM cart WHERE id = $1';
+    if (!cartId) {
+      throw new Error(' ID is required');
+    }
     try {
-      const result = await pool.query(query, [cartId]);
+      const result = await pool.query('SELECT * FROM cart WHERE id = $1', [cartId]);
+      console.log('Cart fetched by ID:', result.rows[0]);
       return result.rows[0];
     } catch (error) {
       console.error('Error fetching cart:', err.message);
