@@ -34,6 +34,7 @@ function ProductDetailComponent() {
     console.log('Stored token:', token); // Check if token is present
   
     if (token) {
+      
       try {
         const decodedToken = jwtDecode(token);
         console.log('Decoded token:', decodedToken); // Check if token can be decoded
