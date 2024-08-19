@@ -22,6 +22,7 @@ const LoginPage = () => {
     if (!accessToken || !refreshToken || !cartId || !userId) {
       console.error('Missing required data from server response.');
       setError('Incomplete login data received.');
+      return;
     }
 
     // Store tokens and cartId in localStorage
@@ -47,7 +48,6 @@ const LoginPage = () => {
   const fetchOrCreateCart = async () => {
     let accessToken = localStorage.getItem('token');
     let refreshToken = localStorage.getItem('refreshToken');
-    //let cartId = localStorage.getItem('cartId')
   
     if (!accessToken) {
       console.error('No token found.');
@@ -65,12 +65,12 @@ const LoginPage = () => {
       let cart = response.data.cart;
 
       // If the cart exists and is completed, create a new cart
-      if (cart && cart.status === 'completed') {
-        const newCartResponse = await axios.post('/cart', {}, {
+      if (cart?.status === 'completed') {
+        response = await axios.post('/cart', {}, {
           headers: { Authorization: `Bearer ${accessToken}` }
         });
 
-        cart = newCartResponse.data.cart;
+        cart = response.data.cart;
         console.log('New cart created:', cart);
       }
   
@@ -80,35 +80,15 @@ const LoginPage = () => {
     } catch (error) {
       console.error('Error fetching or creating cart:', error);
   
-      if (error.response && error.response.status === 401) {
-        console.error('Token expired or invalid, refreshing token...');
+      if (error.response?.status === 401) {
         try {
-          const refreshResponse = await axios.post('/auth/refresh', { token: localStorage.getItem('refreshToken') });
+          console.error('Token expired or invalid, refreshing token...');
+          const refreshResponse = await axios.post('/auth/refresh', { token: refreshToken});
           accessToken = refreshResponse.data.accessToken;
           localStorage.setItem('token', accessToken);
   
           // Retry the request with the new token
-          const response = await axios.post('/cart', {}, {// 
-            headers: { Authorization: `Bearer ${accessToken}` }
-          });
-  
-          console.log('Cart response:', response.data);
-
-          let cart = response.data.cart;
-
-          // If the cart exists and is completed, create a new cart
-        if (cart && cart.status === 'completed') {
-          const newCartResponse = await axios.post('/cart', {}, {
-            headers: { Authorization: `Bearer ${accessToken}` }
-          });
-
-          cart = newCartResponse.data.cart;
-          console.log('New cart created:', cart);
-        }
-  
-          const cartId = cart.id;
-          localStorage.setItem('cartId', cartId);
-          return cartId;
+          return await fetchOrCreateCart();
         } catch (refreshError) {
           console.error('Error refreshing token:', refreshError);
           localStorage.removeItem('token');
