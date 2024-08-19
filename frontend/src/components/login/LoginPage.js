@@ -48,6 +48,7 @@ const LoginPage = () => {
   const fetchOrCreateCart = async () => {
     let accessToken = localStorage.getItem('token');
     const refreshToken = localStorage.getItem('refreshToken');
+    let cartId = localStorage.getItem('cartId');
   
     if (!accessToken) {
       console.error('No token found.');
@@ -56,6 +57,7 @@ const LoginPage = () => {
     }
   
     try {
+      // Fetch the current cart
       let response = await axios.get('/cart', {
         headers: { Authorization: `Bearer ${accessToken}` }
       });
@@ -72,15 +74,15 @@ const LoginPage = () => {
   
       // If the cart exists and is completed, create a new cart
       if (cart.status === 'completed') {
-        response = await axios.post('/cart', {}, {
+        response = await axios.post('/cart/cart', {}, {
           headers: { Authorization: `Bearer ${accessToken}` }
         });
   
-        console.log('New cart created:', response.data.cart);
+        console.log('New cart created:', response.data.cartId);
         cart = response.data.cart;
   
         // Check if new cart has an id
-        if (!cart || !cart.id) {
+        if (!cartId || !cartId.id) {
           console.error('New cart is missing or has no id.');
           throw new Error('New cart data is missing.');
         }
