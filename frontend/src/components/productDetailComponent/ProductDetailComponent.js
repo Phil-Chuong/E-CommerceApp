@@ -89,7 +89,7 @@ function ProductDetailComponent() {
         if (!cartId) {
             console.log('No cartId found. Creating a new cart...');
 
-            const newCartResponse = await axios.post('/cart/cart', { user_id: userId }, {
+            const newCartResponse = await axios.post('/cart', { user_id: userId }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 

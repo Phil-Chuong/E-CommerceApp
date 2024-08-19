@@ -62,9 +62,6 @@ const LoginPage = () => {
       });
   
       console.log('Cart response:', response.data);
-
-      // Check the structure of the response
-      console.log('Cart data:', response.data.cart); // Log cart data directly
   
       let cart = response.data[0]; // Assuming response.data.cart contains the cart object
       console.log('Cart object:', cart); // Log the cart object to verify its structure
