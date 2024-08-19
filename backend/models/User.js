@@ -34,6 +34,18 @@ static async getUserById(userId) {
   }
 }
 
+
+static async getUserCartByUserId(userId) {
+  try {
+    const result = await pool.query(`SELECT * FROM carts WHERE user_id = $1 AND status = 'active' LIMIT 1`, [userId]);
+    console.log('User fetched Cart by users ID:', result.rows[0]);
+    return result.rows[0];
+  } catch (error) {
+    console.error('Error fetching users cart by user ID', error.message);
+    throw error;
+  }
+}
+
   // Compare hashed password
   static async comparePassword(user, password) {
     try {

@@ -40,7 +40,7 @@ function ProductDetailComponent() {
         const userId = decodedToken.userId; // Extract userId for future use if needed
         setUserId(userId); // Set userId state
   
-        axios.get(`/cart/active/:userId`, {
+        axios.get(`/user/${userId}/cart`, {
           headers: { Authorization: `Bearer ${token}` }
         })
         .then(response => {
