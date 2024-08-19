@@ -49,7 +49,7 @@ const LoginPage = () => {
     let accessToken = localStorage.getItem('token');
     const refreshToken = localStorage.getItem('refreshToken');
   
-    if (!accessToken || !refreshToken) {
+    if (!accessToken) {
       console.error('No token found.');
       navigate('/login');
       return;
@@ -62,8 +62,11 @@ const LoginPage = () => {
       });
   
       console.log('Cart response:', response.data);
+
+      // Check the structure of the response
+      console.log('Cart data:', response.data.cart); // Log cart data directly
   
-      let cart = response.data.cart; // Assuming response.data.cart contains the cart object
+      let cart = response.data[0]; // Assuming response.data.cart contains the cart object
       console.log('Cart object:', cart); // Log the cart object to verify its structure
   
       // Check if cart is defined and has the necessary properties
@@ -93,8 +96,14 @@ const LoginPage = () => {
       return cart.id;
     } catch (error) {
       console.error('Error fetching or creating cart:', error.message);
-      console.error('Error details:', error);
-  
+      if (error.response) {
+        console.error('Response Data:', error.response.data);
+        setError(error.response.data.message || 'Failed to fetch or create cart.');
+      } else {
+        setError('An error occurred while fetching or creating the cart.');
+      }
+      
+      // Token refresh logic
       if (error.response?.status === 401) {  // Token expired or invalid
         try {
           console.error('Token expired or invalid, refreshing token...');
