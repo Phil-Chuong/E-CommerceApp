@@ -47,7 +47,7 @@ const LoginPage = () => {
 
   const fetchOrCreateCart = async () => {
     let accessToken = localStorage.getItem('token');
-    let refreshToken = localStorage.getItem('refreshToken');
+    const refreshToken = localStorage.getItem('refreshToken');
   
     if (!accessToken) {
       console.error('No token found.');
@@ -56,22 +56,34 @@ const LoginPage = () => {
     }
   
     try {
-      const response = await axios.get('/cart', {}, {
+      let response = await axios.get('/cart', {
         headers: { Authorization: `Bearer ${accessToken}` }
       });
   
       console.log('Cart response:', response.data);
-
+  
       let cart = response.data.cart;
-
+  
+      // Check if cart is defined and has the necessary properties
+      if (!cart || !cart.id) {
+        console.error('Cart is missing or has no id.');
+        throw new Error('Cart data is missing.');
+      }
+  
       // If the cart exists and is completed, create a new cart
-      if (cart?.status === 'completed') {
+      if (cart.status === 'completed') {
         response = await axios.post('/cart', {}, {
           headers: { Authorization: `Bearer ${accessToken}` }
         });
-
+  
+        console.log('New cart created:', response.data.cart);
         cart = response.data.cart;
-        console.log('New cart created:', cart);
+  
+        // Check if new cart has an id
+        if (!cart || !cart.id) {
+          console.error('New cart is missing or has no id.');
+          throw new Error('New cart data is missing.');
+        }
       }
   
       const cartId = cart.id;
@@ -80,10 +92,10 @@ const LoginPage = () => {
     } catch (error) {
       console.error('Error fetching or creating cart:', error);
   
-      if (error.response?.status === 401) {
+      if (error.response?.status === 401) {  // Token expired or invalid
         try {
           console.error('Token expired or invalid, refreshing token...');
-          const refreshResponse = await axios.post('/auth/refresh', { token: refreshToken});
+          const refreshResponse = await axios.post('/auth/refresh', { token: refreshToken });
           accessToken = refreshResponse.data.accessToken;
           localStorage.setItem('token', accessToken);
   
@@ -100,6 +112,7 @@ const LoginPage = () => {
       }
     }
   };
+  
   
 
   const handleSubmit = async (e) => {
