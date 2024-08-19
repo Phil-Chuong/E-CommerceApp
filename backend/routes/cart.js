@@ -4,22 +4,18 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const Cart = require('../models/Cart');
-//const User = require('../models/User');
 const authService = require('../services/authService');
 const { authenticateToken } = require('../services/authenticateToken');
-//const Order = require('../models/Order');
-
 
 const JWT_SECRET = process.env.JWT_SECRET;
-
 
 // Get all cart
 router.get('/', async (req, res) => {
   try {
     const cart = await Cart.getAllCart();
-    res.send(cart);
+    res.json(cart);
   } catch (error) {
-    console.error('Error retrieving cart', error);
+    console.error('Error retrieving cart', error.message);
     res.status(500).json({ error: 'Error retrieving cart' });
   }
 });
@@ -29,13 +25,12 @@ router.get('/:id', async (req, res) => {
   const cartId = parseInt(req.params.id, 10); // Ensure cartId is an integer
   console.log('Fetching cart with ID:', cartId); // Debugging log
 
-  if (!cartId) {
+  if (isNaN(cartId)) {
     console.error('Invalid cart ID');
     return res.status(400).json({ error: 'Invalid cart ID' });
   }
 
   try {
-    const cartId = req.params.id;
     const cart = await Cart.getCartById(cartId);
 
     if (!cart) {
@@ -44,33 +39,35 @@ router.get('/:id', async (req, res) => {
     console.log('Fetched cart:', cart);
     res.json(cart);
   } catch (error) {
-    console.error('Error retrieving cart', error);
+    console.error('Error retrieving cart', error.message);
     res.status(500).json({ error: 'Error retrieving cart' });
   }
 });
 
 //get all cart_items
-// router.get('/cart_items', async (req, res) => {
-//   try {
-//     const cartItems = await Cart.getAllCartItems();
-//     res.send(cartItems);
-//   } catch (error) {
-//     console.error('Error retrieving users', error);
-//     res.status(500).json({ error: 'Error retrieving users' });
-//   }
-// });
+router.get('/cart_items', async (req, res) => {
+  try {
+    const cartItems = await Cart.getAllCartItems();
+    res.json(cartItems);
+  } catch (error) {
+    console.error('Error retrieving cart items:', error.message);
+    res.status(500).json({ error: 'Error retrieving users' });
+  }
+});
 
 // Route to get all cart items by cart ID
 router.get('/cart_items/:cartId', authenticateToken, async (req, res) => {
   const cartId = parseInt(req.params.cartId, 10);
+
   if (isNaN(cartId)) {
       return res.status(400).json({ error: 'Invalid cartId' });
   }
+
   try {
       const items = await Cart.getItemsByCartId(cartId);
       res.json(items);
   } catch (error) {
-      console.error('Error retrieving cart items:', error);
+      console.error('Error retrieving cart items:', error.message);
       res.status(500).json({ error: 'Failed to retrieve cart items' });
   }
 });
@@ -86,6 +83,7 @@ router.get('/active/:userId', authenticateToken, async (req, res) => {
 
   try {
     const activeCart = await Cart.getActiveCartByUserId(userId);
+
     if (!activeCart) {
       return res.status(404).json({ message: 'Active cart not found' });
     }
@@ -99,7 +97,8 @@ router.get('/active/:userId', authenticateToken, async (req, res) => {
 
 // Create or get active cart for the user
 router.post('/', authenticateToken, async (req, res) => {
-  const {cartId} = req.cartId;
+  // const {cartId} = req.cartId;
+
   const userId = req.userId;
   console.log('User ID from token:', userId, 'Cart ID:', cartId); // Debugging log
 
@@ -108,18 +107,15 @@ router.post('/', authenticateToken, async (req, res) => {
   }
 
   try {
-    let cart;
-    
-    if(cartId) {
-      cart = await Cart.getCartById(cartId);
-    }
+    let cart = await Cart.getActiveCartByUserId(userId);
     
     if (!cart) {
       cart = await Cart.createCart(userId);
     }
+
     res.status(200).json({ cartId: cart.id });
   } catch (error) {
-    console.error('Error fetching or creating cart', error);
+    console.error('Error fetching or creating cart', error.message);
     res.status(500).json({ error: 'Error fetching or creating cart' });
   }
 });
@@ -129,7 +125,7 @@ router.post('/', authenticateToken, async (req, res) => {
 router.post('/cart_items', authenticateToken, async (req, res) => {
   console.log('Request body:', req.body);
   try {
-    const { productId, quantity, cartId, } = req.body;
+    const { productId, quantity, cartId } = req.body;
     const userId = req.userId; // Ensure you get the userId from the authenticated user context
 
     console.log('User ID:', userId);
@@ -139,14 +135,15 @@ router.post('/cart_items', authenticateToken, async (req, res) => {
   }
 
     // Check if all required fields are provided
-    if (!cartId || !productId || !quantity) {
-      return res.status(400).json({ error: ' cartId, productId, and quantity are required' });
+    if (!productId || !quantity) {
+      return res.status(400).json({ error: 'productId and quantity are required' });
     }
 
     // Check if cart exists, otherwise create a new cart
     let currentCartId = cartId;
+
     if (!currentCartId) {
-      const newCart = await Cart.createCart();
+      const newCart = await Cart.createCart(userId);
       currentCartId = newCart.id;
     }
 
@@ -155,7 +152,7 @@ router.post('/cart_items', authenticateToken, async (req, res) => {
     res.status(200).json(addedProduct);
 
   } catch (error) {
-    console.error('Error adding product to cart', error);
+    console.error('Error adding product to cart', error.message);
     res.status(500).json({ error: 'Error adding product to cart' });
   }
 });
@@ -163,14 +160,24 @@ router.post('/cart_items', authenticateToken, async (req, res) => {
 
 // Update product in cart
 router.put('/:cartId/cartItems/:productId', authenticateToken, async (req, res) => {
-  const { cartId, productId } = req.params;
+  const cartId = parseInt(req.params.cartId, 10);
+  const productId = parseInt(req.params.productId, 10);
   const { quantity } = req.body;
+
+  if (isNaN(cartId) || isNaN(productId)) {
+    return res.status(400).json({ error: 'Invalid cart ID or product ID' });
+  }
 
   try {
     const cartItem = await Cart.updateCartItem(cartId, productId, quantity);
+
+    if (!cartItem) {
+      return res.status(404).json({ error: 'Cart item not found' });
+    }
+
     res.status(200).json(cartItem);
   } catch (error) {
-    console.error('Error updating cart item', error);
+    console.error('Error updating cart item', error.message);
     res.status(500).json({ error: 'Error updating cart item' });
   }
 });
@@ -179,20 +186,27 @@ router.put('/:cartId/cartItems/:productId', authenticateToken, async (req, res) 
 // Decrement cart item quantity or delete if quantity is 1
 router.put('/cart_items/:itemId/decrement', async (req, res) => {
   const { itemId } = req.params;
+
   console.log(`Received request to decrement cart item with id: ${itemId}`);
+
   try {
     const result = await Cart.decrementCartItem(itemId);
+
+    if (result === 0) {
+      return res.status(404).json({ error: 'Cart item not found' });
+    }
+
     console.log(`Decrement result: ${JSON.stringify(result)}`);
-    res.status(200).json(result);
+    res.status(200).json({ message: 'Cart item updated successfully' });
   } catch (error) {
-    console.error('Error decrementing cart item', error);
+    console.error('Error decrementing cart item', error.message);
     res.status(500).json({ error: 'Error decrementing cart item' });
   }
 });
 
 
 // Delete cart by id
-router.delete('/:cartId', async (req, res) => {
+router.delete('/:cartId', authenticateToken, async (req, res) => {
   const { cartId } = req.params;
   try {
     const result = await Cart.deleteCart(cartId);

@@ -14,14 +14,17 @@ class Cart {
 
   static async getCartById(cartId) {
     if (!cartId) {
-      throw new Error(' ID is required');
+      throw new Error('Cart ID is required');
     }
     try {
       const result = await pool.query('SELECT * FROM cart WHERE id = $1', [cartId]);
+      if (result.rows.length === 0) {
+        return null; // Return null if no cart found
+      }
       console.log('Cart fetched by ID:', result.rows[0]);
       return result.rows[0];
     } catch (error) {
-      console.error('Error fetching cart:', err.message);
+      console.error('Error fetching cart:', error.message);
       throw error;
     }
   }
@@ -35,7 +38,7 @@ class Cart {
         );
         return result.rows[0];
       } catch (error) {
-        console.error('Error creating cart for user:', error);
+        console.error('Error creating cart for user:', error.message);
         throw new Error('Error creating cart');
       }
   };
@@ -45,9 +48,12 @@ class Cart {
     const query = 'SELECT * FROM cart WHERE user_id = $1 AND status = $2';
     try {
       const result = await pool.query(query, [userId, 'active']);
+      if (result.rows.length === 0) {
+        return null; // Return null if no active cart found
+      }
       return result.rows[0];
     } catch (error) {
-      console.error('Error retrieving active cart:', error);
+      console.error('Error retrieving active cart:', error.message);
       throw error;
     }
   }
@@ -59,6 +65,7 @@ class Cart {
       const result = await pool.query(query);
       return result.rows;
     } catch (error) {
+      console.error('Error fetching all cart items:', error.message);
       throw error;
     }
   }
@@ -78,6 +85,9 @@ class Cart {
     const query = 'SELECT qty, cart_id, product_id FROM cart_items WHERE id = $1';
     try {
       const result = await pool.query(query, [itemId]);
+      if (result.rows.length === 0) {
+        return null; // Return null if no cart item found
+      }
       return result.rows[0];
     } catch (error) {
       console.error('Error fetching cart item:', error.message);
@@ -144,7 +154,7 @@ class Cart {
         return rows[0];
       }
     } catch (error) {
-      console.error('Error adding product to cart:', error);
+      console.error('Error adding product to cart:', error.message);
       throw error;
     }
   }
@@ -155,8 +165,12 @@ class Cart {
     const query = 'UPDATE cart_items SET qty = $1 WHERE id = $2 RETURNING *';
     try {
       const result = await pool.query(query, [quantity, cartItemId]);
+      if (result.rows.length === 0) {
+        return null; // Return null if no cart item updated
+      }
       return result.rows[0];
     } catch (error) {
+      console.error('Error updating cart item:', error.message);
       throw error;
     }
   }
@@ -171,6 +185,7 @@ class Cart {
       const result = await pool.query('DELETE FROM cart WHERE id = $1', [cartId]);
       return result.rowCount;
     } catch (error) {
+      console.error('Error deleting cart:', error.message);
       throw error;
     }
   }
