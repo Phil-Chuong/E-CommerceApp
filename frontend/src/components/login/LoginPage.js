@@ -16,8 +16,8 @@ const LoginPage = () => {
     console.log('Received data:', { accessToken, refreshToken, cartId, userId });
     //console.log('Received accessToken:', accessToken);
     //console.log('Received refreshToken:', refreshToken);
-    //console.log('Received cartId:', cartId);
-    //console.log('Received userId:', userId);
+    console.log('Received cartId:', cartId);
+    console.log('Received userId:', userId);
 
     if (!accessToken || !refreshToken || !cartId || !userId) {
       console.error('Missing required data from server response.');
@@ -48,7 +48,6 @@ const LoginPage = () => {
   const fetchOrCreateCart = async () => {
     let accessToken = localStorage.getItem('token');
     const refreshToken = localStorage.getItem('refreshToken');
-    //let cartId = localStorage.getItem('cartId');
   
     if (!accessToken || !refreshToken) {
       console.error('No token found.');
@@ -79,7 +78,7 @@ const LoginPage = () => {
           headers: { Authorization: `Bearer ${accessToken}` }
         });
   
-        console.log('New cart created:', response.data.cartId);
+        console.log('New cart created:', response.data.cart);
         cart = response.data.cart;
   
         // Check if new cart has an id
@@ -90,9 +89,8 @@ const LoginPage = () => {
       }
       
       // Update local storage with the cart ID
-      cartId = cart.id;
-      localStorage.setItem('cartId', cartId);
-      return cartId;
+      localStorage.setItem('cartId', cart.id);
+      return cart.id;
     } catch (error) {
       console.error('Error fetching or creating cart:', error.message);
       console.error('Error details:', error);
