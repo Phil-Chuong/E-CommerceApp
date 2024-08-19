@@ -14,8 +14,11 @@ function ProductDetailComponent() {
 
   useEffect(() => {
     setLoading(true); // Set loading state to true on mount or id change
+    console.log('Fetching product details for ID:', id);
+
     axios.get(`/products/${id}`)
       .then(response => {
+        console.log('Product details fetched:', response.data);
         setProduct(response.data);
         setLoading(false); // Set loading state to false on successful fetch
       })
@@ -37,13 +40,14 @@ function ProductDetailComponent() {
         const userId = decodedToken.userId; // Extract userId for future use if needed
         setUserId(userId); // Set userId state
   
-        axios.get(`/user/${userId}/cart`, {
+        axios.get(`/cart/active/:userId`, {
           headers: { Authorization: `Bearer ${token}` }
         })
         .then(response => {
-          //console.log('Cart data:', response.data); // Check if cart data is received
+          console.log('Cart data:', response.data); // Check if cart data is received
           if (response.data) {
             setCartId(response.data.id);
+            console.log('Cart ID set:', response.data.id);
           }
         })
         .catch(error => {
@@ -64,7 +68,7 @@ function ProductDetailComponent() {
 
     try {
         // Log the product object for debugging
-        console.log('Product:', product);
+        console.log('Add to cart clicked for product:', product);
 
         // Check if product is valid
         if (!product || !product.id) {
@@ -93,8 +97,10 @@ function ProductDetailComponent() {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
+            console.log('New cart response:', newCartResponse.data);
+
             if (newCartResponse.data && newCartResponse.data.cartId) {
-                let cartId = newCartResponse.data.cartId;
+                cartId = newCartResponse.data.cartId;
                 localStorage.setItem('cartId', cartId);
                 console.log('New cart created with ID:', cartId);
             } else {
@@ -109,6 +115,7 @@ function ProductDetailComponent() {
         // Fetch product details including stock
         const productResponse = await axios.get(`/products/${product.id}`);
         const currentStock = productResponse.data.stock;
+        console.log('Current stock:', currentStock);
 
         // Check if there is enough stock to add to cart
         if (currentStock <= 0) {
