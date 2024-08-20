@@ -10,7 +10,7 @@ class User {
       console.log('Executing query:', query);
       const result = await pool.query(query);
       console.log('Query result:', result.rows);
-      return result.rows;
+      return result.rows[0];
     } catch (error) {
       console.error('Error fetching all users:', error.message); // Log error details
       throw error;
@@ -37,7 +37,10 @@ static async getUserById(userId) {
 
 static async getUserCartByUserId(userId) {
   try {
-    const result = await pool.query(`SELECT * FROM carts WHERE user_id = $1 AND status = 'active' LIMIT 1`, [userId]);
+    const result = await pool.query(
+      `SELECT * FROM cart WHERE user_id = $1 AND status = 'active' LIMIT 1`, 
+      [userId]
+    );
     console.log('User fetched Cart by users ID:', result.rows[0]);
     return result.rows[0];
   } catch (error) {

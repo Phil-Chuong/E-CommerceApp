@@ -44,19 +44,17 @@ router.get('/:id', async (req, res) => {
 });
 
 
-router.get('/user/:userId/cart', async (req, res) => {
-  // Parse userId from the request parameters
-  const userId = parseInt(req.params.userId, 10); // Corrected from req.params.id to req.params.userId
+router.get('/:id/cart', async (req, res) => {
+  const userId = parseInt(req.params.id, 10);
+  console.log("Fetched userId from params:", userId); // Add this line to debug
 
   try {
-    // Fetch the user's cart using a method from your User model or service
     const cart = await User.getUserCartByUserId(userId);
-
-    // If cart is found, send it back to the client
+    console.log("Fetched cart:", cart); // Debugging line
+    
     if (cart) {
       res.status(200).json(cart);
     } else {
-      // If no active cart is found, return a 404 status
       res.status(404).json({ message: 'No active cart found for this user.' });
     }
   } catch (error) {
