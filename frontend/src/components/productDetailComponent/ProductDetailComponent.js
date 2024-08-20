@@ -48,10 +48,12 @@ function ProductDetailComponent() {
         })
         .then(response => {
           console.log('Cart data:', response.data); // Check if cart data is received
-          if (response.data) {
+          if (response.data && response.data.id) {
             setCartId(response.data.id);
             localStorage.setItem('cartId', response.data.id); // Store the cartId in localStorage
             console.log('Cart ID set:', response.data.id);
+          } else {
+            console.log('No active cart found for user.');
           }
         })
         .catch(error => {
@@ -160,7 +162,7 @@ function ProductDetailComponent() {
         }
         alert('Error adding product to cart. Please try again.');
     }
-};
+  };
 
   
     if (loading) return <div>Loading...</div>; // Render loading state
