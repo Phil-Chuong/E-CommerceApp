@@ -117,6 +117,7 @@ const LoginPage = () => {
           navigate('/login');
         }
       } else {
+        console.error('Error fetching or creating cart:', error.message);
         throw error;
       }
     }

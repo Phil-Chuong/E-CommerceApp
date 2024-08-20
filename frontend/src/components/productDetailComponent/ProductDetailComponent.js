@@ -12,6 +12,7 @@ function ProductDetailComponent() {
   const [cartId, setCartId] = useState(null);
   const [userId, setUserId] = useState(null);
 
+  // Fetch product details
   useEffect(() => {
     setLoading(true); // Set loading state to true on mount or id change
     console.log('Fetching product details for ID:', id);
@@ -29,20 +30,21 @@ function ProductDetailComponent() {
   }, [id]);
 
 
+  // Fetch cart ID and user ID from the token
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    console.log('Stored token:', token); // Check if token is present
+    const accessToken = localStorage.getItem('accessToken');
+    console.log('Stored token:', accessToken); // Check if token is present
   
-    if (token) {
+    if (accessToken) {
       
       try {
-        const decodedToken = jwtDecode(token);
+        const decodedToken = jwtDecode(accessToken);
         console.log('Decoded token:', decodedToken); // Check if token can be decoded
         const userId = decodedToken.userId; // Extract userId for future use if needed
         setUserId(userId); // Set userId state
   
         axios.get(`/users/${userId}/cart`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${accessToken}` }
         })
         .then(response => {
           console.log('Cart data:', response.data); // Check if cart data is received
@@ -80,11 +82,11 @@ function ProductDetailComponent() {
 
         // Retrieve token and cartId from localStorage
         const accessToken = localStorage.getItem('accessToken');
-        const token = localStorage.getItem('token');
-        let cartId = localStorage.getItem('cartId');
+        const refreshToken = localStorage.getItem('refreshToken');
+        const cartId = localStorage.getItem('cartId');
         const userId = localStorage.getItem('userId');
 
-        if (!token || !accessToken || !userId) {
+        if ( !accessToken|| !refreshToken || !userId ) {
             alert('You need to be logged in to add products to the cart');
             console.log('You need to be logged in to add products to the cart')
             return;

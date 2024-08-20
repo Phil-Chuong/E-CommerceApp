@@ -36,6 +36,7 @@ class Cart {
           'INSERT INTO cart (user_id, status) VALUES ($1, $2) RETURNING *',
           [userId, 'active']
         );
+        console.log('Cart created:', result.rows[0]);
         return result.rows[0];
       } catch (error) {
         console.error('Error creating cart for user:', error.message);
