@@ -34,7 +34,7 @@ function ProductDetailComponent() {
     const accessToken = localStorage.getItem('accessToken');
     console.log('Stored access Token:', accessToken); // Check if token is present
   
-    if (accessToken) {     
+    if (!accessToken) {     // add !
       try {
         const decodedToken = jwtDecode(accessToken);
         console.log('Decoded token:', decodedToken); // Check if token can be decoded

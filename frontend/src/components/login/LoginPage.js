@@ -33,6 +33,7 @@ const LoginPage = () => {
       cartId: localStorage.getItem('cartId'),
       userId: localStorage.getItem('userId')
     });
+    
 
     try {
       await fetchOrCreateCart(); // Fetch and update cart items
