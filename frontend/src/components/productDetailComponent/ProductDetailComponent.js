@@ -12,7 +12,6 @@ function ProductDetailComponent() {
   const [cartId, setCartId] = useState(null);
   const [userId, setUserId] = useState(null);
 
-  // Fetch product details
   useEffect(() => {
     setLoading(true); // Set loading state to true on mount or id change
     console.log('Fetching product details for ID:', id);
@@ -30,20 +29,18 @@ function ProductDetailComponent() {
   }, [id]);
 
 
-  // Fetch cart ID and user ID from the token
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');
-    console.log('Stored token:', accessToken); // Check if token is present
+    console.log('Stored access Token:', accessToken); // Check if token is present
   
-    if (accessToken) {
-      
+    if (accessToken) {     
       try {
         const decodedToken = jwtDecode(accessToken);
         console.log('Decoded token:', decodedToken); // Check if token can be decoded
         const userId = decodedToken.userId; // Extract userId for future use if needed
         setUserId(userId); // Set userId state
   
-        axios.get(`/users/${userId}/cart`, {
+        axios.get(`/user/${userId}/cart`, {
           headers: { Authorization: `Bearer ${accessToken}` }
         })
         .then(response => {
@@ -68,7 +65,6 @@ function ProductDetailComponent() {
 
   
   const handleAddToCart = async (product) => {
-
     try {
         // Log the product object for debugging
         console.log('Add to cart clicked for product:', product);
@@ -82,22 +78,23 @@ function ProductDetailComponent() {
 
         // Retrieve token and cartId from localStorage
         const accessToken = localStorage.getItem('accessToken');
-        const refreshToken = localStorage.getItem('refreshToken');
-        const cartId = localStorage.getItem('cartId');
-        const userId = localStorage.getItem('userId');
+        const cartIdFromStorage  = localStorage.getItem('cartId');
+        const userIdFromStorage  = localStorage.getItem('userId');
 
-        if ( !accessToken|| !refreshToken || !userId ) {
+        if (!accessToken || !userIdFromStorage ) {
             alert('You need to be logged in to add products to the cart');
             console.log('You need to be logged in to add products to the cart')
             return;
         }
 
+        let cartId = cartIdFromStorage;
+
         // If cartId is not found in localStorage, create a new cart
         if (!cartId) {
             console.log('No cartId found. Creating a new cart...');
 
-            const newCartResponse = await axios.post('/cart', { user_id: userId }, {
-                headers: { Authorization: `Bearer ${token}` }
+            const newCartResponse = await axios.post('/cart', { user_id: userIdFromStorage }, {
+                headers: { Authorization: `Bearer ${accessToken}` }
             });
 
             console.log('New cart response:', newCartResponse.data);
@@ -134,7 +131,7 @@ function ProductDetailComponent() {
             productId: parseInt(product.id),
             quantity: 1
         }, {
-            headers: { Authorization: `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${accessToken}` }
         });
 
         console.log('Product added to cart:', addToCartResponse.data);
@@ -157,7 +154,6 @@ function ProductDetailComponent() {
         } else {
             console.error('Error setting up request:', error.message);
         }
-
         alert('Error adding product to cart. Please try again.');
     }
 };
