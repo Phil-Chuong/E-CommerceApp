@@ -27,7 +27,8 @@ function ProductDetailComponent() {
         setLoading(false); // Set loading state to false on error
       });
   }, [id]);
-
+  
+  
 
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');
@@ -39,6 +40,8 @@ function ProductDetailComponent() {
         console.log('Decoded token:', decodedToken); // Check if token can be decoded
         const userId = decodedToken.userId; // Extract userId for future use if needed
         setUserId(userId); // Set userId state
+
+        localStorage.setItem('userId', userId); // Ensure the userId is stored in localStorage
   
         axios.get(`/user/${userId}/cart`, {
           headers: { Authorization: `Bearer ${accessToken}` }
@@ -47,6 +50,7 @@ function ProductDetailComponent() {
           console.log('Cart data:', response.data); // Check if cart data is received
           if (response.data) {
             setCartId(response.data.id);
+            localStorage.setItem('cartId', response.data.id); // Store the cartId in localStorage
             console.log('Cart ID set:', response.data.id);
           }
         })

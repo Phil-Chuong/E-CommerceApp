@@ -13,7 +13,7 @@ const LoginPage = () => {
   
 
   const handleLoginSuccess = async (accessToken, refreshToken, cartId, userId) => {
-    console.log('Received data:', { accessToken, refreshToken, cartId, userId });
+    console.log('Login Success - Received data:', { accessToken, refreshToken, cartId, userId });
 
     if (!accessToken || !refreshToken || !cartId || !userId) {
       console.error('Missing required data from server response.');
@@ -57,7 +57,7 @@ const LoginPage = () => {
     let accessToken = localStorage.getItem('token');
     const refreshToken = localStorage.getItem('refreshToken');
 
-    console.log('Stored tokens:', {
+    console.log('Fetching or Creating Cart - Stored tokens:', {
       token: localStorage.getItem('token'),
       refreshToken: localStorage.getItem('refreshToken'),
     });
