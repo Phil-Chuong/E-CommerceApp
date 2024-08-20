@@ -97,17 +97,6 @@ app.use('/users', usersRouter);
 app.use('/orders', ordersRouter);
 app.use('/search', searchRouter);
 
-//testing ROUTES
-// app.get('/users', async (req, res) => {
-//   try {
-//     const result = await pool.query('SELECT * FROM users');
-//     res.json({ users: result.rows });
-//   } catch (err) {
-//     console.error('Error fetching users:', err.message);
-//     res.status(500).json({ error: 'Error fetching users' });
-//   }
-// });
-
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '/public')));
