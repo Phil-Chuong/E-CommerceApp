@@ -31,12 +31,12 @@ function ProductDetailComponent() {
   
 
   useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
-    console.log('Stored access Token:', accessToken); // Check if token is present
+    const token = localStorage.getItem('token');
+    console.log('Stored access Token:', token); // Check if token is present
   
-    if (!accessToken) {     // add !
+    if (token) { 
       try {
-        const decodedToken = jwtDecode(accessToken);
+        const decodedToken = jwtDecode(token);
         console.log('Decoded token:', decodedToken); // Check if token can be decoded
         const userId = decodedToken.userId; // Extract userId for future use if needed
         setUserId(userId); // Set userId state
@@ -44,7 +44,7 @@ function ProductDetailComponent() {
         localStorage.setItem('userId', userId); // Ensure the userId is stored in localStorage
   
         axios.get(`/user/${userId}/cart`, {
-          headers: { Authorization: `Bearer ${accessToken}` }
+          headers: { Authorization: `Bearer ${token}` }
         })
         .then(response => {
           console.log('Cart data:', response.data); // Check if cart data is received
