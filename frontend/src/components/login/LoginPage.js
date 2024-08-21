@@ -48,10 +48,10 @@ const LoginPage = () => {
     }
     }
 
-    console.log('Tokens after login:', {
-      token: localStorage.getItem('token'),
-      refreshToken: localStorage.getItem('refreshToken'),
-    });
+    // console.log('Tokens after login:', {
+    //   token: localStorage.getItem('token'),
+    //   refreshToken: localStorage.getItem('refreshToken'),
+    // });
   };
 
   const fetchOrCreateCart = async () => {

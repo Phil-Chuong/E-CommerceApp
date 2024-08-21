@@ -162,9 +162,9 @@ const CheckoutComponent = () => {
         return <div>No items in the cart.</div>;
     }
 
-    if (!Array.isArray(cartItems) || cartItems.length === 0) {
-        return <div>No items in the cart.</div>;
-      }
+    // if (!Array.isArray(cartItems) || cartItems.length === 0) {
+    //     return <div>No items in the cart.</div>;
+    //   }
 
     return (
         <div className='checkoutBodyContainer'>
