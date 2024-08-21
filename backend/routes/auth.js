@@ -102,24 +102,40 @@ router.post('/login', checkNotAuthenticated, async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
-    // Check if the user has a cart, if not, create one
-    const cartResult = await pool.query('SELECT * FROM cart WHERE user_id = $1 AND status = $2', [user.id, 'active']);
-    const cartId = cartResult.rows.length > 0 ? cartResult.rows[0].id : (await createCart(user.id)).id;
+    // // Check if the user has a cart, if not, create one
+    // const cartResult = await pool.query('SELECT * FROM cart WHERE user_id = $1 AND status = $2', [user.id, 'active']);
+    // const cartId = cartResult.rows.length > 0 ? cartResult.rows[0].id : (await createCart(user.id)).id;
+    
+    const userIdInDb = user.id;
+
+    // Check if a cart already exists for the user and if it's active
+    let cartResult = await pool.query('SELECT id, status FROM cart WHERE user_id = $1 ORDER BY created_at DESC LIMIT 1', [userIdInDb]);
+
+    if (cartResult.rows.length === 0 || cartResult.rows[0].status !== 'active') {
+      // Create a new cart for the user if no active cart exists
+      cartResult = await pool.query('INSERT INTO cart (user_id) VALUES ($1) RETURNING id', [userIdInDb]);
+    }
+
+    const cartId = cartResult.rows[0].id;
 
 
     // Generate JWT token with userId
-    const accessToken = jwt.sign({ userId: user.id, cartId }, JWT_SECRET, { expiresIn: '1h' });
-    const refreshToken = jwt.sign({ userId: user.id }, REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+    const accessToken = jwt.sign({ userId: user.id, cartId }, JWT_SECRET, { 
+      expiresIn: '1h' 
+    });
+    const refreshToken = jwt.sign({ userId: user.id }, REFRESH_TOKEN_SECRET, { 
+      expiresIn: '7d' 
+    });
 
     console.log(`User ${user.id} logged in successfully. Tokens generated.`);
 
     // console.log(`User ${user.id} logged in successfully. Token accepted.`);
     // console.log(`User ${user.id} logged in successfully. Refresh token accepted.`);
 
-    res.json({ accessToken, refreshToken, cartId, userId: user.id});
+    res.json({ accessToken, refreshToken, cartId, userId: userIdInDb});
   } catch (error) {
     console.error('Error during login:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ error: 'An error occurred during login' });
   }
 });
 

@@ -16,7 +16,7 @@ router.post('/google-login', async (req, res) => {
   res.header("Access-Control-Allow-Origin", "*"); // Allow any origin to access this endpoint
   res.header("Access-Control-Allow-Methods", "POST, OPTIONS"); // Allow POST and OPTIONS methods
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization"); // Allow these headers
-  
+
   try {
     const { token } = req.body;  // 'token' should contain the ID token
     console.log('Received token:', token); // Log the received token
@@ -54,11 +54,17 @@ router.post('/google-login', async (req, res) => {
 
     const userIdInDb = userResult.rows[0].id;
 
-    // // Check if a cart already exists for the user
+     // Check if a cart already exists for the user and if it's active
+    //let cartResult = await pool.query('SELECT id, status FROM cart WHERE user_id = $1 ORDER BY created_at DESC LIMIT 1', [userIdInDb]);
     let cartResult = await pool.query('SELECT id, status FROM cart WHERE user_id = $1 ORDER BY created_at DESC LIMIT 1', [userIdInDb]);
-    
-    if (cartResult.rows.length === 0 || cartResult.rows[0].status === 'completed') {
-      // Create a new cart for the user
+
+
+    // if (cartResult.rows.length === 0 || cartResult.rows[0].status === 'completed') {
+    //   // Create a new cart for the user
+    //   cartResult = await pool.query('INSERT INTO cart (user_id) VALUES ($1) RETURNING id', [userIdInDb]);
+    // }
+    if (cartResult.rows.length === 0 || cartResult.rows[0].status !== 'active') {
+      // Create a new cart for the user if no active cart exists
       cartResult = await pool.query('INSERT INTO cart (user_id) VALUES ($1) RETURNING id', [userIdInDb]);
     }
 
