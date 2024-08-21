@@ -10,7 +10,7 @@ class User {
       console.log('Executing query:', query);
       const result = await pool.query(query);
       console.log('Query result:', result.rows);
-      return result.rows[0];
+      return result.rows;
     } catch (error) {
       console.error('Error fetching all users:', error.message); // Log error details
       throw error;
