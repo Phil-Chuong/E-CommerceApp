@@ -192,7 +192,7 @@ const LoginPage = () => {
       console.log('Received cartId:', cartId);
       console.log('Received userId:', userId );
 
-      if (accessToken && refreshToken && cartId && userId) {
+      if (accessToken && refreshToken && cartId) {
         handleLoginSuccess(accessToken, refreshToken, cartId, userId);
       } else {
         setError('Missing data from server response');

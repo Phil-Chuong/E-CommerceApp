@@ -31,8 +31,7 @@ router.post('/google-login', async (req, res) => {
     const payload = ticket.getPayload();
     console.log('Google payload:', payload); // Log the payload
 
-    const { sub, email, name } = payload;
-    const userId = sub;
+    const { sub: userId, email, name } = payload;
     const fullName = name.split(' '); // Assuming name is a full name
     const [firstname, lastname] = fullName.length > 1 ? [fullName[0], fullName.slice(1).join(' ')] : [fullName[0], null];
 
@@ -41,7 +40,6 @@ router.post('/google-login', async (req, res) => {
 
     if (userResult.rows.length === 0) {
       // If user doesn't exist, create a new user
-      //const [firstname, lastname] = fullName.length > 1 ? [fullName[0], fullName.slice(1).join(' ')] : [fullName[0], null];
       const defaultPassword = await bcrypt.hash('defaultpassword', 10);
 
       userResult = await pool.query(
@@ -71,7 +69,7 @@ router.post('/google-login', async (req, res) => {
       expiresIn: '7d',
     });
 
-    res.json({ accessToken, refreshToken, cartId });
+    res.json({ accessToken, refreshToken, cartId, userId: userIdInDb });
   } catch (error) {
     console.error('Error during Google login:', error);
     res.status(401).json({ error: 'Invalid Google token' });

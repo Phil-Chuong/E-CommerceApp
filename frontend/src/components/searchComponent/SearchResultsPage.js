@@ -46,7 +46,7 @@ const SearchResultsPage = () => {
 
                     <div className="placeholder-image">No Image Available</div>
                     )}
-                  {product.price ? (
+                    {product.price ? (
                     <p>£{product.price}</p>
                     ) : (
                     <p>Price not available</p>
