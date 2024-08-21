@@ -43,7 +43,7 @@ function ProductDetailComponent() {
 
         localStorage.setItem('userId', userId); // Ensure the userId is stored in localStorage
         
-        axios.get(`/user/${userId}/cart`, {
+        axios.get(`/users/${userId}/cart`, {
           headers: { Authorization: `Bearer ${token}` }
         })
         .then(response => {
