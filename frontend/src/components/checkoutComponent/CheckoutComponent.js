@@ -90,8 +90,7 @@ const CheckoutComponent = () => {
         const cardElement = elements.getElement(CardElement);
         if (!stripe || !cardElement) {
             setLoading(false);
-            console.error('Stripe or CardElement is not available');
-            console.log('Stripe, cardElement, or cartId not available');
+            setPaymentError('Stripe or CardElement is not available');
             return;
         }
 
@@ -102,12 +101,15 @@ const CheckoutComponent = () => {
                 card: cardElement,
             });
 
+            // if (paymentMethodError) {
+            //     setPaymentError(paymentMethod.error.message);
+            //     setLoading(false);
+            //     console.log('Error creating payment method:', paymentMethodError.message);
+            //     return;
+            // }   
             if (paymentMethodError) {
-                setPaymentError(paymentMethod.error.message);
-                setLoading(false);
-                console.log('Error creating payment method:', paymentMethodError.message);
-                return;
-            }        
+                throw new Error(paymentMethodError.message);
+            }     
 
             if (!cartId) {
                 throw new Error('Cart ID not found in localStorage');
@@ -118,10 +120,13 @@ const CheckoutComponent = () => {
 
             console.log('handlePayment result:', result);
             
+            // if (result.error) {
+            //     setPaymentError(result.error);
+            //     setLoading(false);
+            //     return;
+            // }
             if (result.error) {
-                setPaymentError(result.error);
-                setLoading(false);
-                return;
+                throw new Error(result.error);
             }
 
             if (result.success) {
@@ -133,11 +138,12 @@ const CheckoutComponent = () => {
                 }, 5000);
                 
                 } else {
-                    setCartId(null);
-                    console.error('Payment failed');
+                    // setCartId(null);
+                    // console.error('Payment failed');
+                    throw new Error('Payment failed');
             }
         } catch (error) {
-            setPaymentError('Payment failed. Please try again.');
+            setPaymentError(error.message || 'Payment failed. Please try again.');
             console.error('Unhandled error during payment:', error);
         } finally {
             setLoading(false);
@@ -149,7 +155,11 @@ const CheckoutComponent = () => {
     }
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div className="loading-message">Processing your payment...</div>;
+    }
+
+    if (cartItems.length === 0) {
+        return <div>No items in the cart.</div>;
     }
 
     if (!Array.isArray(cartItems) || cartItems.length === 0) {
