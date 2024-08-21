@@ -36,6 +36,7 @@ const SearchResultsPage = () => {
             {results.map((product) => {
               const imageURL = `https://techtitan.onrender.com${product.image_path}`;
 
+              return (
               <Link to={`/products/${product.id}`} key={product.id}>
                 <li className='productItems'>
                   <h3>{product.name}</h3>
@@ -52,6 +53,7 @@ const SearchResultsPage = () => {
                   )}
                 </li>
               </Link>
+              );
             })}
           </ul>
         </div>
