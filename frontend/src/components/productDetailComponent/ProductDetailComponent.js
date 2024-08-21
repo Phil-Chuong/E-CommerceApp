@@ -76,35 +76,23 @@ function ProductDetailComponent() {
 
         localStorage.setItem('userId', userId); // Ensure the userId is stored in localStorage
         
+        axios.get(`/user/${userId}/cart`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(response => {
+          console.log('Cart data:', response.data); // Check if cart data is received
 
-        // Fetch cart data using the fetchCartData function
-        fetchCartData(userId, token)
-        .then(cartData => {
-            if (cartData && cartData.id) {
-                setCartId(cartData.id);
-                localStorage.setItem('cartId', cartData.id); // Store the cartId in localStorage
-                console.log('Cart ID set:', cartData.id);
-            } else {
-                console.log('No active cart found for user.');
-            }
+          if (response.data && response.data.id) {
+            setCartId(response.data.id);
+            localStorage.setItem('cartId', response.data.id); // Store the cartId in localStorage
+            console.log('Cart ID set:', response.data.id);
+          } else {
+            console.log('No active cart found for user.');
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching cart:', error);
         });
-        // axios.get(`/user/${userId}/cart`, {
-        //   headers: { Authorization: `Bearer ${token}` }
-        // })
-        // .then(response => {
-        //   console.log('Cart data:', response.data); // Check if cart data is received
-
-        //   if (response.data && response.data.id) {
-        //     setCartId(response.data.id);
-        //     localStorage.setItem('cartId', response.data.id); // Store the cartId in localStorage
-        //     console.log('Cart ID set:', response.data.id);
-        //   } else {
-        //     console.log('No active cart found for user.');
-        //   }
-        // })
-        // .catch(error => {
-        //   console.error('Error fetching cart:', error);
-        // });
       } catch (error) {
         console.error('Error decoding token:', error);
       }
