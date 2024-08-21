@@ -95,6 +95,11 @@ const CheckoutComponent = () => {
         }
 
         try {
+            // Check if CardElement is still present in the DOM
+            if (!elements.getElement(CardElement)) {
+                throw new Error('CardElement is not available or has been unmounted');
+            }
+
             console.log('Creating payment method...');
             const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
                 type: 'card',
