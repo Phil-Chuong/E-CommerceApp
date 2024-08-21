@@ -12,39 +12,6 @@ function ProductDetailComponent() {
   const [cartId, setCartId] = useState(null);
   const [userId, setUserId] = useState(null);
 
-//   // Function to fetch cart data
-//   const fetchCartData = async (userId, token) => {
-//     try {
-//         const response = await axios.get(`/user/${userId}/cart`, {
-//             headers: {
-//                 Authorization: `Bearer ${token}`,
-//             },
-//         });
-
-//         // Check if the response is JSON
-//         if (response.headers['content-type'] && response.headers['content-type'].includes('application/json')) {
-//             const cartData = response.data;
-//             console.log('Cart data:', cartData);
-//             return cartData;
-//         } else {
-//             console.error('Unexpected response format:', response.data);
-//             alert('Failed to fetch cart data. The response was not in the expected format.');
-//             return null;
-//         }
-//     } catch (error) {
-//         console.error('Error fetching cart:', error);
-
-//         if (error.response) {
-//             console.error('Server responded with an error:', error.response.status, error.response.data);
-//         } else {
-//             console.error('No response received:', error.message);
-//         }
-
-//         alert('An error occurred while fetching the cart data. Please try again later.');
-//         return null;
-//     }
-// };
-
   useEffect(() => {
     setLoading(true); // Set loading state to true on mount or id change
     console.log('Fetching product details for ID:', id);
@@ -89,17 +56,6 @@ function ProductDetailComponent() {
           } else {
             console.log('No active cart found for user.');
           }
-
-          // Check if the response is JSON
-        if (response.headers['content-type'] && response.headers['content-type'].includes('application/json')) {
-          const cartData = response.data;
-          console.log('Cart data:', cartData);
-          return cartData;
-      } else {
-          console.error('Unexpected response format:', response.data);
-          alert('Failed to fetch cart data. The response was not in the expected format.');
-          return null;
-      }
         })
         .catch(error => {
           console.error('Error fetching cart:', error);
@@ -113,7 +69,6 @@ function ProductDetailComponent() {
     }
   }, []); // Empty dependency array ensures this effect runs only once on component mount
   
-
   
   const handleAddToCart = async (product) => {
     try {
@@ -150,8 +105,8 @@ function ProductDetailComponent() {
 
             console.log('New cart response:', newCartResponse.data);
 
-            if (newCartResponse.data && newCartResponse.data.cartId) {
-                cartId = newCartResponse.data.cartId;
+            if (newCartResponse.data && newCartResponse.data.id) {
+                cartId = newCartResponse.data.id;
                 localStorage.setItem('cartId', cartId);
                 console.log('New cart created with ID:', cartId);
             } else {
