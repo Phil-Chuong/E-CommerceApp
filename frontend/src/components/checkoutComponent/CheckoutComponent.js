@@ -143,6 +143,14 @@ const CheckoutComponent = () => {
         }
     };
 
+    if (error) {
+        return <div className="error-message">{error}</div>;
+    }
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
     if (!Array.isArray(cartItems) || cartItems.length === 0) {
         return <div>No items in the cart.</div>;
       }
@@ -155,25 +163,26 @@ const CheckoutComponent = () => {
                 <div className='bothPaymentContainer'>               
                     <div className="checkout-items-box">
                         {cartItems.map((item) => {
-                                const product = products.find(product => product.id === item.product_id);
-                                const imageURL = `https://techtitan.onrender.com${product.image_path}`;
+                            const product = products.find(product => product.id === item.product_id);
+                            if (!product) return null; // Skip if product not found
+                            //const imageURL = `https://techtitan.onrender.com${product.image_path}`;
+                            const imageURL = product?.image_path ? `https://techtitan.onrender.com${product.image_path}` : 'default_image_path'; // Provide a fallback image URL
 
-                                if (!product) return null; // Skip if product not found
-                                return (
-                                    <li key={item.id} className='checkout-items'>
-                                        <div className='checkout-itemProduct'>
-                                            <div className='checkout-img'>
-                                                <img src={imageURL} alt={product.name} />
-                                            </div>
-
-                                            <div className='checkout-payment-section'>                                 
-                                                <h3>{product.name}</h3>
-                                                <p>£{product.price}  X {item.qty}</p>                                           
-                                            </div>
+                            return (
+                                <li key={item.id} className='checkout-items'>
+                                    <div className='checkout-itemProduct'>
+                                        <div className='checkout-img'>
+                                            <img src={imageURL} alt={product.name || 'Product Image'} />
                                         </div>
-                                    </li>                            
-                                );                          
-                            })}
+
+                                        <div className='checkout-payment-section'>                                 
+                                            <h3>{product.name}</h3>
+                                            <p>£{product.price}  X {item.qty}</p>                                           
+                                        </div>
+                                    </div>
+                                </li>                            
+                            );                          
+                        })}
                     </div>
 
                     <div className='cardPaymentContainer'>
