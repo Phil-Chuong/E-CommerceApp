@@ -29,12 +29,14 @@ const pool = new Pool({
   }
 });
 
-//Enable CORS
-app.use(cors({
-  origin: 'https://tech-titan.onrender.com', // Frontend URL
-  methods: 'GET,POST,PUT,DELETE',
-  allowedHeaders: 'Content-Type,Authorization'
-}));
+// Allow requests from specific origins
+const corsOptions = {
+  origin: 'https://tech-titan.onrender.com', // Update this with your client URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 
 
 
