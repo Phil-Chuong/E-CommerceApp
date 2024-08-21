@@ -12,38 +12,38 @@ function ProductDetailComponent() {
   const [cartId, setCartId] = useState(null);
   const [userId, setUserId] = useState(null);
 
-  // Function to fetch cart data
-  const fetchCartData = async (userId, token) => {
-    try {
-        const response = await axios.get(`/user/${userId}/cart`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+//   // Function to fetch cart data
+//   const fetchCartData = async (userId, token) => {
+//     try {
+//         const response = await axios.get(`/user/${userId}/cart`, {
+//             headers: {
+//                 Authorization: `Bearer ${token}`,
+//             },
+//         });
 
-        // Check if the response is JSON
-        if (response.headers['content-type'] && response.headers['content-type'].includes('application/json')) {
-            const cartData = response.data;
-            console.log('Cart data:', cartData);
-            return cartData;
-        } else {
-            console.error('Unexpected response format:', response.data);
-            alert('Failed to fetch cart data. The response was not in the expected format.');
-            return null;
-        }
-    } catch (error) {
-        console.error('Error fetching cart:', error);
+//         // Check if the response is JSON
+//         if (response.headers['content-type'] && response.headers['content-type'].includes('application/json')) {
+//             const cartData = response.data;
+//             console.log('Cart data:', cartData);
+//             return cartData;
+//         } else {
+//             console.error('Unexpected response format:', response.data);
+//             alert('Failed to fetch cart data. The response was not in the expected format.');
+//             return null;
+//         }
+//     } catch (error) {
+//         console.error('Error fetching cart:', error);
 
-        if (error.response) {
-            console.error('Server responded with an error:', error.response.status, error.response.data);
-        } else {
-            console.error('No response received:', error.message);
-        }
+//         if (error.response) {
+//             console.error('Server responded with an error:', error.response.status, error.response.data);
+//         } else {
+//             console.error('No response received:', error.message);
+//         }
 
-        alert('An error occurred while fetching the cart data. Please try again later.');
-        return null;
-    }
-};
+//         alert('An error occurred while fetching the cart data. Please try again later.');
+//         return null;
+//     }
+// };
 
   useEffect(() => {
     setLoading(true); // Set loading state to true on mount or id change
@@ -89,6 +89,17 @@ function ProductDetailComponent() {
           } else {
             console.log('No active cart found for user.');
           }
+
+          // Check if the response is JSON
+        if (response.headers['content-type'] && response.headers['content-type'].includes('application/json')) {
+          const cartData = response.data;
+          console.log('Cart data:', cartData);
+          return cartData;
+      } else {
+          console.error('Unexpected response format:', response.data);
+          alert('Failed to fetch cart data. The response was not in the expected format.');
+          return null;
+      }
         })
         .catch(error => {
           console.error('Error fetching cart:', error);
