@@ -90,6 +90,7 @@ const CheckoutComponent = () => {
         const cardElement = elements.getElement(CardElement);
         if (!stripe || !cardElement) {
             setLoading(false);
+            console.error('Stripe or CardElement is not available');
             console.log('Stripe, cardElement, or cartId not available');
             return;
         }

@@ -13,6 +13,10 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 // Handle Google login
 router.post('/google-login', async (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*"); // Allow any origin to access this endpoint
+  res.header("Access-Control-Allow-Methods", "POST, OPTIONS"); // Allow POST and OPTIONS methods
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization"); // Allow these headers
+  
   try {
     const { token } = req.body;  // 'token' should contain the ID token
     console.log('Received token:', token); // Log the received token
