@@ -135,7 +135,8 @@ function ProductDetailComponent() {
         const addToCartResponse = await axios.post('/cart/cart_items', {
             cartId: parseInt(cartId), // Ensure cartId is an integer
             productId: parseInt(product.id),
-            quantity: 1
+            quantity: 1,
+            userId,
         }, {
             headers: { Authorization: `Bearer ${token}` }
         });
