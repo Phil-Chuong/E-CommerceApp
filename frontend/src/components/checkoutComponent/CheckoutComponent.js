@@ -106,15 +106,12 @@ const CheckoutComponent = () => {
                 card: cardElement,
             });
 
-            // if (paymentMethodError) {
-            //     setPaymentError(paymentMethod.error.message);
-            //     setLoading(false);
-            //     console.log('Error creating payment method:', paymentMethodError.message);
-            //     return;
-            // }   
             if (paymentMethodError) {
-                throw new Error(paymentMethodError.message);
-            }     
+                setPaymentError(paymentMethod.error.message);
+                setLoading(false);
+                console.log('Error creating payment method:', paymentMethodError.message);
+                return;
+            }               
 
             if (!cartId) {
                 throw new Error('Cart ID not found in localStorage');
@@ -125,13 +122,10 @@ const CheckoutComponent = () => {
 
             console.log('handlePayment result:', result);
             
-            // if (result.error) {
-            //     setPaymentError(result.error);
-            //     setLoading(false);
-            //     return;
-            // }
             if (result.error) {
-                throw new Error(result.error);
+                setPaymentError(result.error);
+                setLoading(false);
+                return;
             }
 
             if (result.success) {
@@ -142,10 +136,9 @@ const CheckoutComponent = () => {
                     navigate('/login');
                 }, 5000);
                 
-                } else {
-                    // setCartId(null);
-                    // console.error('Payment failed');
-                    throw new Error('Payment failed');
+            } else {
+                console.error('Payment failed');
+                setCartId(null);
             }
         } catch (error) {
             setPaymentError(error.message || 'Payment failed. Please try again.');
