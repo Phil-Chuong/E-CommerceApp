@@ -10,7 +10,8 @@ router.post('/checkout', authenticateToken, async (req, res) => {
     // Extract values from the request body
     const { totalPrice, paymentMethodId, cartId} = req.body;
     const userId = req.userId; // Ensure this is correctly populated by authenticateToken middleware
-
+    console.log('Authenticated user ID:', req.userId);
+    
     // Log values to debug
     console.log('Request body:', req.body);
     console.log('User ID:', userId);
@@ -35,7 +36,7 @@ router.post('/checkout', authenticateToken, async (req, res) => {
             payment_method: paymentMethodId,
             confirmation_method: 'manual',
             confirm: true,
-            return_url: 'http://localhost:3000/homePage', // Adjust the URL as per your application
+            return_url: 'https://tech-titan.onrender.com/homePage', // Adjust the URL as per your application
         });
 
         console.log('Payment Intent created successfully:', paymentIntent);

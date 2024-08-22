@@ -84,8 +84,8 @@ const CheckoutComponent = () => {
     }, [cartItems, products]);
 
     // Tracing tokens and cartId
-    console.log('Retrieved token:', localStorage.getItem('token'));
-    console.log('Retrieved cartId:', cartId);
+    // console.log('Retrieved token:', localStorage.getItem('token'));
+    // console.log('Retrieved cartId:', cartId);
 
     const handlePayment = async () => {
         console.log('Starting payment process...');
@@ -96,30 +96,18 @@ const CheckoutComponent = () => {
         const cardElement = elements.getElement(CardElement);
         console.log('CardElement:', cardElement);
 
-        // if (!stripe || !cardElement) {
-        //     setLoading(false);
-        //     setPaymentError('Stripe or CardElement is not available');
-        //     return;
-        // }
-        if (!stripe) {
+        if (!stripe || !elements || !elements.getElement(CardElement)) {
             console.error('Stripe.js has not been loaded.');
             setLoading(false);
-            setPaymentError('Stripe is not available');
-            return;
-        }
-
-        if (!cardElement) {
-            console.error('CardElement is not available or has been unmounted.');
-            setLoading(false);
-            setPaymentError('CardElement is not available.');
+            setPaymentError('Stripe.js has not been loaded or CardElement is not available');
             return;
         }
 
         try {
-            // // Check if CardElement is still present in the DOM
-            // if (!elements.getElement(CardElement)) {
-            //     throw new Error('CardElement is not available or has been unmounted');
-            // }
+            // Check if CardElement is still present in the DOM
+            if (!elements.getElement(CardElement)) {
+                throw new Error('CardElement is not available or has been unmounted');
+            }
 
             console.log('Attempting to create payment method...');
             const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
@@ -128,11 +116,12 @@ const CheckoutComponent = () => {
             });
 
             if (paymentMethodError) {
-                console.log('Error creating payment method:', paymentMethodError.message);
+                console.log('Payment method creation error:', paymentMethodError);
                 setPaymentError(paymentMethodError.message);
                 setLoading(false);
                 return;
-            }   
+            }
+            console.log('Backend response:', response.data);
             
             console.log('Payment method created successfully:', paymentMethod);
 

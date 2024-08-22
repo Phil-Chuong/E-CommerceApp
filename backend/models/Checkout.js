@@ -5,17 +5,19 @@ const Order = require('./Order');
 class Checkout {
 
   static async checkout(cartId, paymentMethodId, totalPrice, userId) {
+    const client = await pool.connect();
     try {
+      await client.query('BEGIN');
+
         console.log('Fetching cart with ID:', cartId);
         const cart = await Cart.getCartById(cartId);
+      
 
         if (!cart) {
-          console.log('Cart not found');
-            throw new Error('Cart not found');
+          throw new Error('Cart not found');
         }
 
         if (cart.status === 'completed') {
-          console.log('Cart already completed');
             throw new Error('Cart already completed');
         }
 
@@ -28,25 +30,28 @@ class Checkout {
         await Order.createOrder(userId, cartId, parseFloat(totalPrice));
 
         //await Checkout.clearCartItems(cartId);
-
+        await client.query('COMMIT');
         console.log('Checkout completed successfully');
 
     } catch (error) {
         console.error('Error during checkout:', error.message);
+        console.error('Detailed error info:', err.stack);
         throw error;
+    } finally {
+      client.release();
     }
   }
 
   static async updateStatus(cartId, status, userId, totalPrice) {
     console.log(`Update Status - cartId: ${cartId}, status: ${status}, userId: ${userId}, totalPrice: ${totalPrice}`);
-
     try {
 
       // Use parameterized queries to prevent SQL injection
       console.log(cartId);
       const result = await pool.query(
-        'UPDATE cart SET status = $1 WHERE id = $2 RETURNING *', 
-        [status, cartId]);
+        'UPDATE cart SET status = $1, updated_at = NOW() WHERE id = $2 RETURNING *', 
+        [status, cartId]
+      );
   
       // Check if any rows were updated
       if (result.rowCount === 0) {

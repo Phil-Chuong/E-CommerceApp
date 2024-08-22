@@ -97,31 +97,31 @@
     font-weight: 700;
 }
 
-/* .card-element {
+.card-element {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     margin-top: 10px;
     margin-bottom: 20px;
-} */
+}
 
 .error-message {
     color: red;
     font-weight: 700;
 }
 
-/* .payment-success {
+.payment-success {
     color: rgb(61, 7, 212);
-} */
+}
 
-/* button {
+button {
     padding: 10px 20px;
     background-color: #28a745;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-} */
+}
 
 button:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
@@ -130,23 +130,6 @@ button:hover {
 button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
-}
-
-
-/* Temporary styles for debugging */
-.card-element {
-    border: 2px solid red; /* Add a visible border to ensure it's visible */
-    padding: 20px; /* Increase padding to make sure it's large enough */
-}
-
-button {
-    background-color: blue; /* Change button color to make it stand out */
-    border: 2px solid yellow; /* Add a border to the button for visibility */
-}
-
-/* Hide non-critical styles to simplify debugging */
-.payment-success {
-    display: none; /* Hide success message for now */
 }
 
 
