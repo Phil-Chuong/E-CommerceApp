@@ -96,7 +96,7 @@ router.get('/active/:userId', async (req, res) => {
 
 
 // Create or get active cart for the user
-router.post('/', async (req, res) => {
+router.post('/', authenticateToken, async (req, res) => {
   const {cartId} = req.cartId;
   const userId = req.userId;
   console.log('User ID from token:', userId, 'Cart ID:', cartId); // Debugging log
@@ -121,7 +121,7 @@ router.post('/', async (req, res) => {
 
 
 // Add product to cart or create cart if it doesn't exist
-router.post('/cart_items', async (req, res) => {
+router.post('/cart_items', authenticateToken, async (req, res) => {
   console.log('Request body:', req.body);
   try {
     const { productId, quantity, cartId } = req.body;
@@ -158,7 +158,7 @@ router.post('/cart_items', async (req, res) => {
 
 
 // Update product in cart
-router.put('/:cartId/cartItems/:productId', async (req, res) => {
+router.put('/:cartId/cartItems/:productId', authenticateToken, async (req, res) => {
   const cartId = parseInt(req.params.cartId, 10);
   const productId = parseInt(req.params.productId, 10);
   const { quantity } = req.body;
@@ -183,7 +183,7 @@ router.put('/:cartId/cartItems/:productId', async (req, res) => {
 
 
 // Decrement cart item quantity or delete if quantity is 1
-router.put('/cart_items/:itemId/decrement', async (req, res) => {
+router.put('/cart_items/:itemId/decrement', authenticateToken, async (req, res) => {
   const { itemId } = req.params;
 
   console.log(`Received request to decrement cart item with id: ${itemId}`);
@@ -205,7 +205,7 @@ router.put('/cart_items/:itemId/decrement', async (req, res) => {
 
 
 // Delete cart by id
-router.delete('/:cartId', async (req, res) => {
+router.delete('/:cartId', authenticateToken, async (req, res) => {
   const { cartId } = req.params;
   try {
     const result = await Cart.deleteCart(cartId);
@@ -218,7 +218,7 @@ router.delete('/:cartId', async (req, res) => {
 
 
 // Delete cart item and update product stock
-router.delete('/cart_items/:itemId', async (req, res) => {
+router.delete('/cart_items/:itemId', authenticateToken, async (req, res) => {
   const { itemId } = req.params;
   try {
     const result = await Cart.decrementCartItem(itemId);

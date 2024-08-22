@@ -84,22 +84,20 @@ function ProductDetailComponent() {
 
         // Retrieve token and cartId from localStorage
         const token = localStorage.getItem('token');
-        const cartIdFromStorage  = localStorage.getItem('cartId');
-        const userIdFromStorage  = localStorage.getItem('userId');
+        let cartId  = localStorage.getItem('cartId');
+        const userId  = localStorage.getItem('userId');
 
-        if (!token || !userIdFromStorage ) {
+        if (!token || !userId ) {
             alert('You need to be logged in to add products to the cart');
             console.log('You need to be logged in to add products to the cart')
             return;
         }
 
-        let cartId = cartIdFromStorage;
-
         // If cartId is not found in localStorage, create a new cart
         if (!cartId) {
             console.log('No cartId found. Creating a new cart...');
 
-            const newCartResponse = await axios.post('/cart', { user_id: userIdFromStorage }, {
+            const newCartResponse = await axios.post('/cart', { user_id: userId }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -133,8 +131,8 @@ function ProductDetailComponent() {
 
         // Add product to cart
         const addToCartResponse = await axios.post('/cart/cart_items', {
-            cartId: parseInt(cartId), // Ensure cartId is an integer
-            productId: parseInt(product.id),
+            cartId: parseInt(cartId, 10), // Ensure cartId is an integer
+            productId: parseInt(product.id, 10),
             quantity: 1,
             userId,
         }, {
