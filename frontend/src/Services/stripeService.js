@@ -41,10 +41,10 @@ const stripeService = {
                 return { success: true , newCartId };
             }
 
-            // // Payment processing code
-            // if (response.data && response.data.newCartId) {
-            //      return { success: true, newCartId: response.data.newCartId };
-            // }
+            // Payment processing code
+            if (response.data && response.data.newCartId) {
+                 return { success: true, newCartId: response.data.newCartId };
+            }
             
             // Confirm the payment intent with Stripe Elements
             console.log('Attempting to confirm payment with client secret:', client_secret);
