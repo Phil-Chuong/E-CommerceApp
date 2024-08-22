@@ -101,6 +101,13 @@ const CheckoutComponent = () => {
             return;
         }
 
+        if (!elements) {
+            console.error('Elements has not been loaded.');
+            setLoading(false);
+            setPaymentError('Stripe Elements are not available');
+            return;
+        }
+
         if (!cardElement) {
             console.error('CardElement is not available or has been unmounted.');
             setLoading(false);
@@ -110,9 +117,9 @@ const CheckoutComponent = () => {
 
         try {
             // Check if CardElement is still present in the DOM
-            if (!elements.getElement(CardElement)) {
-                throw new Error('CardElement is not available or has been unmounted');
-            }
+            // if (!elements.getElement(CardElement)) {
+            //     throw new Error('CardElement is not available or has been unmounted');
+            // }
 
             console.log('Attempting to create payment method...');
             const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
