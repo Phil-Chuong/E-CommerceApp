@@ -92,6 +92,7 @@ const CheckoutComponent = () => {
         setLoading(true);
         setPaymentError(null);
 
+        // Retrieve the CardElement
         const cardElement = elements.getElement(CardElement);
         console.log('CardElement:', cardElement);
 
@@ -101,14 +102,14 @@ const CheckoutComponent = () => {
         //     return;
         // }
         if (!stripe) {
-            console.error('Stripe has not loaded yet.');
+            console.error('Stripe.js has not been loaded.');
             setLoading(false);
-            setPaymentError('Stripe has not loaded yet.');
+            setPaymentError('Stripe is not available');
             return;
         }
 
         if (!cardElement) {
-            console.error('CardElement is not available.');
+            console.error('CardElement is not available or has been unmounted.');
             setLoading(false);
             setPaymentError('CardElement is not available.');
             return;
@@ -135,42 +136,32 @@ const CheckoutComponent = () => {
             
             console.log('Payment method created successfully:', paymentMethod);
 
+            // Proceed with the payment
             if (!cartId) {
                 throw new Error('Cart ID not found in localStorage');
             }
 
             console.log('Calling stripeService.handlePayment with cartId:', cartId);
-            const result = await stripeService.handlePayment(totalAmount, paymentMethod.id, cartId);
 
+            const result = await stripeService.handlePayment(totalAmount, paymentMethod.id, cartId);
             console.log('handlePayment result:', result);
             
             if (result.error) {
-                console.error('Error during payment processing:', result.error);
-                setPaymentError(result.error);
-                setLoading(false);
-                return;
-            }
-
-            if (result.success) {
-                console.log('Payment successful', result.success);
-                setPaymentSuccess(true);
-
-                setTimeout(() => {
-                    console.log('Redirecting to login page...');
-                    navigate('/login');
-                }, 5000);
-                
-            } else {
-                console.error('Payment failed, setting cartId to null.');
-                setCartId(null);
-            }
-        } catch (error) {
-            console.error('Unhandled error during payment:', error.message);
-            setPaymentError(error.message || 'Payment failed. Please try again.');
-        } finally {
-            console.log('Payment process completed. Setting loading to false.');
-            setLoading(false);
+            setPaymentError(result.error);
+        } else if (result.success) {
+            console.log('Payment successful');
+            setPaymentSuccess(true);
+            navigate('/success');
+        } else {
+            console.error('Payment failed for unknown reasons');
         }
+    } catch (error) {
+        console.error('Unhandled error during payment:', error);
+        setPaymentError(error.message || 'Payment failed. Please try again.');
+    } finally {
+        setLoading(false);
+        console.log("Payment process completed. Setting loading to false.");
+    }
     };
 
     if (error) {
