@@ -147,6 +147,7 @@ router.post('/cart_items', authenticateToken, async (req, res) => {
     }
 
     // Add product to cart
+    console.log('Adding product to cart with cartId:', currentCartId);
     const addedProduct = await Cart.addProductToCart(currentCartId, productId, quantity, userId);
     res.status(200).json(addedProduct);
 

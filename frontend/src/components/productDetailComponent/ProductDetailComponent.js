@@ -134,7 +134,7 @@ function ProductDetailComponent() {
             cartId: parseInt(cartId, 10), // Ensure cartId is an integer
             productId: parseInt(product.id, 10),
             quantity: 1,
-            userId,
+            userId: parseInt(userId, 10),
         }, {
             headers: { Authorization: `Bearer ${token}` }
         });
