@@ -83,9 +83,6 @@ const CheckoutComponent = () => {
         calculateTotalPrice();
     }, [cartItems, products]);
 
-    // Tracing tokens and cartId
-    // console.log('Retrieved token:', localStorage.getItem('token'));
-    // console.log('Retrieved cartId:', cartId);
 
     const handlePayment = async () => {
         console.log('Starting payment process...');
@@ -94,12 +91,20 @@ const CheckoutComponent = () => {
 
         // Retrieve the CardElement
         const cardElement = elements.getElement(CardElement);
-        console.log('CardElement:', cardElement);
 
-        if (!stripe || !elements || !elements.getElement(CardElement)) {
+
+        // Add checks to debug CardElement
+        if (!stripe) {
             console.error('Stripe.js has not been loaded.');
             setLoading(false);
-            setPaymentError('Stripe.js has not been loaded or CardElement is not available');
+            setPaymentError('Stripe is not available');
+            return;
+        }
+
+        if (!cardElement) {
+            console.error('CardElement is not available or has been unmounted.');
+            setLoading(false);
+            setPaymentError('CardElement is not available.');
             return;
         }
 
@@ -122,7 +127,6 @@ const CheckoutComponent = () => {
                 return;
             }
 
-            
             console.log('Payment method created successfully:', paymentMethod);
 
             // Proceed with the payment
