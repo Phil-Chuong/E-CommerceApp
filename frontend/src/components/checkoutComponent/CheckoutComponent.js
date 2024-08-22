@@ -58,7 +58,7 @@ const CheckoutComponent = () => {
         const fetchProducts = async () => {
             try {
                 const productResponse = await axios.get('/products');
-                //console.log('Products fetched:', productResponse.data); // Debugging log
+                console.log('Products fetched:', productResponse.data); // Debugging log
                 setProducts(productResponse.data);
             } catch (error) {
                 console.error('Error fetching products:', error);
