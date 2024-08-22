@@ -13,6 +13,7 @@ function CartItemComponent() {
 
     const navigate = useNavigate();
     const token = localStorage.getItem('token');
+ 
 
     useEffect(() => {
         console.log('Component mounted or updated');
@@ -23,8 +24,8 @@ function CartItemComponent() {
             console.log('fetching cart items with cartId', cartId);      
 
             if (!token || !cartId) {
-                console.log('Token or cartId not found.');
-                setError('Token or cart_id not found.'); // Handle case where token or cart_id is missing
+                console.log('Token or cartId or userId not found.');
+                setError('Token or cart_id or userId not found.'); // Handle case where token or cart_id is missing
                 setLoading(false);
                 return;
             }

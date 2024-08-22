@@ -12,17 +12,17 @@ const LoginPage = () => {
   const navigate = useNavigate();
   
 
-  const handleLoginSuccess = async (accessToken, refreshToken, cartId, userId) => {
-    console.log('Login Success - Received data:', { accessToken, refreshToken, cartId, userId });
+  const handleLoginSuccess = async (token, refreshToken, cartId, userId) => {
+    console.log('Login Success - Received data:', { token, refreshToken, cartId, userId });
 
-    if (!accessToken || !refreshToken || !cartId || !userId) {
+    if (!token || !refreshToken || !cartId || !userId) {
       console.error('Missing required data from server response.');
       setError('Incomplete login data received.');
       return;
     }
 
     // Store tokens and cartId in localStorage
-    localStorage.setItem('token', accessToken);
+    localStorage.setItem('token', token);
     localStorage.setItem('refreshToken', refreshToken);
     localStorage.setItem('cartId', cartId);
     localStorage.setItem('userId', userId);
@@ -55,15 +55,17 @@ const LoginPage = () => {
   };
 
   const fetchOrCreateCart = async () => {
-    let accessToken = localStorage.getItem('token');
+    let token = localStorage.getItem('token');
     const refreshToken = localStorage.getItem('refreshToken');
+    let cartId = localStorage.getItem('cartId');
 
     console.log('Fetching or Creating Cart - Stored tokens:', {
       token: localStorage.getItem('token'),
       refreshToken: localStorage.getItem('refreshToken'),
+      cartId: localStorage.getItem('cartId')
     });
-  
-    if (!accessToken) {
+
+    if (!token) {
       console.error('No token found.');
       navigate('/login');
       return;
@@ -72,7 +74,7 @@ const LoginPage = () => {
     try {
       // Fetch the current cart
       let response = await axios.get('/cart', {
-        headers: { Authorization: `Bearer ${accessToken}` }
+        headers: { Authorization: `Bearer ${token}` }
       });
   
       console.log('Cart response:', response.data);
@@ -89,7 +91,7 @@ const LoginPage = () => {
       // If the cart exists and is completed, create a new cart
       if (cart.status === 'completed') {
         response = await axios.post('/cart', {}, {
-          headers: { Authorization: `Bearer ${accessToken}` }
+          headers: { Authorization: `Bearer ${token}` }
         });
   
         console.log('New cart created:', response.data.cart);
@@ -119,8 +121,8 @@ const LoginPage = () => {
         try {
           console.error('Token expired or invalid, refreshing token...');
           const refreshResponse = await axios.post('/auth/refresh', { token: refreshToken });
-          accessToken = refreshResponse.data.accessToken;
-          localStorage.setItem('token', accessToken);
+          token = refreshResponse.data.token;
+          localStorage.setItem('token', token);
   
           // Retry the request with the new token
           return await fetchOrCreateCart();
@@ -147,15 +149,15 @@ const LoginPage = () => {
       console.log('Login response:', response.data);
 
       // Extract the token from the response data and store it in localStorage
-      const { accessToken, refreshToken, cartId, userId} = response.data;
+      const { token, refreshToken, cartId, userId} = response.data;
 
-      console.log('Extracted Data:', { accessToken, refreshToken, cartId, userId });
+      console.log('Extracted Data:', { token, refreshToken, cartId, userId });
 
       // Store tokens and cartId in localStorage
-      if (accessToken && refreshToken && cartId && userId) {
+      if (token && refreshToken && cartId && userId) {
 
       // Example function to handle further actions after successful login
-        handleLoginSuccess(accessToken, refreshToken, cartId, userId); // Handle post-login actions
+        handleLoginSuccess(token, refreshToken, cartId, userId); // Handle post-login actions
       } else {
         throw new Error('Missing data from server response');
       }
@@ -186,14 +188,14 @@ const LoginPage = () => {
       const response = await axios.post('/authRoutes/google-login', { token: credential });
       console.log('Backend response:', response.data); // Log the backend response
 
-      const { accessToken, refreshToken, cartId, userId } = response.data;
-      console.log('Received accessToken:', accessToken);
+      const { token, refreshToken, cartId, userId } = response.data;
+      console.log('Received token:', token);
       console.log('Received refreshToken:', refreshToken);
       console.log('Received cartId:', cartId);
       console.log('Received userId:', userId );
 
-      if (accessToken && refreshToken && cartId) {
-        handleLoginSuccess(accessToken, refreshToken, cartId, userId);
+      if (token && refreshToken && cartId) {
+        handleLoginSuccess(token, refreshToken, cartId, userId);
       } else {
         setError('Missing data from server response');
       }
