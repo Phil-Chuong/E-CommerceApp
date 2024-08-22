@@ -121,6 +121,7 @@ const CheckoutComponent = () => {
                 setLoading(false);
                 return;
             }
+
             
             console.log('Payment method created successfully:', paymentMethod);
 

@@ -139,9 +139,11 @@ function CartItemComponent() {
                                 <ul className='cartItemUL'>
                                 {cartItems.map((item) => {
                                     const product = products.find(product => product.id === item.product_id);
-                                    const imageURL = `https://techtitan.onrender.com${product.image_path}`;
                                     
-                                        if (!product) return null; // Skip if product not found
+                                    //const imageURL = `https://techtitan.onrender.com${product.image_path}`;
+                                    const imageURL = product?.image_path ? `https://techtitan.onrender.com${product.image_path}` : 'default_image_path'; // Provide a fallback image URL
+                                        
+                                    if (!product) return null; // Skip if product not found
                                         return (
                                         <li key={item.id} className='items'>
                                                 <div className='itemProduct'>
