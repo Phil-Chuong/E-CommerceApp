@@ -60,7 +60,7 @@ const LoginPage = () => {
     let cartId = localStorage.getItem('cartId');
 
     console.log('Fetching or Creating Cart - Stored tokens:', {
-      token: localStorage.getItem('token'),
+      accessToken: localStorage.getItem('token'),
       refreshToken: localStorage.getItem('refreshToken'),
       cartId: localStorage.getItem('cartId')
     });
@@ -79,20 +79,29 @@ const LoginPage = () => {
   
       console.log('Cart response:', response.data);
   
-      let cart = response.data[0]; // Assuming response.data.cart contains the cart object
-      console.log('Cart object:', cart); // Log the cart object to verify its structure
-  
-      // Check if cart is defined and has the necessary properties
-      if (!cart || !cart.id) {
-        console.error('Cart is missing or has no id.');
-        throw new Error('Cart data is missing.');
-      }
-  
-      // If the cart exists and is completed, create a new cart
-      if (cart.status === 'completed') {
+      let cart = response.data.find(cart => cart.id === parseInt(cartId, 10)); // Ensure cartId is compared as number
+      console.log('Cart object:', cart);
+
+      // If cart is not found, create a new cart
+      if (!cart) {
+        console.error('Cart not found, creating a new cart.');
         response = await axios.post('/cart', {}, {
           headers: { Authorization: `Bearer ${accessToken}` }
         });
+
+        console.log('New cart created:', response.data.cart);
+        cart = response.data.cart;
+  
+      // Check if new cart has an id
+      if (!cartId || !cart.id) {
+        console.error('Cart is missing or has no id.');
+        throw new Error('Cart data is missing.');
+      }
+    } else if (cart.status === 'completed') {
+      // If the existing cart is completed, create a new cart
+      response = await axios.post('/cart', {}, {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      });
   
         console.log('New cart created:', response.data.cart);
         cart = response.data.cart;
@@ -128,7 +137,7 @@ const LoginPage = () => {
           return await fetchOrCreateCart();
         } catch (refreshError) {
           console.error('Error refreshing token:', refreshError);
-          localStorage.removeItem('token');
+          localStorage.removeItem('accessToken');
           localStorage.removeItem('refreshToken');
           navigate('/login');
         }
