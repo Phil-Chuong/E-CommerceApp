@@ -10,7 +10,7 @@ const { authenticateToken } = require('../services/authenticateToken');
 const JWT_SECRET = process.env.JWT_SECRET;
 
 // Get all cart
-router.get('/', async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
   try {
     const cart = await Cart.getAllCart();
     res.json(cart);
@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
 });
 
 // Get cart by id
-router.get('/:id', async (req, res) => {
+router.get('/:id', authenticateToken, async (req, res) => {
   const cartId = parseInt(req.params.id, 10); // Ensure cartId is an integer
   console.log('Fetching cart with ID:', cartId); // Debugging log
 

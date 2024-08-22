@@ -9,17 +9,21 @@ function CartItemComponent() {
     const [loading, setLoading] = useState(true); // Add loading state
     const [products, setProducts] = useState([]);
     const [error, setError] = useState(null); // Add error state
-    const [cartId, setCartId] = useState(localStorage.getItem('cartId'));
+    const [cartId, setCartId] = useState(localStorage.getItem('cartId') || '');
 
     const navigate = useNavigate();
     const token = localStorage.getItem('token');
 
     useEffect(() => {
-        
+        console.log('Component mounted or updated');
+        console.log('Current cartId:', cartId);
+        console.log('Token:', token);
+
         const fetchCartItems = async () => {  
-            console.log('fetching update cartId', cartId);   
+            console.log('fetching cart items with cartId', cartId);      
 
             if (!token || !cartId) {
+                console.log('Token or cartId not found.');
                 setError('Token or cart_id not found.'); // Handle case where token or cart_id is missing
                 setLoading(false);
                 return;
@@ -33,7 +37,8 @@ function CartItemComponent() {
                 });
 
 
-                //console.log('Cart items fetched:', cartResponse.data); // Debugging log
+                console.log('Cart items fetched:', cartResponse.data); // Debugging log
+                
                 setCartItems(cartResponse.data.items || cartResponse.data);
                 setLoading(false); // Set loading state to false on successful fetch
             } catch (error) {
@@ -48,10 +53,14 @@ function CartItemComponent() {
 
 
     useEffect(() => {
+        console.log('Fetching products');
+
         const fetchProducts = async () => {
             try {
                 const productResponse = await axios.get('/products');
-                //console.log('Products fetched:', productResponse.data); // Debugging log
+
+                console.log('Products fetched:', productResponse.data); // Debugging log
+                
                 setProducts(productResponse.data);
             } catch (error) {
                 console.error('Error fetching products:', error);
@@ -90,6 +99,7 @@ function CartItemComponent() {
           
           
     const handlePayment = () => {
+        console.log('Navigating to checkout');
         navigate('/checkout');
     };
 
