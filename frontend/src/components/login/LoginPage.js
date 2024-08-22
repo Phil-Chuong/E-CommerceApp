@@ -12,17 +12,17 @@ const LoginPage = () => {
   const navigate = useNavigate();
   
 
-  const handleLoginSuccess = async (token, refreshToken, cartId, userId) => {
-    console.log('Login Success - Received data:', { token, refreshToken, cartId, userId });
+  const handleLoginSuccess = async (accessToken, refreshToken, cartId, userId) => {
+    console.log('Login Success - Received data:', { accessToken, refreshToken, cartId, userId });
 
-    if (!token || !refreshToken || !cartId || !userId) {
+    if (!accessToken || !refreshToken || !cartId || !userId) {
       console.error('Missing required data from server response.');
       setError('Incomplete login data received.');
       return;
     }
 
     // Store tokens and cartId in localStorage
-    localStorage.setItem('token', token);
+    localStorage.setItem('token', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
     localStorage.setItem('cartId', cartId);
     localStorage.setItem('userId', userId);
@@ -121,8 +121,8 @@ const LoginPage = () => {
         try {
           console.error('Token expired or invalid, refreshing token...');
           const refreshResponse = await axios.post('/auth/refresh', { token: refreshToken });
-          token = refreshResponse.data.token;
-          localStorage.setItem('token', token);
+          accessToken = refreshResponse.data.accessToken;
+          localStorage.setItem('token', accessToken);
   
           // Retry the request with the new token
           return await fetchOrCreateCart();
@@ -149,15 +149,15 @@ const LoginPage = () => {
       console.log('Login response:', response.data);
 
       // Extract the token from the response data and store it in localStorage
-      const { token, refreshToken, cartId, userId} = response.data;
+      const { accessToken, refreshToken, cartId, userId} = response.data;
 
-      console.log('Extracted Data:', { token, refreshToken, cartId, userId });
+      console.log('Extracted Data:', { accessToken, refreshToken, cartId, userId });
 
       // Store tokens and cartId in localStorage
-      if (token && refreshToken && cartId && userId) {
+      if (accessToken && refreshToken && cartId && userId) {
 
       // Example function to handle further actions after successful login
-        handleLoginSuccess(token, refreshToken, cartId, userId); // Handle post-login actions
+        handleLoginSuccess(accessToken, refreshToken, cartId, userId); // Handle post-login actions
       } else {
         throw new Error('Missing data from server response');
       }
@@ -188,14 +188,14 @@ const LoginPage = () => {
       const response = await axios.post('/authRoutes/google-login', { token: credential });
       console.log('Backend response:', response.data); // Log the backend response
 
-      const { token, refreshToken, cartId, userId } = response.data;
-      console.log('Received token:', token);
+      const { accessToken, refreshToken, cartId, userId } = response.data;
+      console.log('Received accessToken:', accessToken);
       console.log('Received refreshToken:', refreshToken);
       console.log('Received cartId:', cartId);
       console.log('Received userId:', userId );
 
-      if (token && refreshToken && cartId) {
-        handleLoginSuccess(token, refreshToken, cartId, userId);
+      if (accessToken && refreshToken && cartId) {
+        handleLoginSuccess(accessToken, refreshToken, cartId, userId);
       } else {
         setError('Missing data from server response');
       }
