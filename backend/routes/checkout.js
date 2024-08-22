@@ -6,7 +6,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const Checkout = require('../models/Checkout');
 
 // CHECKOUT
-router.post('/checkout', authenticateToken, async (req, res) => {
+router.post('/checkout', async (req, res) => {
     // Extract values from the request body
     const { totalPrice, paymentMethodId, cartId} = req.body;
     const userId = req.userId; // Ensure this is correctly populated by authenticateToken middleware
