@@ -6,10 +6,11 @@ import './CheckoutComponent.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const CheckoutComponent = () => {
+const CheckoutComponent = ({ totalAmount, cartId }) => {
 
     const stripe = useStripe();
     const elements = useElements();
+    const navigate = useNavigate();
 
     const [totalAmount, setTotalAmount] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -21,7 +22,7 @@ const CheckoutComponent = () => {
 
     const [cartId, setCartId] = useState(localStorage.getItem('cartId') || null);
     const token = localStorage.getItem('token'); 
-    const navigate = useNavigate();
+
 
     useEffect(() => {
         console.log('Retrieved token:', token);
@@ -82,36 +83,57 @@ const CheckoutComponent = () => {
         calculateTotalPrice();
     }, [cartItems, products]);
 
+    // Tracing tokens and cartId
+    console.log('Retrieved token:', localStorage.getItem('token'));
+    console.log('Retrieved cartId:', cartId);
 
     const handlePayment = async () => {
+        console.log('Starting payment process...');
         setLoading(true);
         setPaymentError(null);
 
         const cardElement = elements.getElement(CardElement);
-        if (!stripe || !cardElement) {
+        console.log('CardElement:', cardElement);
+
+        // if (!stripe || !cardElement) {
+        //     setLoading(false);
+        //     setPaymentError('Stripe or CardElement is not available');
+        //     return;
+        // }
+        if (!stripe) {
+            console.error('Stripe has not loaded yet.');
             setLoading(false);
-            setPaymentError('Stripe or CardElement is not available');
+            setPaymentError('Stripe has not loaded yet.');
+            return;
+        }
+
+        if (!cardElement) {
+            console.error('CardElement is not available.');
+            setLoading(false);
+            setPaymentError('CardElement is not available.');
             return;
         }
 
         try {
-            // Check if CardElement is still present in the DOM
-            if (!elements.getElement(CardElement)) {
-                throw new Error('CardElement is not available or has been unmounted');
-            }
+            // // Check if CardElement is still present in the DOM
+            // if (!elements.getElement(CardElement)) {
+            //     throw new Error('CardElement is not available or has been unmounted');
+            // }
 
-            console.log('Creating payment method...');
+            console.log('Attempting to create payment method...');
             const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
                 type: 'card',
                 card: cardElement,
             });
 
             if (paymentMethodError) {
-                setPaymentError(paymentMethod.error.message);
-                setLoading(false);
                 console.log('Error creating payment method:', paymentMethodError.message);
+                setPaymentError(paymentMethodError.message);
+                setLoading(false);
                 return;
-            }               
+            }   
+            
+            console.log('Payment method created successfully:', paymentMethod);
 
             if (!cartId) {
                 throw new Error('Cart ID not found in localStorage');
@@ -123,27 +145,30 @@ const CheckoutComponent = () => {
             console.log('handlePayment result:', result);
             
             if (result.error) {
+                console.error('Error during payment processing:', result.error);
                 setPaymentError(result.error);
                 setLoading(false);
                 return;
             }
 
             if (result.success) {
-                console.log('Payment successful');
+                console.log('Payment successful', result.success);
                 setPaymentSuccess(true);
 
                 setTimeout(() => {
+                    console.log('Redirecting to login page...');
                     navigate('/login');
                 }, 5000);
                 
             } else {
-                console.error('Payment failed');
+                console.error('Payment failed, setting cartId to null.');
                 setCartId(null);
             }
         } catch (error) {
+            console.error('Unhandled error during payment:', error.message);
             setPaymentError(error.message || 'Payment failed. Please try again.');
-            console.error('Unhandled error during payment:', error);
         } finally {
+            console.log('Payment process completed. Setting loading to false.');
             setLoading(false);
         }
     };
