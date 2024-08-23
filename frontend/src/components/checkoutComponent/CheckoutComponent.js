@@ -211,7 +211,8 @@ const CheckoutComponent = () => {
                             <div className="payment-form">
                                 <label>
                                     Card Details:
-                                    <CardElement id="card-element" className="card-element" />
+                                    {/* <CardElement id="card-element" className="card-element" /> */}
+                                    <CardElement />
                                 </label>
 
                                 {paymentError && <p className="error-message">{paymentError}</p>}
