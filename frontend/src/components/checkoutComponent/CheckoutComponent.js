@@ -83,6 +83,15 @@ const CheckoutComponent = () => {
         calculateTotalPrice();
     }, [cartItems, products]);
 
+    useEffect(() => {
+        const cardElement = elements.getElement(CardElement);
+        if (!cardElement) {
+            console.error('CardElement is not mounted.');
+        } else {
+            console.log('CardElement is successfully mounted.');
+        }
+    }, [elements]);
+
 
     const handlePayment = async () => {
         console.log('Starting payment process...');
