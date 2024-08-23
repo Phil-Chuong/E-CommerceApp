@@ -155,7 +155,7 @@ const CheckoutComponent = () => {
 
             console.log('Calling stripeService.handlePayment with cartId:', cartId);
 
-            const result = await stripeService.handlePayment(totalAmount, paymentMethod.id, cartId, userId);
+            const result = await stripeService.handlePayment(totalAmount, paymentMethod.id, cartId);
             console.log('handlePayment result:', result);
             
             if (result.error) {
