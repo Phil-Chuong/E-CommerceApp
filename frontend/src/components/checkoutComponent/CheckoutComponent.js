@@ -83,43 +83,27 @@ const CheckoutComponent = () => {
         calculateTotalPrice();
     }, [cartItems, products]);
 
-    useEffect(() => {
-        const cardElement = elements.getElement(CardElement);
-        if (cardElement) {
-            console.log('CardElement has been successfully mounted:', cardElement);
-        } else {
-            console.error('CardElement is not mounted.');
-        }
-    }, [elements]);
-
 
     const handlePayment = async () => {
         console.log('Starting payment process...');
         setLoading(true);
         setPaymentError(null);
 
+
+        // Add checks to debug CardElement
+        if (!stripe || !elements) {
+            console.error('Stripe.js has not been loaded or Elements is null.');
+            setLoading(false);
+            setPaymentError('Stripe.js or Elements is not available.');
+            return;
+        }
+
         // Retrieve the CardElement
         const cardElement = elements.getElement(CardElement);
         console.log('CardElement at the start of payment process:', cardElement);
 
-
-        // Add checks to debug CardElement
-        if (!stripe) {
-            console.error('Stripe.js has not been loaded.');
-            setLoading(false);
-            setPaymentError('Stripe is not available');
-            return;
-        }
-
-        if (!elements) {
-            console.error('Elements has not been loaded.');
-            setLoading(false);
-            setPaymentError('Stripe Elements are not available');
-            return;
-        }
-
         if (!cardElement) {
-            console.error('CardElement is not available or has been unmounted.');
+            console.error('CardElement has not been mounted.');
             setLoading(false);
             setPaymentError('CardElement is not available.');
             return;
@@ -127,9 +111,9 @@ const CheckoutComponent = () => {
 
         try {
             //Check if CardElement is still present in the DOM
-            if (!elements.getElement(CardElement)) {
-                throw new Error('CardElement is not available or has been unmounted');
-            }
+            // if (!elements.getElement(CardElement)) {
+            //     throw new Error('CardElement is not available or has been unmounted');
+            // }
 
             console.log('Attempting to create payment method...');
             const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
@@ -137,7 +121,9 @@ const CheckoutComponent = () => {
                 card: cardElement,
             });
 
-            console.log(stripe.data);
+            console.log('Stripe:', stripe);
+            console.log('Elements:', elements);
+            console.log('CardElement:', cardElement);
 
             if (paymentMethodError) {
                 console.log('Payment method creation error:', paymentMethodError);
@@ -159,21 +145,21 @@ const CheckoutComponent = () => {
             console.log('handlePayment result:', result);
             
             if (result.error) {
-            setPaymentError(result.error);
-        } else if (result.success) {
-            console.log('Payment successful');
-            setPaymentSuccess(true);
-            navigate('/success');
-        } else {
-            console.error('Payment failed for unknown reasons');
+                setPaymentError(result.error);
+            } else if (result.success) {
+                console.log('Payment successful');
+                setPaymentSuccess(true);
+                navigate('/success');
+            } else {
+                console.error('Payment failed for unknown reasons');
+            }
+        } catch (error) {
+            console.error('Unhandled error during payment:', error);
+            setPaymentError(error.message || 'Payment failed. Please try again.');
+        } finally {
+            setLoading(false);
+            console.log("Payment process completed. Setting loading to false.");
         }
-    } catch (error) {
-        console.error('Unhandled error during payment:', error);
-        setPaymentError(error.message || 'Payment failed. Please try again.');
-    } finally {
-        setLoading(false);
-        console.log("Payment process completed. Setting loading to false.");
-    }
     };
 
     if (error) {
@@ -187,10 +173,6 @@ const CheckoutComponent = () => {
     if (cartItems.length === 0) {
         return <div>No items in the cart.</div>;
     }
-
-    // if (!Array.isArray(cartItems) || cartItems.length === 0) {
-    //     return <div>No items in the cart.</div>;
-    //   }
 
     return (
         <div className='checkoutBodyContainer'>
