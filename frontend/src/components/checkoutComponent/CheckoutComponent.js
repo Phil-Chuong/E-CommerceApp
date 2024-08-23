@@ -6,7 +6,9 @@ import './CheckoutComponent.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const CheckoutComponent = () => {
+const CheckoutComponent = ({ cartItems }) => {
+    // Assuming you use cartItems inside the component
+    console.log('Cart items in CheckoutComponent:', cartItems);
 
     const stripe = useStripe();
     const elements = useElements();
