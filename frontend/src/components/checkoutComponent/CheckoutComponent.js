@@ -6,7 +6,7 @@ import './CheckoutComponent.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const CheckoutComponent = ({ cartItems }) => {
+const CheckoutComponent = () => {
     // Assuming you use cartItems inside the component
     console.log('Cart items in CheckoutComponent:', cartItems);
 
@@ -146,9 +146,9 @@ const CheckoutComponent = ({ cartItems }) => {
             console.log('Payment method created successfully:', paymentMethod);
 
             // Proceed with the payment
-            if (!cartId) {
-                throw new Error('Cart ID not found in localStorage');
-            }
+            // if (!cartId) {
+            //     throw new Error('Cart ID not found in localStorage');
+            // }
 
             console.log('Calling stripeService.handlePayment with cartId:', cartId);
 
@@ -195,8 +195,8 @@ const CheckoutComponent = ({ cartItems }) => {
                         {cartItems.map((item) => {
                             const product = products.find(product => product.id === item.product_id);
                             if (!product) return null; // Skip if product not found
-                            //const imageURL = `https://techtitan.onrender.com${product.image_path}`;
-                            const imageURL = product?.image_path ? `https://techtitan.onrender.com${product.image_path}` : 'default_image_path'; // Provide a fallback image URL
+                            const imageURL = `https://techtitan.onrender.com${product.image_path}`;
+                            //const imageURL = product?.image_path ? `https://techtitan.onrender.com${product.image_path}` : 'default_image_path'; // Provide a fallback image URL
 
                             return (
                                 <li key={item.id} className='checkout-items'>

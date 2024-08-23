@@ -97,13 +97,13 @@
     font-weight: 700;
 }
 
-.card-element {
-    /* padding: 10px; */
+/* .card-element {
+    padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     margin-top: 10px;
     margin-bottom: 20px;
-}
+} */
 
 .error-message {
     color: red;
