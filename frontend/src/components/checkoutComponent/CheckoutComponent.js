@@ -212,7 +212,7 @@ const CheckoutComponent = () => {
                                 <label>
                                     Card Details:
                                     {/* <CardElement id="card-element" className="card-element" /> */}
-                                    <CardElement />
+                                    <CardElement className="card-element"/>
                                 </label>
 
                                 {paymentError && <p className="error-message">{paymentError}</p>}
