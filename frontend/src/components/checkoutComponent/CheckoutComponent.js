@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import stripeService from '../../Services/stripeService';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import './CheckoutComponent.css'; 
@@ -91,6 +91,7 @@ const CheckoutComponent = () => {
 
         // Retrieve the CardElement
         const cardElement = elements.getElement(CardElement);
+        console.log(cardElement);
 
 
         // Add checks to debug CardElement
@@ -116,16 +117,19 @@ const CheckoutComponent = () => {
         }
 
         try {
-            // Check if CardElement is still present in the DOM
-            // if (!elements.getElement(CardElement)) {
-            //     throw new Error('CardElement is not available or has been unmounted');
-            // }
+            //Check if CardElement is still present in the DOM
+            if (!elements.getElement(CardElement)) {
+                throw new Error('CardElement is not available or has been unmounted');
+            }
+            console.log(cardElement);
 
             console.log('Attempting to create payment method...');
             const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
                 type: 'card',
                 card: cardElement,
             });
+
+            console.log(stripe.data);
 
             if (paymentMethodError) {
                 console.log('Payment method creation error:', paymentMethodError);
