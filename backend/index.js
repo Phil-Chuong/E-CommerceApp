@@ -30,14 +30,11 @@ const pool = new Pool({
 });
 
 // Allow requests from specific origins
-const corsOptions = {
-  origin: 'https://tech-titan.onrender.com', // Update this with your client URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-};
-
-app.use(cors(corsOptions));
-
+app.use(cors({
+  origin: 'https://tech-titan.onrender.com', // Allow specific origin
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true, // Allow cookies or other credentials
+}));
 
 
 // Middleware
