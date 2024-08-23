@@ -17,7 +17,7 @@ router.post('/checkout', async (req, res) => {
     console.log('User ID:', userId);
     
     // Check if all required fields are provided
-    if (!totalPrice || !paymentMethodId || !cartId || !userId) {
+    if (!totalPrice || !paymentMethodId || !cartId) {
         return res.status(400).send({ error: 'totalPrice, paymentMethodId, userId and cartId are required' });
     }
 

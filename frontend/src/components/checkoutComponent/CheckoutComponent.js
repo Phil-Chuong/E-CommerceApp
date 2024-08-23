@@ -83,6 +83,15 @@ const CheckoutComponent = () => {
         calculateTotalPrice();
     }, [cartItems, products]);
 
+    useEffect(() => {
+        const cardElement = elements.getElement(CardElement);
+        if (cardElement) {
+            console.log('CardElement has been successfully mounted:', cardElement);
+        } else {
+            console.error('CardElement is not mounted.');
+        }
+    }, [elements]);
+
 
     const handlePayment = async () => {
         console.log('Starting payment process...');
@@ -91,7 +100,7 @@ const CheckoutComponent = () => {
 
         // Retrieve the CardElement
         const cardElement = elements.getElement(CardElement);
-        console.log(cardElement);
+        console.log('CardElement at the start of payment process:', cardElement);
 
 
         // Add checks to debug CardElement
@@ -121,7 +130,6 @@ const CheckoutComponent = () => {
             if (!elements.getElement(CardElement)) {
                 throw new Error('CardElement is not available or has been unmounted');
             }
-            console.log(cardElement);
 
             console.log('Attempting to create payment method...');
             const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
@@ -147,7 +155,7 @@ const CheckoutComponent = () => {
 
             console.log('Calling stripeService.handlePayment with cartId:', cartId);
 
-            const result = await stripeService.handlePayment(totalAmount, paymentMethod.id, cartId);
+            const result = await stripeService.handlePayment(totalAmount, paymentMethod.id, cartId, userId);
             console.log('handlePayment result:', result);
             
             if (result.error) {
