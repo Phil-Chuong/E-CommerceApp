@@ -10,6 +10,8 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  const url = 'https://tech-titan.onrender.com';
   
 
   const handleLoginSuccess = async (accessToken, refreshToken, cartId, userId) => {
@@ -37,7 +39,7 @@ const LoginPage = () => {
 
     try {
       await fetchOrCreateCart(); // Fetch and update cart items
-      navigate('/HomePage');
+      navigate(`${url}/HomePage`);
     } catch (error) {
       console.error('Error handling login success:', error);
       if (error.response) {
@@ -67,7 +69,7 @@ const LoginPage = () => {
   
     if (!accessToken) {
       console.error('No token found.');
-      navigate('/login');
+      navigate(`${url}/login`);
       return;
     }
   
@@ -139,7 +141,7 @@ const LoginPage = () => {
           console.error('Error refreshing token:', refreshError);
           localStorage.removeItem('accessToken');
           localStorage.removeItem('refreshToken');
-          navigate('/login');
+          navigate(`${url}/login`);
         }
       } else {
         console.error('Error fetching or creating cart:', error.message);
@@ -154,7 +156,7 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       // Send a POST request to the server with user credentials
-      const response = await axios.post('https://techtitan.onrender.com/auth/login', { email, password });
+      const response = await axios.post('/auth/login', { email, password });
       console.log('Login response:', response.data);
 
       // Extract the token from the response data and store it in localStorage
@@ -247,7 +249,7 @@ const LoginPage = () => {
         />
         <br />
         <p>
-          Don't have an account? <a href="https://techtitan.onrender.com/register">Register here</a>
+          Don't have an account? <a href="https://tech-titan.onrender.com/Register">Register here</a>
         </p>
       </form>
     </div>

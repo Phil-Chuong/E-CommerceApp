@@ -18,7 +18,7 @@ const RegisterPage = () => {
     console.log('Form submitted');
 
     try {
-      const response = await axios.post('https://techtitan.onrender.com/auth/register', { firstname, lastname, username, email, password });
+      const response = await axios.post('/auth/register', { firstname, lastname, username, email, password });
       console.log('Registration response:', response.data);
       
       const { accessToken, cartId } = response.data;
@@ -30,7 +30,7 @@ const RegisterPage = () => {
 
       localStorage.setItem('cartId', cartId);
 
-      navigate('/HomePage');
+      navigate('https://tech-titan.onrender.com/HomePage');
     } catch (error) {
       if (error.response) {
         console.error('Registration error:', error.response.data.error);
@@ -55,7 +55,7 @@ const RegisterPage = () => {
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required/>
         <button type="submit">Register</button>
         <br/>
-        <Link to="/login">Login</Link> {/* Use Link component for internal navigation */}
+        <Link to="https://tech-titan.onrender.com/login">Login</Link> {/* Use Link component for internal navigation */}
       </form>
     </div>    
   )
