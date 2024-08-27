@@ -32,7 +32,7 @@ const CheckoutComponent = () => {
     useEffect(() => {
         console.log('Retrieved token:', token);
         console.log('Retrieved cartId:', cartId);
-        onsole.log('Component mounted. Retrieved token:', token, 'Retrieved cartId:', cartId);
+        console.log('Component mounted. Retrieved token:', token, 'Retrieved cartId:', cartId);
         
         if (!token || !cartId) {
             setError('Token or cartId not found.');
