@@ -86,18 +86,20 @@ const CheckoutComponent = () => {
 
 
     const handlePayment = async () => {
-        setLoading(true);
-        setPaymentError(null);
-
-        const cardElement = elements.getElement(CardElement);
-        console.log('CardElement:', cardElement);
-
-        if (!stripe || !cardElement) {
-            setPaymentError('Stripe or CardElement not available');
-            setLoading(false);
-            console.log('Stripe or cardElement not available');
+        if (!stripe || !elements) {
+            setPaymentError('Stripe.js has not loaded yet.');
             return;
         }
+
+        const cardElement = elements.getElement(CardElement);
+
+        if (!cardElement) {
+            setPaymentError('CardElement not found.');
+            return;
+        }
+
+        setLoading(true);
+        setPaymentError(null);
 
         try {
             console.log('Creating payment method...');
@@ -191,7 +193,7 @@ const CheckoutComponent = () => {
                                 <label>
                                     Card Details:
                                     {/* <CardElement id="card-element" className="card-element" /> */}
-                                    <CardElement className="card-element" aria-hidden="false"/>
+                                    <CardElement className="card-element" aria-hidden="true"/>
                                 </label>
 
                                 {paymentError && <p className="error-message">{paymentError}</p>}
