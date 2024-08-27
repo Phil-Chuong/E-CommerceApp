@@ -247,7 +247,7 @@ const LoginPage = () => {
         />
         <br />
         <p>
-          Don't have an account? <a href="/register">Register here</a>
+          Don't have an account? <a href="https://techtitan.onrender.com/register">Register here</a>
         </p>
       </form>
     </div>
