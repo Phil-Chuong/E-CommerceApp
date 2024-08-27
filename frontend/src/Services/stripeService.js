@@ -33,21 +33,22 @@ const stripeService = {
             }
 
             // Confirm the payment intent with Stripe Elements
-            const { client_secret, status, newCartId  } = response.data;// add newCartId
+            const { client_secret, status } = response.data;// add newCartId
 
             // Check if payment has already been processed
             if (status === 'succeeded') {
                 console.log('Payment has already been processed.');
-                return { success: true , newCartId };
+                return { success: true }; // remove newCardId
             }
 
             // Payment processing code
-            if (response.data && response.data.newCartId) {
-                 return { success: true, newCartId: response.data.newCartId };
-            }
+            //if (response.data && response.data.newCartId) {
+                 //return { success: true, newCartId: response.data.newCartId };
+            //}
             
             // Confirm the payment intent with Stripe Elements
             console.log('Attempting to confirm payment with client secret:', client_secret);
+
             const { error } = await stripe.confirmCardPayment(client_secret, {
                 payment_method: paymentMethodId,
             });
@@ -58,7 +59,7 @@ const stripeService = {
             }
 
             console.log('Payment successfully processed!');
-            return { success: true, newCartId: response.data.newCartId }; // add newCartId 
+            return { success: true }; //newCartId: response.data.newCartId 
             
         } catch (error) {
             console.error('Error processing payment:', error.message);
