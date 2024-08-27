@@ -36,6 +36,7 @@ const CheckoutComponent = () => {
         console.log('Component mounted. Retrieved token:', token, 'Retrieved cartId:', cartId);
         
         if (!token || !cartId) {
+            console.error('Token or cartId not found.');
             setError('Token or cartId not found.');
             return;
         }
@@ -43,6 +44,7 @@ const CheckoutComponent = () => {
         const fetchCartItems = async () => {
 
             try {
+                console.log('Fetching cart items...');
                 const cartResponse = await axios.get(`/cart/cart_items/${cartId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
@@ -60,12 +62,14 @@ const CheckoutComponent = () => {
 
 
     useEffect(() => {
+        console.log('Fetching products...');
         const fetchProducts = async () => {
             try {
                 const productResponse = await axios.get('/products');
                 console.log('Products fetched:', productResponse.data); // Debugging log
                 setProducts(productResponse.data);
             } catch (error) {
+                console.error('Failed to load products:', error);
                 setError('Failed to load products');
             }
         };
@@ -75,6 +79,7 @@ const CheckoutComponent = () => {
 
 
     useEffect(() => {
+        console.log('Calculating total price...');
         const calculateTotalPrice = () => {
             const total = cartItems.reduce((total, item) => {
                 const product = products.find(product => product.id === item.product_id);
@@ -92,14 +97,17 @@ const CheckoutComponent = () => {
         e.preventDefault();
 
         console.log('handlePayment function called');
-        if (!stripe || !elements || !isCardElementLoaded) {        
+        if (!stripe || !elements || !isCardElementLoaded) {   
+            console.log('Stripe or Elements not loaded or CardElement not mounted');     
             setPaymentError('Stripe.js has not yet loaded or CardElement is not mounted.');      
             return;
         }
 
         const cardElement = elements.getElement(CardElement);
+        console.log('CardElement:', cardElement);
 
         if (!cardElement) {
+            console.error('CardElement not found.');
             setPaymentError('CardElement not found.');
             return;
         }
@@ -108,25 +116,32 @@ const CheckoutComponent = () => {
         setPaymentError(null);
 
         try {
+            console.log('Creating payment method...');
             const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
                 type: 'card',
                 card: cardElement,
             });
 
             if (paymentMethodError) {
+                console.error('Payment method creation error:', paymentMethodError.message);
                 setPaymentError(paymentMethodError.message);
                 return;
             }
 
+            console.log('Payment method created:', paymentMethod.id);
+
             const result = await stripeService.handlePayment(totalAmount, paymentMethod.id, cartId);
 
             if (result.error) {
+                console.error('Payment handling error:', result.error);
                 setPaymentError(result.error);
                 return;
             }
 
+            console.log('Payment successfully processed');
             setPaymentSuccess(true);
         } catch (error) {
+            console.error('Unhandled error during payment:', error);
             setPaymentError('Payment failed. Please try again.');
         } finally {
             setLoading(false);
@@ -184,10 +199,14 @@ const CheckoutComponent = () => {
                                     <CardElement 
                                     className="card-element" 
                                     aria-hidden="true"
-                                    onReady={() => setIsCardElementLoaded(true)}
+                                    onReady={() => {
+                                        console.log('CardElement is mounted and ready.');
+                                        setIsCardElementLoaded(true)
+                                    }}
                                     onChange={(event) => {
                                         if (event.complete) {
                                           // Handle additional logic when card details are complete
+                                          console.log('Card details are complete.');
                                         }
                                       }}
                                     />
