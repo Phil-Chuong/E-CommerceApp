@@ -4,20 +4,24 @@ const Order = require('./Order');
 
 class Checkout {
 
-  static async checkout(cartId, paymentMethodId, totalPrice, userId) {
-    const client = await pool.connect();
+  //static async checkout(cartId, paymentMethodId, totalPrice, userId) {
+    static async checkout(cartId) {
+  
+  //const client = await pool.connect();
     try {
-      await client.query('BEGIN');
+      //await client.query('BEGIN');
 
         console.log('Fetching cart with ID:', cartId);
         const cart = await Cart.getCartById(cartId);
       
 
         if (!cart) {
+          console.log('Cart not found');
           throw new Error('Cart not found');
         }
 
         if (cart.status === 'completed') {
+            console.log('Cart already completed');
             throw new Error('Cart already completed');
         }
 
@@ -30,16 +34,17 @@ class Checkout {
         await Order.createOrder(userId, cartId, parseFloat(totalPrice));
 
         //await Checkout.clearCartItems(cartId);
-        await client.query('COMMIT');
+        //await client.query('COMMIT');
         console.log('Checkout completed successfully');
 
     } catch (error) {
         console.error('Error during checkout:', error.message);
         console.error('Detailed error info:', err.stack);
         throw error;
-    } finally {
-      client.release();
     }
+    // } finally {
+    //   client.release();
+    // }
   }
 
   static async updateStatus(cartId, status, userId, totalPrice) {

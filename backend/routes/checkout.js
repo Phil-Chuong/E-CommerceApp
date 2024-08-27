@@ -31,7 +31,7 @@ router.post('/checkout', async (req, res) => {
 
     try {
         const paymentIntent = await stripe.paymentIntents.create({
-            amount: totalPrice * 100,
+            amount: numericTotalPrice * 100,
             currency: 'gbp',
             payment_method: paymentMethodId,
             confirmation_method: 'manual',
