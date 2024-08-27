@@ -12,7 +12,7 @@ const CheckoutComponent = () => {
 
     const stripe = useStripe();
     const elements = useElements();
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
 
     const [totalAmount, setTotalAmount] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -35,7 +35,6 @@ const CheckoutComponent = () => {
         
         const fetchCartItems = async () => {
             if (!token || !cartId) {
-                console.error('Token or cartId not found');
                 setError('Token or cartId not found.');
                 return;
             }
@@ -50,8 +49,6 @@ const CheckoutComponent = () => {
             } catch (error) {
                 console.error('Error fetching cart items:', error);
                 setError('Failed to load cart items');
-            } finally {
-                setLoading(false); 
             }
         };
 
@@ -66,7 +63,6 @@ const CheckoutComponent = () => {
                 console.log('Products fetched:', productResponse.data); // Debugging log
                 setProducts(productResponse.data);
             } catch (error) {
-                console.error('Error fetching products:', error);
                 setError('Failed to load products');
             }
         };
@@ -94,8 +90,10 @@ const CheckoutComponent = () => {
         setPaymentError(null);
 
         const cardElement = elements.getElement(CardElement);
+        
         if (!stripe || !cardElement) {
             setLoading(false);
+            setPaymentError('Stripe or CardElement not available');
             console.log('Stripe or cardElement not available');
             return;
         }
