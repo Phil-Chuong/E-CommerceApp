@@ -13,17 +13,16 @@ router.post('/checkout', authenticateToken, async (req, res) => {
     console.log('Authenticated user ID:', req.userId);
     
     // Log values to debug
+    console.log('Authenticated user ID:', userId);
     console.log('Request body:', req.body);
-    console.log('User ID:', userId);
     
     // Check if all required fields are provided
-    if (!totalPrice || !paymentMethodId || !cartId) {
+    if (!totalPrice || !paymentMethodId || !cartId || !userId) {
         return res.status(400).send({ error: 'totalPrice, paymentMethodId, userId and cartId are required' });
     }
 
     // Convert totalPrice to a number
     const numericTotalPrice = parseFloat(totalPrice);
-
     if (isNaN(numericTotalPrice)) {
         return res.status(400).send({ error: 'Invalid totalPrice format' });
     }
@@ -42,7 +41,7 @@ router.post('/checkout', authenticateToken, async (req, res) => {
         console.log('Payment Intent created successfully:', paymentIntent);
 
         // Update the checkout status and create the order
-        await Checkout.checkout(cartId, paymentMethodId, totalPrice);
+        await Checkout.checkout(cartId, userId, paymentMethodId, totalPrice);
         
         res.status(200).json({
             client_secret: paymentIntent.client_secret,

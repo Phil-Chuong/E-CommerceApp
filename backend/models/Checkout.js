@@ -4,16 +4,14 @@ const Order = require('./Order');
 
 class Checkout {
 
-  //static async checkout(cartId, paymentMethodId, totalPrice) {
-    static async checkout(cartId) {
+  static async checkout(cartId, userId, totalPrice) {
   
-  //const client = await pool.connect();
+  const client = await pool.connect();
     try {
-      //await client.query('BEGIN');
+      await client.query('BEGIN');
 
         console.log('Fetching cart with ID:', cartId);
         const cart = await Cart.getCartById(cartId);
-      
 
         if (!cart) {
           console.log('Cart not found');
@@ -28,32 +26,29 @@ class Checkout {
         console.log('Proceeding with payment intent creation');
         // Proceed with payment intent creation and other checkout logic...
         
-        // Ensure `userId` and `totalPrice` are not missing
         await Checkout.updateStatus(cartId, 'completed', userId, totalPrice); // Adjust status as needed
-
         await Order.createOrder(userId, cartId, parseFloat(totalPrice));
-
         //await Checkout.clearCartItems(cartId);
-        //await client.query('COMMIT');
+
+        await client.query('COMMIT');
         console.log('Checkout completed successfully');
 
-    } catch (error) {
+      } catch (error) {
+        await client.query('ROLLBACK');
         console.error('Error during checkout:', error.message);
-        console.error('Detailed error info:', err.stack);
         throw error;
+      } finally {
+        client.release();
     }
-    // } finally {
-    //   client.release();
-    // }
   }
 
-  static async updateStatus(cartId, status, userId, totalPrice) {
+  static async updateStatus(client, cartId, status, userId, totalPrice) {
     console.log(`Update Status - cartId: ${cartId}, status: ${status}, userId: ${userId}, totalPrice: ${totalPrice}`);
     try {
 
       // Use parameterized queries to prevent SQL injection
       console.log(cartId);
-      const result = await pool.query(
+      const result = await client.query(
         'UPDATE cart SET status = $1, updated_at = NOW() WHERE id = $2 RETURNING *', 
         [status, cartId]
       );
@@ -69,10 +64,10 @@ class Checkout {
     }
   }
 
-  static async clearCartItems(cartId) {
+  static async clearCartItems(client, cartId) {
     try {
 
-      await pool.query('DELETE FROM cart_items WHERE cart_id = $1', [cartId]);
+      await client.query('DELETE FROM cart_items WHERE cart_id = $1', [cartId]);
 
       console.log('Cart items cleared for cartId:', cartId);
     } catch (err) {

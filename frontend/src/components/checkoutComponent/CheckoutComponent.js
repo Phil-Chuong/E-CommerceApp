@@ -92,62 +92,41 @@ const CheckoutComponent = () => {
         e.preventDefault();
 
         console.log('handlePayment function called');
-        if (!stripe || !elements || !isCardElementLoaded) {
-            console.log('Stripe or Elements not loaded');
-            setPaymentError('Stripe.js has not loaded yet.');
-            console.error('Stripe.js has not yet loaded or CardElement is not mounted.');
+        if (!stripe || !elements || !isCardElementLoaded) {        
+            setPaymentError('Stripe.js has not yet loaded or CardElement is not mounted.');      
             return;
         }
 
         const cardElement = elements.getElement(CardElement);
 
         if (!cardElement) {
-            console.log('CardElement not found');
             setPaymentError('CardElement not found.');
             return;
         }
-
-        console.log('CardElement found:', cardElement);
 
         setLoading(true);
         setPaymentError(null);
 
         try {
-            console.log('Creating payment method...');
-            const paymentMethodId = await stripe.createPaymentMethod({
+            const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
                 type: 'card',
                 card: cardElement,
             });
 
-            console.log('Payment method created:', paymentMethodId);
-
-            if (paymentMethodId) {
-                console.log('Error creating payment method:', paymentMethodId.message);
-                setPaymentError(paymentMethodId.message);
+            if (paymentMethodError) {
+                setPaymentError(paymentMethodError.message);
                 return;
             }
 
-            console.log('Payment method created:', paymentMethodId);
-
-            // const cartId = localStorage.getItem('cartId'); // Retrieve cartId from localStorage
-            // if (!cartId) {
-            //     throw new Error('Cart ID not found in localStorage');
-            // }
-
-            // console.log('Calling stripeService.handlePayment with cartId:', cartId);
-            const result = await stripeService.handlePayment(totalAmount, paymentMethodId, cartId);
-            //console.log('handlePayment result:', result);
+            const result = await stripeService.handlePayment(totalAmount, paymentMethod.id, cartId);
 
             if (result.error) {
-                console.log('Error from handlePayment:', result.error);
                 setPaymentError(result.error);
-                // setLoading(false);
                 return;
             }
 
             setPaymentSuccess(true);
         } catch (error) {
-            console.log('Unhandled error during payment:', error);
             setPaymentError('Payment failed. Please try again.');
         } finally {
             setLoading(false);
@@ -177,7 +156,6 @@ const CheckoutComponent = () => {
                             const product = products.find(product => product.id === item.product_id);
                             if (!product) return null; // Skip if product not found
                             const imageURL = `https://techtitan.onrender.com${product.image_path}`;
-                            //const imageURL = product?.image_path ? `https://techtitan.onrender.com${product.image_path}` : 'default_image_path'; // Provide a fallback image URL
 
                             return (
                                 <li key={item.id} className='checkout-items'>
@@ -202,7 +180,7 @@ const CheckoutComponent = () => {
                         {!paymentSuccess && (
                             <div className="payment-form">
                                 <label>
-                                    Card Details:                                  
+                                    Card Details:
                                     <CardElement 
                                     className="card-element" 
                                     aria-hidden="true"
