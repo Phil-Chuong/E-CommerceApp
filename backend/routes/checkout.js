@@ -6,7 +6,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const Checkout = require('../models/Checkout');
 
 // CHECKOUT
-router.post('/checkout', async (req, res) => {
+router.post('/checkout', authenticateToken, async (req, res) => {
     // Extract values from the request body
     const { totalPrice, paymentMethodId, cartId} = req.body;
     const userId = req.userId; // Ensure this is correctly populated by authenticateToken middleware
@@ -17,7 +17,7 @@ router.post('/checkout', async (req, res) => {
     console.log('User ID:', userId);
     
     // Check if all required fields are provided
-    if (!totalPrice || !paymentMethodId || !cartId ||!userId) {
+    if (!totalPrice || !paymentMethodId || !cartId) {
         return res.status(400).send({ error: 'totalPrice, paymentMethodId, userId and cartId are required' });
     }
 
@@ -42,7 +42,7 @@ router.post('/checkout', async (req, res) => {
         console.log('Payment Intent created successfully:', paymentIntent);
 
         // Update the checkout status and create the order
-        await Checkout.checkout(cartId, paymentMethodId, totalPrice, userId);
+        await Checkout.checkout(cartId, paymentMethodId, totalPrice);
         
         res.status(200).json({
             client_secret: paymentIntent.client_secret,

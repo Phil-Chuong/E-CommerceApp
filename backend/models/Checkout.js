@@ -4,7 +4,7 @@ const Order = require('./Order');
 
 class Checkout {
 
-  //static async checkout(cartId, paymentMethodId, totalPrice, userId) {
+  //static async checkout(cartId, paymentMethodId, totalPrice) {
     static async checkout(cartId) {
   
   //const client = await pool.connect();

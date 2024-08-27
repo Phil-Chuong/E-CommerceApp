@@ -103,27 +103,27 @@ const CheckoutComponent = () => {
             return;
         }
 
-        console.log('CardElement:', cardElement);
+        console.log('CardElement found:', cardElement);
 
         setLoading(true);
         setPaymentError(null);
 
         try {
             console.log('Creating payment method...');
-            const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
+            const paymentMethodId = await stripe.createPaymentMethod({
                 type: 'card',
                 card: cardElement,
             });
 
-            console.log('Payment method created:', paymentMethod);
+            console.log('Payment method created:', paymentMethodId);
 
-            if (paymentMethodError) {
-                console.log('Error creating payment method:', paymentMethodError.message);
-                setPaymentError(paymentMethodError.message);
+            if (paymentMethodId) {
+                console.log('Error creating payment method:', paymentMethodId.message);
+                setPaymentError(paymentMethodId.message);
                 return;
             }
 
-            console.log('Payment method created:', paymentMethod);
+            console.log('Payment method created:', paymentMethodId);
 
             // const cartId = localStorage.getItem('cartId'); // Retrieve cartId from localStorage
             // if (!cartId) {
@@ -131,7 +131,7 @@ const CheckoutComponent = () => {
             // }
 
             // console.log('Calling stripeService.handlePayment with cartId:', cartId);
-            const result = await stripeService.handlePayment(totalAmount, paymentMethod.id, cartId);
+            const result = await stripeService.handlePayment(totalAmount, paymentMethodId, cartId);
             //console.log('handlePayment result:', result);
 
             if (result.error) {
@@ -199,8 +199,8 @@ const CheckoutComponent = () => {
                             <div className="payment-form">
                                 <label>
                                     Card Details:
-                                    {/* <CardElement id="card-element" className="card-element" /> */}
-                                    <CardElement className="card-element" aria-hidden="true"/>
+                                    <CardElement />
+                                    {/* <CardElement className="card-element" aria-hidden="true"/> */}
                                 </label>
 
                                 {paymentError && <p className="error-message">{paymentError}</p>}

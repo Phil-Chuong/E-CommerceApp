@@ -8,7 +8,7 @@ const stripeService = {
     initialize: () => stripePromise,
 
     // Function to handle payment using Stripe
-    async handlePayment(totalPrice, paymentMethodId, cartId, userId) {
+    async handlePayment(totalPrice, paymentMethodId, cartId) {
         const stripe = await stripePromise;
 
         try {
@@ -19,7 +19,6 @@ const stripeService = {
                 totalPrice,
                 paymentMethodId,
                 cartId,
-                userId
             }, {
                 headers: {
                     'Content-Type': 'application/json',
