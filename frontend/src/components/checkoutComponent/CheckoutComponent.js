@@ -32,12 +32,14 @@ const CheckoutComponent = () => {
     useEffect(() => {
         console.log('Retrieved token:', token);
         console.log('Retrieved cartId:', cartId);
+        onsole.log('Component mounted. Retrieved token:', token, 'Retrieved cartId:', cartId);
         
+        if (!token || !cartId) {
+            setError('Token or cartId not found.');
+            return;
+        }
+
         const fetchCartItems = async () => {
-            if (!token || !cartId) {
-                setError('Token or cartId not found.');
-                return;
-            }
 
             try {
                 const cartResponse = await axios.get(`/cart/cart_items/${cartId}`, {
@@ -86,7 +88,9 @@ const CheckoutComponent = () => {
 
 
     const handlePayment = async () => {
+        console.log('handlePayment function called');
         if (!stripe || !elements) {
+            console.log('Stripe or Elements not loaded');
             setPaymentError('Stripe.js has not loaded yet.');
             return;
         }
@@ -94,50 +98,53 @@ const CheckoutComponent = () => {
         const cardElement = elements.getElement(CardElement);
 
         if (!cardElement) {
+            console.log('CardElement not found');
             setPaymentError('CardElement not found.');
             return;
         }
+
+        console.log('CardElement:', cardElement);
 
         setLoading(true);
         setPaymentError(null);
 
         try {
             console.log('Creating payment method...');
-            const paymentMethod = await stripe.createPaymentMethod({
+            const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
                 type: 'card',
                 card: cardElement,
             });
 
             console.log('Payment method created:', paymentMethod);
 
-            if (paymentMethod.error) {
-                setPaymentError(paymentMethod.error.message);
-                setLoading(false);
-                console.log('Error creating payment method:', paymentMethod.error.message);
+            if (paymentMethodError) {
+                console.log('Error creating payment method:', paymentMethodError.message);
+                setPaymentError(paymentMethodError.message);
                 return;
             }
 
             console.log('Payment method created:', paymentMethod);
 
-            const cartId = localStorage.getItem('cartId'); // Retrieve cartId from localStorage
-            if (!cartId) {
-                throw new Error('Cart ID not found in localStorage');
-            }
+            // const cartId = localStorage.getItem('cartId'); // Retrieve cartId from localStorage
+            // if (!cartId) {
+            //     throw new Error('Cart ID not found in localStorage');
+            // }
 
-            console.log('Calling stripeService.handlePayment with cartId:', cartId);
+            // console.log('Calling stripeService.handlePayment with cartId:', cartId);
             const result = await stripeService.handlePayment(totalAmount, paymentMethod.id, cartId);
-            console.log('handlePayment result:', result);
+            //console.log('handlePayment result:', result);
 
             if (result.error) {
+                console.log('Error from handlePayment:', result.error);
                 setPaymentError(result.error);
-                setLoading(false);
+                // setLoading(false);
                 return;
             }
 
             setPaymentSuccess(true);
         } catch (error) {
+            console.log('Unhandled error during payment:', error);
             setPaymentError('Payment failed. Please try again.');
-            console.error('Unhandled error during payment:', error);
         } finally {
             setLoading(false);
         }
