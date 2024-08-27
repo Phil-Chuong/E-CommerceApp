@@ -11,6 +11,7 @@ const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_KEY);
 const CheckoutPage = ({ cartItems}) => {
   if (!stripePromise) {
     console.error('Stripe key is not defined in the environment variables.');
+    return <div>Error: Payment processing is unavailable at the moment.</div>;
   }
   
   return (

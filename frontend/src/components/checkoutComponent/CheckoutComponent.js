@@ -90,10 +90,11 @@ const CheckoutComponent = () => {
         setPaymentError(null);
 
         const cardElement = elements.getElement(CardElement);
-        
+        console.log('CardElement:', cardElement);
+
         if (!stripe || !cardElement) {
-            setLoading(false);
             setPaymentError('Stripe or CardElement not available');
+            setLoading(false);
             console.log('Stripe or cardElement not available');
             return;
         }
@@ -122,8 +123,7 @@ const CheckoutComponent = () => {
             }
 
             console.log('Calling stripeService.handlePayment with cartId:', cartId);
-            const result = await stripeService.handlePayment(totalAmount, paymentMethod.paymentMethod.id, cartId);
-
+            const result = await stripeService.handlePayment(totalAmount, paymentMethod.id, cartId);
             console.log('handlePayment result:', result);
 
             if (result.error) {
