@@ -98,11 +98,13 @@
 }
 
 .card-element {
-    padding: 10px;
+    padding: 5px; /* Reduce padding */
     border: 1px solid #ccc;
     border-radius: 4px;
     margin-top: 10px;
     margin-bottom: 20px;
+    width: 100%; /* Ensure full width */
+    box-sizing: border-box; /* Include padding in width calculation */
 }
 
 .error-message {
