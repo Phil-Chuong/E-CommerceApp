@@ -30,7 +30,7 @@ const RegisterPage = () => {
 
       localStorage.setItem('cartId', cartId);
 
-      navigate('https://tech-titan.onrender.com/HomePage');
+      navigate('/HomePage');
     } catch (error) {
       if (error.response) {
         console.error('Registration error:', error.response.data.error);
@@ -55,7 +55,7 @@ const RegisterPage = () => {
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required/>
         <button type="submit">Register</button>
         <br/>
-        <Link to="https://tech-titan.onrender.com/login">Login</Link> {/* Use Link component for internal navigation */}
+        <Link to="/login">Login</Link> {/* Use Link component for internal navigation */}
       </form>
     </div>    
   )

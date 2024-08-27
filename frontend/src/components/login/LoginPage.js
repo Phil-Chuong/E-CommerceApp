@@ -10,8 +10,6 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
-  const url = 'https://tech-titan.onrender.com';
   
 
   const handleLoginSuccess = async (accessToken, refreshToken, cartId, userId) => {
@@ -39,7 +37,7 @@ const LoginPage = () => {
 
     try {
       await fetchOrCreateCart(); // Fetch and update cart items
-      navigate(`${url}/HomePage`);
+      navigate('/HomePage');
     } catch (error) {
       console.error('Error handling login success:', error);
       if (error.response) {
@@ -69,7 +67,7 @@ const LoginPage = () => {
   
     if (!accessToken) {
       console.error('No token found.');
-      navigate(`${url}/login`);
+      navigate('/login');
       return;
     }
   
@@ -141,7 +139,7 @@ const LoginPage = () => {
           console.error('Error refreshing token:', refreshError);
           localStorage.removeItem('accessToken');
           localStorage.removeItem('refreshToken');
-          navigate(`${url}/login`);
+          navigate('/login');
         }
       } else {
         console.error('Error fetching or creating cart:', error.message);
@@ -249,7 +247,7 @@ const LoginPage = () => {
         />
         <br />
         <p>
-          Don't have an account? <a href="https://tech-titan.onrender.com/Register">Register here</a>
+          Don't have an account? <a href="https://tech-titan.onrender.com/register">Register here</a>
         </p>
       </form>
     </div>

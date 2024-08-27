@@ -15,7 +15,7 @@ import Orders from './Routes/orders/Orders';
 import SearchPage from './Routes/search/SearchPage';
 
 
-axios.defaults.baseURL = 'https://tech-titan.onrender.com';
+axios.defaults.baseURL = 'https://techtitan.onrender.com';
 //axios.defaults.baseURL = 'http://localhost:4000';
 
 
