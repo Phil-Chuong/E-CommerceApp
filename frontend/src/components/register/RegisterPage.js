@@ -18,7 +18,7 @@ const RegisterPage = () => {
     console.log('Form submitted');
 
     try {
-      const response = await axios.post('/auth/register', { firstname, lastname, username, email, password });
+      const response = await axios.post('https://techtitan.onrender.com/auth/register', { firstname, lastname, username, email, password });
       console.log('Registration response:', response.data);
       
       const { accessToken, cartId } = response.data;
