@@ -12,6 +12,7 @@ const CheckoutComponent = () => {
 
     const stripe = useStripe();
     const elements = useElements();
+    const [isCardElementLoaded, setIsCardElementLoaded] = useState(false);
     //const navigate = useNavigate();
 
     const [totalAmount, setTotalAmount] = useState(0);
@@ -87,11 +88,14 @@ const CheckoutComponent = () => {
     }, [cartItems, products]);
 
 
-    const handlePayment = async () => {
+    const handlePayment = async (e) => {
+        e.preventDefault();
+
         console.log('handlePayment function called');
-        if (!stripe || !elements) {
+        if (!stripe || !elements || !isCardElementLoaded) {
             console.log('Stripe or Elements not loaded');
             setPaymentError('Stripe.js has not loaded yet.');
+            console.error('Stripe.js has not yet loaded or CardElement is not mounted.');
             return;
         }
 
@@ -199,7 +203,16 @@ const CheckoutComponent = () => {
                             <div className="payment-form">
                                 <label>
                                     Card Details:                                  
-                                    <CardElement className="card-element" aria-hidden="true"/>
+                                    <CardElement 
+                                    className="card-element" 
+                                    aria-hidden="true"
+                                    onReady={() => setIsCardElementLoaded(true)}
+                                    onChange={(event) => {
+                                        if (event.complete) {
+                                          // Handle additional logic when card details are complete
+                                        }
+                                      }}
+                                    />
                                 </label>
 
                                 {paymentError && <p className="error-message">{paymentError}</p>}
