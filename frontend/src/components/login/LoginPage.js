@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import './LoginPage.css';
 import Logo from '../images/Logo.jpg';
@@ -247,7 +247,7 @@ const LoginPage = () => {
         />
         <br />
         <p>
-          Don't have an account? <a href="https://tech-titan.onrender.com/register">Register here</a>
+          Don't have an account? <Link to="/Register">Register here</Link>
         </p>
       </form>
     </div>
