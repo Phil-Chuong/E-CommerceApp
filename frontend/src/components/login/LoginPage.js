@@ -47,11 +47,6 @@ const LoginPage = () => {
       setError('An error occurred while setting up your cart.');
     }
     }
-
-    // console.log('Tokens after login:', {
-    //   token: localStorage.getItem('token'),
-    //   refreshToken: localStorage.getItem('refreshToken'),
-    // });
   };
 
   const fetchOrCreateCart = async () => {
