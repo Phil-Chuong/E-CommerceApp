@@ -198,9 +198,8 @@ const CheckoutComponent = () => {
                         {!paymentSuccess && (
                             <div className="payment-form">
                                 <label>
-                                    Card Details:
-                                    <CardElement />
-                                    {/* <CardElement className="card-element" aria-hidden="true"/> */}
+                                    Card Details:                                  
+                                    <CardElement className="card-element" aria-hidden="true"/>
                                 </label>
 
                                 {paymentError && <p className="error-message">{paymentError}</p>}
