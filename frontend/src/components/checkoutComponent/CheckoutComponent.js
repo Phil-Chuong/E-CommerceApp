@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 const CheckoutComponent = () => {
     // Assuming you use cartItems inside the component
-    console.log('Cart items in CheckoutComponent:', cartItems);
+    //console.log('Cart items in CheckoutComponent:', cartItems);
 
     const stripe = useStripe();
     const elements = useElements();
