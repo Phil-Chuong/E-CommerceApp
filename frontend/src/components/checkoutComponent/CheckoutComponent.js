@@ -217,7 +217,7 @@ const CheckoutComponent = () => {
 
                                 {paymentError && <p className="error-message">{paymentError}</p>}
 
-                                <button onClick={handlePayment} disabled={loading}>
+                                <button onClick={handlePayment} disabled={!stripe || !isCardElementLoaded}>
                                     {loading ? 'Processing...' : 'Pay Now'}
                                 </button>
                             </div>
