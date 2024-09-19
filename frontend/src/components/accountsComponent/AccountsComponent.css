@@ -1,21 +1,29 @@
 .accountBody {
     width: 100%;
-    min-height: 100vh;
+    min-height: 76vh;
     display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
+}
+
+/*bothContainer */
+.bothContainer {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 50px;
+    padding: 10px;
+    /* background-color:crimson; */
 }
 
 
 /* Personal Detail Section */
 .accountContainer {
-    width: 40%;
+    width: 30%;
     height: fit-content;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin-bottom: -170px;
+    margin: 5px;
     background-color: cornflowerblue;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
@@ -25,6 +33,7 @@
     display: flex;
     justify-content: center;
     text-align: center;
+    font-size: 1.2em;
 }
 
 .accountInfoSection {
@@ -51,24 +60,28 @@
 
 .userSection p {
     color: black;
-    font-weight: 700;
-    font-size: 1.1rem;
+    font-weight: 600;
+    font-size: 1rem;
     margin: 8px 0;
 }
 
 
 /*Order History List Section */
 .orderContainer {
-    width: 80%;
+    width: 60%;
     height: fit-content;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin-top: 220px;
-    margin-bottom: 100px; 
+    margin: 5px;
+    margin-left: 20px;
     background-color: cornflowerblue;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+}
+
+.orderContainer h2 {
+    font-size: 1.2em;
 }
 
 .orderListContainer {
@@ -101,8 +114,8 @@
 
 .orderlist p {
     color: black;
-    font-size: 1.1em;
-    font-weight: 700;
+    font-size: 1em;
+    font-weight: 600;
     margin: 5px 0;
 }
 
@@ -123,5 +136,42 @@
     display: flex;
     justify-content: center;
     text-align: center;
+
+}
+
+/* Media query for mobile view */
+@media only screen and (max-width: 600px) {
+    .bothContainer {
+        width: 100%;
+        height: auto;
+        display: flex;
+        flex-wrap: wrap;
+        padding: 10px;
+        /* background-color:crimson; */
+    }
+    
+    .accountContainer {
+        width: 100%;
+        height: auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        background-color: cornflowerblue;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+    }
+
+    .orderContainer {
+        width: 100%;
+        height: fit-content;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin: 5px;
+        margin-top: 20px;
+        background-color: cornflowerblue;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+    }
 
 }

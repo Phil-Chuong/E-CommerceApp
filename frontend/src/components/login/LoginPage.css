@@ -10,7 +10,7 @@
 }
 
 .loginForm {
-    width: 50%;
+    max-width: 50%;
     margin-bottom: 5%;
     padding: 20px;
     background-color:rgb(42, 51, 135);

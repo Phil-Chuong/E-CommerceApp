@@ -127,7 +127,7 @@ function CartItemComponent() {
                <div className='cartItemContainer'>
                     <h2 className='cartTitle'>Your Cart</h2>
 
-                    <div className='bothContainer'>
+                    <div className='mainContainer'>
                         <div className='itemContainer'>
                             <div className='itemBox'>
                                 <ul className='cartItemUL'>
@@ -140,9 +140,11 @@ function CartItemComponent() {
                                     return (
                                         <li key={item.id} className='items'>
                                                 <div className='itemProduct'>
-                                                    <h3>{product.name}</h3>
                                                     <img src={imageURL} alt={product.name} />
-                                                    <p>£{product.price} X {item.qty}</p>                                           
+                                                    <div>
+                                                        <h3>{product.name}</h3>
+                                                        <p>£{product.price} X {item.qty}</p>                                           
+                                                    </div>
                                                 </div>
 
                                                 <div className='addRemove'>

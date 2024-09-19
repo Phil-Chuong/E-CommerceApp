@@ -1,6 +1,6 @@
 .homepageBody {
     width: 100%;
-    min-height: 100vh;
+    min-height: 76vh;
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
@@ -28,6 +28,7 @@
     padding: 40px 20px;
     border-radius: 10px;
     font-size: 1.5em;
+    font-weight: 600;
 }
 
 .homeProductContainer h2 {
@@ -77,18 +78,103 @@
     height: 50px;
     margin: 5px 0;
     color: black;
-    font-weight: 700;
+    font-weight: 600;
 }
 
 .homeProductItems p {
     font-size: 1.1em;
     color: black;
     margin: 5px 0;
-    font-weight: 700;
+    font-weight: 600;
 }
 
 
 /* Media query for mobile view */
-@media (max-width: 768px) {
-    
+@media only screen and (max-width: 600px) {
+    .intro {
+        margin: 20px 50px;
+        padding: 30px 10px;
+        font-size: 1em;
+        /* background-color: aquamarine; */
+    }
+
+    .homeProductContainer h2 {
+        font-size: 1.5em;
+        margin: 3px;
+    }
+
+    .homeProductCard {
+        list-style-type: none;
+        padding: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        /* margin-left: 30px;
+        margin-right: 30px; */
+        margin-top: 0;
+    }
+
+    .homeProductItems {
+        width: 150px;
+        margin: 20px;
+        padding: 10px;
+        background-color: cornflowerblue;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+    }
+
+    .homeProductItems img {
+        min-height: 150px;
+        max-height: 150px;
+        object-fit: fill;
+    }
+}
+
+/* Media query for min: 600px - max: 900px */
+@media only screen and (min-width: 600px) and  (max-width: 900px) {
+    .intro {
+        margin: 20px 50px;
+        padding: 30px 10px;
+        font-size: 1.1em;
+    }
+
+    .homeProductContainer h2 {
+        font-size: 1.5em;
+        margin: 3px;
+    }
+
+    .homeProductCard {
+        list-style-type: none;
+        padding: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 0;
+    }
+
+    .homeProductItems {
+        width: 150px;
+        margin: 20px;
+        padding: 10px;
+        background-color: cornflowerblue;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+    }
+
+    .homeProductItems img {
+        min-height: 150px;
+        max-height: 150px;
+        object-fit: fill;
+    }
+
+}
+
+@media only screen and (min-width: 900px) {
+
 }

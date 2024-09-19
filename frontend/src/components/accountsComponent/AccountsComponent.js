@@ -86,7 +86,7 @@ function AccountsComponent() {
 
   return (
     <div className='accountBody'>
-     
+      <div className='bothContainer'>
         <div className='accountContainer'>          
           <h2>Account Details</h2>
           <div className='accountInfoSection'>
@@ -148,7 +148,8 @@ function AccountsComponent() {
             </ul>
           </div>
         </div>            
-    </div>
+      </div>
+    </div>       
   )
 }
 

@@ -47,9 +47,10 @@
 
 .productDetailInfo h2 {
     margin-bottom: 5px;
+    font-weight: 600;
 }
 
-.product-image {
+.productDetailCard img {
     width: 100%;
     height: 60%;
     border-radius: 10px;
@@ -69,12 +70,6 @@
     text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
 }
-
-/* .addCart button {
-    border-radius: 10px;
-    margin: 5px;
-    padding: 10px;
-} */
 
 .addCart button {
     background-color: #007bff; /* Default color */
@@ -100,36 +95,82 @@
 }
 
 .cartContainer h3 {
-    padding: 5px;
+    padding: 2px;
+    font-weight: 600;
 }
 
-/* Mobile Responsive Design */
-@media (max-width: 768px) {
+
+/* Media query for mobile view */
+@media only screen and (max-width: 768px) {
     .productDetailContainer {
-        width: 90%;
-        margin-top: 80px;
-        margin-bottom: 20px;
-        align-items: center;
-        /* background-color: brown; */
+        width: 100%;
+        height: auto;
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-around;
+        justify-content: left;
+        margin-top: 60px;  
+        margin-bottom: 80px;
+        border-radius: 10px;
+    }
+    
+    .productDetailCard {
+        list-style-type: none;
+        padding: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+    
+    .productDetailCard img {
+        min-width: 130px;
+        max-height: 150px;
+        object-fit: fill;
     }
 
-    .productDetailCard {
-        width: 40%;
-        padding: 10px;
+    .productDetailInfo p {
+        font-weight: 500;
+        margin-top: 5px;
+        font-size: 1em;
+    }
+
+    .productDetailInfo h2 {
+        margin-bottom: 3px;
+        font-size: 1.2em;
     }
 
     .cartContainer {
-        max-width: 40%;
-        margin-bottom: 200px;
-        padding: 10px;
+        max-width: 30%;
+        height: fit-content;
+        display: inline-block;
+        flex-wrap: wrap;
+        margin-top: 15px;
+        padding: 7px;
+        border-radius: 10px;
+        background-color: cornflowerblue; 
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
     }
 
-    .cartContainer button {
-        width: 50%;
-        padding: 10px;
+    .cartContainer h3 {
+        padding: 5px;
+        font-size: 1.2em;
     }
-    
+
+    .addCart button {
+        background-color: #007bff; /* Default color */
+        color: white;
+        padding: 5px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-bottom: 3px;
+    }
+}
+
+@media only screen and (min-width: 600px) and  (max-width: 900px) {
+
+
 }
