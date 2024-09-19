@@ -32,8 +32,8 @@ function ProductListComponent({product}) {
 
         <ul className='productCard'>         
             {products.map((product) => {
-              //const imageURL = `https://techtitan.onrender.com${product.image_path}`;
-              const imageURL = `http://localhost:4000${product.image_path}`;
+              const imageURL = `https://techtitan.onrender.com${product.image_path}`;
+              //const imageURL = `http://localhost:4000${product.image_path}`;
               return (
                 <li  key={product.id} className='productItems'>
                   <Link to={`/products/${product.id}`}>

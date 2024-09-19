@@ -34,8 +34,8 @@ function HomeComponent() {
 
                 <ul className='homeProductCard'>
                     {limitedProducts.map((product) => {
-                        //const imageURL = `https://techtitan.onrender.com${product.image_path}`;
-                        const imageURL = `http://localhost:4000${product.image_path}`;
+                        const imageURL = `https://techtitan.onrender.com${product.image_path}`;
+                        //const imageURL = `http://localhost:4000${product.image_path}`;
                              
                         return (
                             <Link key={product.id} to={`/products/${product.id}`}>

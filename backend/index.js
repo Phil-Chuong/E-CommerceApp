@@ -30,16 +30,16 @@ const pool = new Pool({
 });
 
 // Allow requests from specific origins
-app.use(cors({
-  origin: 'http://localhost:3000', // Adjust the port as needed
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true, // Allow cookies or other credentials
-}));
 // app.use(cors({
-//   origin: 'https://tech-titan.onrender.com', // Allow specific origin
+//   origin: 'http://localhost:3000', // Adjust the port as needed
 //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 //   credentials: true, // Allow cookies or other credentials
 // }));
+app.use(cors({
+  origin: 'https://tech-titan.onrender.com', // Allow specific origin
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true, // Allow cookies or other credentials
+}));
 
 
 // Middleware
@@ -70,10 +70,6 @@ app.use((req, res, next) => {
 
 // Serve static files from the "uploads" directory
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
-
-//app.use((req, res, next) => {res.status(404).send('File not found');});
-
-//console.log(path.join(__dirname, '/uploads', 'your-image-file.jpg'));
 
 // Initialize Stripe
 const stripe = Stripe(process.env.STRIPE_KEY);
@@ -124,8 +120,8 @@ const options = {
     },
     servers: [
       {
-        //url: 'https://techtitan.onrender.com',  // Update this URL
-        url: 'http://localhost:4000',
+        url: 'https://techtitan.onrender.com',  // Update this URL
+        //url: 'http://localhost:4000',
       },
     ],
   },
