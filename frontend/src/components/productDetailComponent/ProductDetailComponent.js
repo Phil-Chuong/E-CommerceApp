@@ -11,6 +11,7 @@ function ProductDetailComponent() {
   const [loading, setLoading] = useState(true);
   const [cartId, setCartId] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [isAdded, setIsAdded] = useState(false);
 
   useEffect(() => {
     setLoading(true); // Set loading state to true on mount or id change
@@ -67,20 +68,12 @@ function ProductDetailComponent() {
       console.log('No token found in localStorage');
       // Handle case where token is not present (e.g., redirect to login page)
     }
-  }, []); // Empty dependency array ensures this effect runs only once on component mount
+  }, []);
   
   
   const handleAddToCart = async (product) => {
-    try {
-        // Log the product object for debugging
-        console.log('Add to cart clicked for product:', product);
-
-        // Check if product is valid
-        if (!product || !product.id) {
-            console.error('Invalid product:', product);
-            alert('Invalid product. Please try again.');
-            return;
-        }
+    try {       
+        console.log('Add to cart clicked for product:', product);// Log the product object for debugging
 
         // Retrieve token and cartId from localStorage
         const token = localStorage.getItem('token');
@@ -95,26 +88,30 @@ function ProductDetailComponent() {
 
         // If cartId is not found in localStorage, create a new cart
         if (!cartId) {
-            console.log('No cartId found. Creating a new cart...');
+          console.log('No cartId found. Creating a new cart...'); 
+          const newCartResponse = await axios.post('/cart', { user_id: userId }, {
+              headers: { Authorization: `Bearer ${token}` }
+          });
 
-            const newCartResponse = await axios.post('/cart', { user_id: userId }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+          console.log('New cart response:', newCartResponse.data);
 
-            console.log('New cart response:', newCartResponse.data);
+          if (newCartResponse.data && newCartResponse.data.id) {
+              cartId = newCartResponse.data.id;
+              localStorage.setItem('cartId', cartId);
+              console.log('New cart created with ID:', cartId);
+          } else {
+              console.error('Failed to create a new cart:', newCartResponse.data);
+              alert('Failed to create a new cart. Please try again.');
+            return;
+          }         
+        }
 
-            if (newCartResponse.data && newCartResponse.data.id) {
-                cartId = newCartResponse.data.id;
-                localStorage.setItem('cartId', cartId);
-                console.log('New cart created with ID:', cartId);
-            } else {
-                console.error('Failed to create a new cart:', newCartResponse.data);
-                alert('Failed to create a new cart. Please try again.');
-                return;
-            }
-            
-          }
-          
+        // Check if product is valid
+        if (!product || !product.id) {
+            console.error('Invalid product:', product);
+            alert('Invalid product. Please try again.');
+            return;
+        }      
 
         // Fetch product details including stock
         const productResponse = await axios.get(`/products/${product.id}`);
@@ -139,8 +136,16 @@ function ProductDetailComponent() {
             headers: { Authorization: `Bearer ${token}` }
         });
 
+        setIsAdded(true); // Set state to true when the product is added to the cart
+
+        // Set a timeout to revert the state back to false after 2 seconds
+        setTimeout(() => {
+          setIsAdded(false);
+
+        }, 1500);
+
         console.log('Product added to cart:', addToCartResponse.data);
-        alert('Product added to cart successfully!');
+        // alert('Product added to cart successfully!');
     } catch (error) {
         console.error('Error adding product to cart:', error);
 
@@ -161,15 +166,16 @@ function ProductDetailComponent() {
         }
         alert('Error adding product to cart. Please try again.');
     }
+
+
   };
 
-  
     if (loading) return <div>Loading...</div>; // Render loading state
 
     if (!product) return <div>No product found.</div>; // Handle case where product is not found
 
-    const imageURL = `https://techtitan.onrender.com${product.image_path}`;
-    
+    //const imageURL = `https://techtitan.onrender.com${product.image_path}`;
+    const imageURL = `http://localhost:4000${product.image_path}`; 
     
     return (
       <div className='productDetailBody'>
@@ -193,7 +199,12 @@ function ProductDetailComponent() {
           </div>
 
           <div className='addCart'>          
-            <button onClick={() => handleAddToCart(product)}><p>Add to cart</p></button>
+            <button 
+              onClick={() => handleAddToCart(product)}
+              className={isAdded ? 'added' : ''}
+              >
+              <p>{isAdded ? 'ADDED' : 'Add to Cart'}</p>
+            </button>
           </div>           
         </div>
 

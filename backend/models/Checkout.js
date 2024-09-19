@@ -1,15 +1,12 @@
+const { Pool } = require('pg');
 const pool = require('../DB/db');
 const Cart = require('./Cart');
 const Order = require('./Order');
 
 class Checkout {
 
-  static async checkout(cartId, userId, totalPrice) {
-  
-  const client = await pool.connect();
+  static async checkout(cartId, paymentMethodId, userId, totalPrice) {
     try {
-      await client.query('BEGIN');
-
         console.log('Fetching cart with ID:', cartId);
         const cart = await Cart.getCartById(cartId);
 
@@ -19,37 +16,35 @@ class Checkout {
         }
 
         if (cart.status === 'completed') {
-            console.log('Cart already completed');
-            throw new Error('Cart already completed');
+          console.log('Cart already completed');
+          throw new Error('Cart already completed');
         }
 
-        console.log('Proceeding with payment intent creation');
-        // Proceed with payment intent creation and other checkout logic...
+        console.log('Proceeding with payment intent creation');      
+        await Checkout.updateStatus(cartId, 'completed', userId, parseFloat(totalPrice)); // Adjust status as needed
         
-        await Checkout.updateStatus(cartId, 'completed', userId, totalPrice); // Adjust status as needed
+        // Create order within the transaction
         await Order.createOrder(userId, cartId, parseFloat(totalPrice));
+        
+        // Clear cart items (optional, depending on your business logic)
         //await Checkout.clearCartItems(cartId);
 
-        await client.query('COMMIT');
         console.log('Checkout completed successfully');
 
       } catch (error) {
-        await client.query('ROLLBACK');
         console.error('Error during checkout:', error.message);
         throw error;
-      } finally {
-        client.release();
-    }
+      }
   }
 
-  static async updateStatus(client, cartId, status, userId, totalPrice) {
+  static async updateStatus(cartId, status, totalPrice, userId) {
     console.log(`Update Status - cartId: ${cartId}, status: ${status}, userId: ${userId}, totalPrice: ${totalPrice}`);
     try {
 
       // Use parameterized queries to prevent SQL injection
       console.log(cartId);
-      const result = await client.query(
-        'UPDATE cart SET status = $1, updated_at = NOW() WHERE id = $2 RETURNING *', 
+      const result = await pool.query(
+        'UPDATE cart SET status = $1, updated_at = NOW() WHERE id = $2 RETURNING *', //
         [status, cartId]
       );
   
@@ -64,10 +59,10 @@ class Checkout {
     }
   }
 
-  static async clearCartItems(client, cartId) {
+  static async clearCartItems(cartId) {
     try {
 
-      await client.query('DELETE FROM cart_items WHERE cart_id = $1', [cartId]);
+      await pool.query('DELETE FROM cart_items WHERE cart_id = $1', [cartId]);
 
       console.log('Cart items cleared for cartId:', cartId);
     } catch (err) {
@@ -75,7 +70,6 @@ class Checkout {
       throw err;
     }
   }
-
 
 }
 

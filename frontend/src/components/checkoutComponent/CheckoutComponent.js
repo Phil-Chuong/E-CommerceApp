@@ -4,16 +4,10 @@ import stripeService from '../../Services/stripeService';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import './CheckoutComponent.css'; 
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 const CheckoutComponent = () => {
-    // Assuming you use cartItems inside the component
-    //console.log('Cart items in CheckoutComponent:', cartItems);
-
     const stripe = useStripe();
     const elements = useElements();
-    const [isCardElementLoaded, setIsCardElementLoaded] = useState(false);
-    //const navigate = useNavigate();
 
     const [totalAmount, setTotalAmount] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -23,18 +17,12 @@ const CheckoutComponent = () => {
     const [cartItems, setCartItems] = useState([]);
     const [products, setProducts] = useState([]);
 
-    //const [checkoutStatus, setCheckoutStatus] = useState(null);
-
-   //const [cartId, setCartId] = useState(localStorage.getItem('cartId') || null);
-   const cartId = localStorage.getItem('cartId');
-   const token = localStorage.getItem('token'); 
+    const cartId = localStorage.getItem('cartId');
+    const token = localStorage.getItem('token'); 
 
 
     useEffect(() => {
-        console.log('Retrieved token:', token);
-        console.log('Retrieved cartId:', cartId);
-        console.log('Component mounted. Retrieved token:', token, 'Retrieved cartId:', cartId);
-        
+       
         if (!token || !cartId) {
             console.error('Token or cartId not found.');
             setError('Token or cartId not found.');
@@ -42,9 +30,8 @@ const CheckoutComponent = () => {
         }
 
         const fetchCartItems = async () => {
-
             try {
-                console.log('Fetching cart items...');
+                //console.log('Fetching cart items...');
                 const cartResponse = await axios.get(`/cart/cart_items/${cartId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
@@ -66,7 +53,7 @@ const CheckoutComponent = () => {
         const fetchProducts = async () => {
             try {
                 const productResponse = await axios.get('/products');
-                console.log('Products fetched:', productResponse.data); // Debugging log
+                //console.log('Products fetched:', productResponse.data); // Debugging log
                 setProducts(productResponse.data);
             } catch (error) {
                 console.error('Failed to load products:', error);
@@ -79,7 +66,8 @@ const CheckoutComponent = () => {
 
 
     useEffect(() => {
-        console.log('Calculating total price...');
+        //console.log('Calculating total price...');
+        if (cartItems.length > 0 && products.length > 0) {
         const calculateTotalPrice = () => {
             const total = cartItems.reduce((total, item) => {
                 const product = products.find(product => product.id === item.product_id);
@@ -90,63 +78,62 @@ const CheckoutComponent = () => {
         };
 
         calculateTotalPrice();
+        }
     }, [cartItems, products]);
 
+    
+    const handlePayment = async () => {
 
-    const handlePayment = async (e) => {
-        e.preventDefault();
-
-        console.log('handlePayment function called');
-        if (!stripe || !elements || !isCardElementLoaded) {   
-            console.log('Stripe or Elements not loaded or CardElement not mounted');     
-            setPaymentError('Stripe.js has not yet loaded or CardElement is not mounted.');      
+        if (!stripe || !elements) {
+            console.log('Stripe or cardElement not available');
             return;
         }
 
+        // Retrieve the CardElement before proceeding
         const cardElement = elements.getElement(CardElement);
-        console.log('CardElement:', cardElement);
-
         if (!cardElement) {
             console.error('CardElement not found.');
-            setPaymentError('CardElement not found.');
             return;
         }
-
-        setLoading(true);
-        setPaymentError(null);
 
         try {
             console.log('Creating payment method...');
-            const { error: paymentMethodError, paymentMethod } = await stripe.createPaymentMethod({
+            const { error, paymentMethod } = await stripe.createPaymentMethod({
                 type: 'card',
                 card: cardElement,
             });
 
-            if (paymentMethodError) {
-                console.error('Payment method creation error:', paymentMethodError.message);
-                setPaymentError(paymentMethodError.message);
+            console.log('Payment method created:', paymentMethod);
+
+            if (error) {
+                console.log('Error creating payment method:', error.message);
                 return;
             }
 
-            console.log('Payment method created:', paymentMethod.id);
+            //console.log('Payment method created:', paymentMethod);
 
+            const cartId = localStorage.getItem('cartId'); // Retrieve cartId from localStorage
+            if (!cartId) {
+                throw new Error('Cart ID not found in localStorage');
+            }
+
+            console.log('Calling stripeService.handlePayment with cartId:', cartId);
             const result = await stripeService.handlePayment(totalAmount, paymentMethod.id, cartId);
 
+            console.log('handlePayment result:', result);
+
             if (result.error) {
-                console.error('Payment handling error:', result.error);
-                setPaymentError(result.error);
                 return;
             }
 
-            console.log('Payment successfully processed');
             setPaymentSuccess(true);
         } catch (error) {
             console.error('Unhandled error during payment:', error);
-            setPaymentError('Payment failed. Please try again.');
         } finally {
             setLoading(false);
         }
     };
+    
 
     if (error) {
         return <div className="error-message">{error}</div>;
@@ -156,9 +143,10 @@ const CheckoutComponent = () => {
         return <div className="loading-message">Processing your payment...</div>;
     }
 
-    if (cartItems.length === 0) {
+    if (!Array.isArray(cartItems) || cartItems.length === 0) {
         return <div>No items in the cart.</div>;
     }
+
 
     return (
         <div className='checkoutBodyContainer'>
@@ -170,7 +158,8 @@ const CheckoutComponent = () => {
                         {cartItems.map((item) => {
                             const product = products.find(product => product.id === item.product_id);
                             if (!product) return null; // Skip if product not found
-                            const imageURL = `https://techtitan.onrender.com${product.image_path}`;
+                            //const imageURL = `https://techtitan.onrender.com${product.image_path}`;
+                            const imageURL = `http://localhost:4000${product.image_path}`;
 
                             return (
                                 <li key={item.id} className='checkout-items'>
@@ -196,25 +185,12 @@ const CheckoutComponent = () => {
                             <div className="payment-form">
                                 <label>
                                     Card Details:
-                                    <CardElement 
-                                    className="card-element" 
-                                    aria-hidden="true"
-                                    onReady={() => {
-                                        console.log('CardElement is mounted and ready.');
-                                        setIsCardElementLoaded(true)
-                                    }}
-                                    onChange={(event) => {
-                                        if (event.complete) {
-                                          // Handle additional logic when card details are complete
-                                          console.log('Card details are complete.');
-                                        }
-                                      }}
-                                    />
+                                    <CardElement className="card-element" />
                                 </label>
 
                                 {paymentError && <p className="error-message">{paymentError}</p>}
 
-                                <button onClick={handlePayment} disabled={!stripe || !isCardElementLoaded}>
+                                <button onClick={handlePayment} disabled={loading}>
                                     {loading ? 'Processing...' : 'Pay Now'}
                                 </button>
                             </div>
@@ -223,7 +199,7 @@ const CheckoutComponent = () => {
                         {paymentSuccess && (
                             <div className="payment-success">
                                 <p>Payment successful!</p>
-                                <Link to="/login" style={{ fontSize: '32px' }}>
+                                <Link to="/Login" style={{ fontSize: '32px' }}>
                                 Thank you for Shopping with us.
                                 </Link>
                             </div>

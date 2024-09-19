@@ -4,7 +4,6 @@ import axios from 'axios';
 import './HomeComponent.css';
 
 function HomeComponent() {
-
     const [products, setProducts] = useState([]);
     const navigate = useNavigate();
 
@@ -25,6 +24,7 @@ function HomeComponent() {
     }, [navigate]);
 
     const limitedProducts = products.slice(0, 10); // Limit to 10 products
+    
 
     return (
         <div className='homepageBody'>
@@ -34,8 +34,9 @@ function HomeComponent() {
 
                 <ul className='homeProductCard'>
                     {limitedProducts.map((product) => {
-                        const imageURL = `https://techtitan.onrender.com${product.image_path}`;
-
+                        //const imageURL = `https://techtitan.onrender.com${product.image_path}`;
+                        const imageURL = `http://localhost:4000${product.image_path}`;
+                             
                         return (
                             <Link key={product.id} to={`/products/${product.id}`}>
                                 <li className='homeProductItems'>

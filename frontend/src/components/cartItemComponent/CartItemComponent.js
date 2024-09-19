@@ -25,7 +25,7 @@ function CartItemComponent() {
 
             if (!token || !cartId) {
                 console.log('Token or cartId or userId not found.');
-                setError('Token or cart_id or userId not found.'); // Handle case where token or cart_id is missing
+                setError('Token or cart_id or userId not found.');
                 setLoading(false);
                 return;
             }
@@ -36,7 +36,6 @@ function CartItemComponent() {
                 const cartResponse = await axios.get(`/cart/cart_items/${cartId}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-
 
                 console.log('Cart items fetched:', cartResponse.data); // Debugging log
                 
@@ -59,7 +58,6 @@ function CartItemComponent() {
         const fetchProducts = async () => {
             try {
                 const productResponse = await axios.get('/products');
-
                 console.log('Products fetched:', productResponse.data); // Debugging log
                 
                 setProducts(productResponse.data);
@@ -98,22 +96,18 @@ function CartItemComponent() {
         }
     };
           
-          
     const handlePayment = () => {
         console.log('Navigating to checkout');
         navigate('/checkout');
     };
 
-
     // Function to calculate total price
     const calculateTotalPrice = () => {
-
         return cartItems.reduce((total, item) => {
             const product = products.find(product => product.id === item.product_id);
             return total + (product ? product.price * item.qty : 0);
         }, 0);
     }
-
 
     if (loading) return <div>Loading...</div>;
 
@@ -139,12 +133,11 @@ function CartItemComponent() {
                                 <ul className='cartItemUL'>
                                 {cartItems.map((item) => {
                                     const product = products.find(product => product.id === item.product_id);
-                                    
-                                    //const imageURL = `https://techtitan.onrender.com${product.image_path}`;
-                                    const imageURL = product?.image_path ? `https://techtitan.onrender.com${product.image_path}` : 'default_image_path'; // Provide a fallback image URL
-                                        
                                     if (!product) return null; // Skip if product not found
-                                        return (
+                                    const imageURL = `http://localhost:4000${product.image_path}`;                                   
+                                    //const imageURL = product?.image_path ? `https://techtitan.onrender.com${product.image_path}` : 'default_image_path'; // Provide a fallback image URL                                  
+                                        
+                                    return (
                                         <li key={item.id} className='items'>
                                                 <div className='itemProduct'>
                                                     <h3>{product.name}</h3>

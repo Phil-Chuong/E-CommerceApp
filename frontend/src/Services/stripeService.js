@@ -13,7 +13,7 @@ const stripeService = {
 
         try {
             console.log('Attempting to create payment intent...');
-            
+
             // Create payment intent on your backend
             const response = await axios.post('/checkout/checkout', {
                 totalPrice,
@@ -22,7 +22,7 @@ const stripeService = {
             }, {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Assuming token is stored in localStorage
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
             });
 
@@ -33,19 +33,14 @@ const stripeService = {
             }
 
             // Confirm the payment intent with Stripe Elements
-            const { client_secret, status } = response.data;// add newCartId
+            const { client_secret, status } = response.data;
 
             // Check if payment has already been processed
             if (status === 'succeeded') {
                 console.log('Payment has already been processed.');
-                return { success: true }; // remove newCardId
+                return { success: true }; // Payment was already completed
             }
 
-            // Payment processing code
-            //if (response.data && response.data.newCartId) {
-                 //return { success: true, newCartId: response.data.newCartId };
-            //}
-            
             // Confirm the payment intent with Stripe Elements
             console.log('Attempting to confirm payment with client secret:', client_secret);
 
@@ -53,14 +48,14 @@ const stripeService = {
                 payment_method: paymentMethodId,
             });
 
+            // Handle payment confirmation error
             if (error) {
                 console.error('Payment confirmation failed:', error.message);
                 throw new Error(error.message);
             }
 
             console.log('Payment successfully processed!');
-            return { success: true }; //newCartId: response.data.newCartId 
-            
+            return { success: true };         
         } catch (error) {
             console.error('Error processing payment:', error.message);
             return { error: error.message };

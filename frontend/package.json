@@ -1,7 +1,6 @@
 {
   "name": "e-commerceappfrontend",
   "version": "0.1.0",
-  "proxy": "https://techtitan.onrender.com",
   "private": true,
   "dependencies": {
     "@react-oauth/google": "^0.12.1",

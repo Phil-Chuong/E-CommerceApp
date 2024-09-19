@@ -131,7 +131,7 @@ router.post('/cart_items', authenticateToken, async (req, res) => {
 
     if (!userId) {
       return res.status(400).json({ error: 'User ID not found in request' });
-  }
+    }
 
     // Check if all required fields are provided
     if (!productId || !quantity) {

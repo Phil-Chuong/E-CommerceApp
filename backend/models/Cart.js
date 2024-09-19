@@ -29,22 +29,6 @@ class Cart {
     }
   }
 
-  static async createCart(userId) {
-      try {
-        console.log(`Creating cart for user id: ${userId}`);
-        const result = await pool.query(
-          'INSERT INTO cart (user_id, status) VALUES ($1, $2) RETURNING *',
-          [userId, 'active']
-        );
-        console.log('Cart created:', result.rows[0]);
-        return result.rows[0];
-      } catch (error) {
-        console.error('Error creating cart for user:', error.message);
-        throw new Error('Error creating cart');
-      }
-  };
-
-
   static async getActiveCartByUserId(userId) {
     const query = 'SELECT * FROM cart WHERE user_id = $1 AND status = $2';
     try {
@@ -58,6 +42,22 @@ class Cart {
       throw error;
     }
   }
+
+  //CREATE CART
+  static async createCart(userId) {
+    try {
+      console.log(`Creating cart for user id: ${userId}`);
+      const result = await pool.query(
+        'INSERT INTO cart (user_id, status) VALUES ($1, $2) RETURNING *',
+        [userId, 'active']
+      );
+      console.log('Cart created:', result.rows[0]);
+      return result.rows[0];
+    } catch (error) {
+      console.error('Error creating cart for user:', error.message);
+      throw new Error('Error creating cart');
+    }
+  };
 
   //get all cart_items
   static async getAllCartItems() {
@@ -100,7 +100,7 @@ class Cart {
   // POST REQUEST
   static async addProductToCart(cartId, productId, quantity, userId) {
     try {
-      // Fetch product details including price
+      // Fetch product details including price and stock
       const productQuery = 'SELECT price, stock FROM products WHERE id = $1';
       const productResult = await pool.query(productQuery, [productId]);
       const product = productResult.rows[0];
@@ -109,10 +109,17 @@ class Cart {
         throw new Error('Product not found');
       }
 
+      // Log current stock and requested quantity
+      console.log(`Stock for product ${productId}: ${product.stock}, Requested quantity: ${quantity}`);
+      
       // Check if there is enough stock
       if (product.stock < quantity) {
         return { message: 'Not enough stock available' };
       }
+
+      // Start a transaction
+      await pool.query('BEGIN');
+
 
       // Check if the product already exists in the cart
       const existingCartItem = await pool.query(
@@ -123,9 +130,11 @@ class Cart {
       if (existingCartItem.rows.length > 0) {
         // If the product exists in the cart, update the quantity
         const updatedQuantity = existingCartItem.rows[0].qty + parseInt(quantity);
+        console.log(`Updated quantity: ${updatedQuantity}, Stock: ${product.stock}`);
 
         // Ensure the updated quantity doesn't exceed the stock
       if (updatedQuantity > product.stock) {
+        await pool.query('ROLLBACK');
         return { message: 'Not enough stock available' };
       }
 
@@ -133,29 +142,30 @@ class Cart {
           'UPDATE cart_items SET qty = $1 WHERE cart_id = $2 AND product_id = $3',
           [updatedQuantity, cartId, productId]
         );
-
-        await pool.query(
-          'UPDATE products SET stock = stock - $1 WHERE id = $2',
-          [quantity, productId]
-        );
-
-        return { message: 'Product quantity updated in cart' };
       } else {
         // If the product doesn't exist in the cart, create a new entry
         const query = 'INSERT INTO cart_items (cart_id, product_id, qty, price) VALUES ($1, $2, $3, $4) RETURNING *';
         const values = [cartId, productId, quantity, product.price];
-        const { rows } = await pool.query(query, values);
-
-        // Update the stock for the product
-        await pool.query(
-          'UPDATE products SET stock = stock - $1 WHERE id = $2',
-          [quantity, productId]
-        );
-
-        return rows[0];
+        await pool.query(query, values);
       }
+      // Update the stock for the product
+      console.log(`Stock before update for product ${productId}: ${product.stock}`);
+      const stockUpdateResult = await pool.query(
+        'UPDATE products SET stock = stock - $1 WHERE id = $2',
+        [quantity, productId]
+      );
+      console.log(`Stock update result: ${stockUpdateResult.rowCount}`);
+      const updatedProductResult = await pool.query('SELECT stock FROM products WHERE id = $1', [productId]);
+      console.log(`Stock after update for product ${productId}: ${updatedProductResult.rows[0].stock}`);
+      console.log(`Stock update result: ${stockUpdateResult.rowCount}`);
+
+      // Commit the transaction
+      await pool.query('COMMIT');
+
+      return { message: 'Product added to cart successfully' };
     } catch (error) {
       console.error('Error adding product to cart:', error.message);
+      await pool.query('ROLLBACK');
       throw error;
     }
   }

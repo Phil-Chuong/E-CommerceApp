@@ -13,10 +13,10 @@ const LoginPage = () => {
   
 
   const handleLoginSuccess = async (accessToken, refreshToken, cartId, userId) => {
-    console.log('Login Success - Received data:', { accessToken, refreshToken, cartId, userId });
+      //console.log('Login Success - Received data:', { accessToken, refreshToken, cartId, userId });
 
     if (!accessToken || !refreshToken || !cartId || !userId) {
-      console.error('Missing required data from server response.');
+      //console.error('Missing required data from server response.');
       setError('Incomplete login data received.');
       return;
     }
@@ -33,7 +33,6 @@ const LoginPage = () => {
       cartId: localStorage.getItem('cartId'),
       userId: localStorage.getItem('userId')
     });
-    
 
     try {
       await fetchOrCreateCart(); // Fetch and update cart items
@@ -97,16 +96,14 @@ const LoginPage = () => {
       response = await axios.post('/cart', {}, {
         headers: { Authorization: `Bearer ${accessToken}` }
       });
-  
-        console.log('New cart created:', response.data.cart);
-        cart = response.data.cart;
-  
-        // Check if new cart has an id
-        if (!cart || !cart.id) {
-          console.error('New cart is missing or has no id.');
-          throw new Error('New cart data is missing.');
-        }
-      }
+      console.log('New cart created:', response.data.cart);
+      cart = response.data.cart;
+        // // Check if new cart has an id
+        // if (!cart || !cart.id) {
+        //   console.error('New cart is missing or has no id.');
+        //   throw new Error('New cart data is missing.');
+        // }
+    }
       
       // Update local storage with the cart ID
       localStorage.setItem('cartId', cart.id);
@@ -150,12 +147,12 @@ const LoginPage = () => {
     try {
       // Send a POST request to the server with user credentials
       const response = await axios.post('/auth/login', { email, password });
-      console.log('Login response:', response.data);
+      //console.log('Login response:', response.data);
 
       // Extract the token from the response data and store it in localStorage
       const { accessToken, refreshToken, cartId, userId} = response.data;
 
-      console.log('Extracted Data:', { accessToken, refreshToken, cartId, userId });
+      //console.log('Extracted Data:', { accessToken, refreshToken, cartId, userId });
 
       // Store tokens and cartId in localStorage
       if (accessToken && refreshToken && cartId && userId) {

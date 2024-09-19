@@ -9,11 +9,10 @@ const Checkout = require('../models/Checkout');
 router.post('/checkout', authenticateToken, async (req, res) => {
     // Extract values from the request body
     const { totalPrice, paymentMethodId, cartId} = req.body;
-    const userId = req.userId; // Ensure this is correctly populated by authenticateToken middleware
-    console.log('Authenticated user ID:', req.userId);
+    const userId = req.userId;
     
     // Log values to debug
-    console.log('Authenticated user ID:', userId);
+    console.log('Authenticated user ID:', req.userId);
     console.log('Request body:', req.body);
     
     // Check if all required fields are provided
@@ -23,25 +22,26 @@ router.post('/checkout', authenticateToken, async (req, res) => {
 
     // Convert totalPrice to a number
     const numericTotalPrice = parseFloat(totalPrice);
+
     if (isNaN(numericTotalPrice)) {
         return res.status(400).send({ error: 'Invalid totalPrice format' });
     }
 
-
     try {
         const paymentIntent = await stripe.paymentIntents.create({
-            amount: numericTotalPrice * 100,
+            amount: totalPrice * 100,
             currency: 'gbp',
             payment_method: paymentMethodId,
             confirmation_method: 'manual',
             confirm: true,
-            return_url: 'https://tech-titan.onrender.com/homePage', // Adjust the URL as per your application
+            //return_url: 'https://tech-titan.onrender.com/homePage', // Adjust the URL as per your application
+            return_url: 'http://localhost:3000/homePage',
         });
 
         console.log('Payment Intent created successfully:', paymentIntent);
 
         // Update the checkout status and create the order
-        await Checkout.checkout(cartId, userId, paymentMethodId, totalPrice);
+        await Checkout.checkout(cartId, paymentMethodId, totalPrice, userId);
         
         res.status(200).json({
             client_secret: paymentIntent.client_secret,

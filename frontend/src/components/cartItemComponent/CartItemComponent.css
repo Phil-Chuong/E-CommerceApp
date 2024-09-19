@@ -1,6 +1,6 @@
 .cartBody {
     width: 100%;
-    min-height: 73.9vh;
+    min-height: 76vh;
     display: flex;
     /* justify-content: center; */
     flex-direction: column;

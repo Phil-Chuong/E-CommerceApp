@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 function OrderComponent() {
-
     const { cartId } = useParams();
     const [cartItems, setCartItems] = useState([]);
     const [products, setProducts] = useState([]);
@@ -60,9 +59,7 @@ function OrderComponent() {
 
     if (loading) return <div>Loading...</div>;
 
-    // Handle case where there is an error
     if (error) return <div>Error: {error}</div>;
-
 
     return (
         <div className='orderHistoryBody'>
@@ -72,7 +69,8 @@ function OrderComponent() {
                 <ul className='orderItems'>
                     {cartItems.map((item) => {
                         const product = products.find(product => product.id === item.product_id);
-                        const imageURL = `https://techtitan.onrender.com${product.image_path}`;
+                        //const imageURL = `https://techtitan.onrender.com${product.image_path}`;
+                        const imageURL = product?.image_path ? `http://localhost:4000${product.image_path}` : 'default_image_path'; // Provide a fallback image URL
 
                         if (!product) return null; // Skip if product not found
                             return (
