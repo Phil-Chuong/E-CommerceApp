@@ -1,5 +1,4 @@
 /* src/components/LoginPage.css */
-
 .loginBody {
     width: 100%;
     min-height: 100vh;
@@ -10,7 +9,7 @@
 }
 
 .loginForm {
-    max-width: 50%;
+    width: 50%;
     margin-bottom: 5%;
     padding: 20px;
     background-color:rgb(42, 51, 135);
@@ -24,7 +23,7 @@
 .loginForm h2 {
     margin-bottom: 20px;
     font-family: "Bebas Neue", sans-serif;
-    font-weight: 400;
+    font-weight: 500;
     font-style: normal;
     font-size: 32px;
 }
