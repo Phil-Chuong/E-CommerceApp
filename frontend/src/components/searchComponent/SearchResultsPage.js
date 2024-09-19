@@ -34,8 +34,8 @@ const SearchResultsPage = () => {
         <div className='searchBox'>
           <ul className='searchCard'>
             {results.map((product) => {
-              const imageURL = `https://techtitan.onrender.com${product.image_path}`;
-              //const imageURL = `http://localhost:4000${product.image_path}`;
+              //const imageURL = `https://techtitan.onrender.com${product.image_path}`;
+              const imageURL = `http://localhost:4000${product.image_path}`;
 
               return (
               <Link to={`/products/${product.id}`} key={product.id}>

@@ -30,16 +30,16 @@ const pool = new Pool({
 });
 
 // Allow requests from specific origins
-// app.use(cors({
-//   origin: 'http://localhost:3000', // Adjust the port as needed
-//   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-//   credentials: true, // Allow cookies or other credentials
-// }));
 app.use(cors({
-  origin: 'https://tech-titan.onrender.com', // Allow specific origin
+  origin: 'http://localhost:3000', // Adjust the port as needed
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true, // Allow cookies or other credentials
 }));
+// app.use(cors({
+//   origin: 'https://tech-titan.onrender.com', // Allow specific origin
+//   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+//   credentials: true, // Allow cookies or other credentials
+// }));
 
 
 // Middleware
@@ -120,8 +120,8 @@ const options = {
     },
     servers: [
       {
-        url: 'https://techtitan.onrender.com',  // Update this URL
-        //url: 'http://localhost:4000',
+        //url: 'https://techtitan.onrender.com',  // Update this URL
+        url: 'http://localhost:4000',
       },
     ],
   },

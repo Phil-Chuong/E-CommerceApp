@@ -69,8 +69,8 @@ function OrderComponent() {
                 <ul className='orderItems'>
                     {cartItems.map((item) => {
                         const product = products.find(product => product.id === item.product_id);
-                        const imageURL = `https://techtitan.onrender.com${product.image_path}`;
-                        //const imageURL = product?.image_path ? `http://localhost:4000${product.image_path}` : 'default_image_path'; // Provide a fallback image URL
+                        //const imageURL = `https://techtitan.onrender.com${product.image_path}`;
+                        const imageURL = product?.image_path ? `http://localhost:4000${product.image_path}` : 'default_image_path'; // Provide a fallback image URL
 
                         if (!product) return null; // Skip if product not found
                             return (
