@@ -52,42 +52,42 @@ $ npm start
  ![homepage](https://github.com/user-attachments/assets/7a1b2c17-4a88-437f-b85f-59df10642d00) ![cart](https://github.com/user-attachments/assets/3e0c1d33-0154-4227-b9f8-3158f9aa4223) ![checkout success](https://github.com/user-attachments/assets/65f794d7-ee48-45a0-b554-0316f5ebed1b)
 
 ### Order Management:
-- Users can view their order history and account details.
+Users can view their order history and account details.
 
  ![order history with account](https://github.com/user-attachments/assets/582ac607-6c87-4d54-82ce-480b6cd4c816)
 
 ### Search Functionality:
-- A search bar feature to find products quickly.
+A search bar feature to find products quickly.
 
  ![search feature](https://github.com/user-attachments/assets/4c18f548-a4dc-49d5-897a-ea69bba46840) ![search result](https://github.com/user-attachments/assets/9d00b24b-3b1c-4ad3-95ad-7d061be807d8)
   
 ### Responsive Design:
-- Fully responsive design with a mobile-friendly toggle dropdown menu.
+Fully responsive design with a mobile-friendly toggle dropdown menu.
 
  ![mobile media query with dropdown menu](https://github.com/user-attachments/assets/b45c2524-ec88-4412-9e6f-d06484609a8b)
 
 ## TechStack
 
 ### Frontend: 
-HTML, CSS, JavaScript, React
+- HTML, CSS, JavaScript, React
 ### Backend: 
-Node.js, Express.js
+- Node.js, Express.js
 ### Database: 
-PostgreSQL via PGAdmin 4
+- PostgreSQL via PGAdmin 4
 ### Payment Gateway: 
-Stripe for secure online payments
+- Stripe for secure online payments
 ### Hosting: 
-Render for application hosting
+- Render for application hosting
 ### Version Control: 
-Git, GitHub for source code management
+- Git, GitHub for source code management
 
 ## Environment Variables
 
-- Make sure to set up the following environment variables for JWT authentication, Stripe API keys, and database connection.
+Make sure to set up the following environment variables for JWT authentication, Stripe API keys, and database connection.
 
 ## Hosting
 
-- The project is live and hosted on Render: [Tech Titan](https://tech-titan.onrender.com) - Visit the Site
+The project is live and hosted on Render: [Tech Titan](https://tech-titan.onrender.com) - Visit the Site
 
 ## Future works:
 - Able to continue shopping after payment.
