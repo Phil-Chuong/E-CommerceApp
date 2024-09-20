@@ -19,7 +19,7 @@ Tech Titan is a full-featured e-commerce web application that allows users to br
 - Browse a catalog of products.
 - Add products to a shopping cart.
 - Secure Stripe payment integration at the checkout route.
-  ![homepage](https://github.com/user-attachments/assets/c1fb866a-1a2c-4c02-acee-517e4dcd11d3)
+  ![homepage 2](https://github.com/user-attachments/assets/70731e7d-d11a-4970-8d69-62e89d0ba1a1)
   ![cart](https://github.com/user-attachments/assets/d1d6daea-dce4-4eb5-adfd-6f483330ac9e)
   ![checkout success](https://github.com/user-attachments/assets/bfd1bc46-09a5-4e27-9925-9219bf1cec15)
 
