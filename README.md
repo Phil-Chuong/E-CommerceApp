@@ -6,6 +6,21 @@ https://tech-titan.onrender.com
 
 Tech Titan is a full-featured e-commerce web application that allows users to browse, search, and purchase products. The application offers secure user authentication, a shopping cart with integrated Stripe payments, and user-friendly features such as viewing order history and account details.
 
+## Setup
+### Backend:
+- Navigate to backend folder
+- install dependencies:
+  npm install
+- Start the backend server:
+  npm start
+
+### Frontend:
+- Navigate to the frontend folder
+- Install dependencies:
+  npm install
+- Start the frontend server:
+  npm start
+
 ## Features
 
 ### User Authentication:
@@ -13,8 +28,6 @@ Tech Titan is a full-featured e-commerce web application that allows users to br
 -Goolge login authentication.
 -Secure authentication using JWT and refresh tokens for session management.
 ![Login page](https://github.com/user-attachments/assets/b85616c4-d8ca-4310-b7b3-25551d68a3ce) ![Register](https://github.com/user-attachments/assets/cb931893-82ce-4a87-828d-7e1f19220dc3)
-
-
 
 ### Product Management:
 -Browse a catalog of products.
@@ -39,12 +52,18 @@ Tech Titan is a full-featured e-commerce web application that allows users to br
 
 ## TechStack
 
-### Frontend: HTML, CSS, JavaScript, React
-### Backend: Node.js, Express.js
-### Database: PostgreSQL via PGAdmin 4
-### Payment Gateway: Stripe for secure online payments
-### Hosting: Render for application hosting
-### Version Control: Git, GitHub for source code management
+### Frontend: 
+HTML, CSS, JavaScript, React
+### Backend: 
+Node.js, Express.js
+### Database: 
+PostgreSQL via PGAdmin 4
+### Payment Gateway: 
+Stripe for secure online payments
+### Hosting: 
+Render for application hosting
+### Version Control: 
+Git, GitHub for source code management
 
 ## Environment Variables
 
@@ -53,3 +72,9 @@ Make sure to set up the following environment variables for JWT authentication, 
 ## Hosting
 
 The project is live and hosted on Render: [Tech Titan](https://tech-titan.onrender.com) - Visit the Site
+
+## Future works:
+- Able to continue shopping after payment.
+- Able to change account details.
+- Set up refund feature.
+
