@@ -8,18 +8,32 @@ Tech Titan is a full-featured e-commerce web application that allows users to br
 
 ## Setup
 ### Backend:
-- Navigate to backend folder
+- Navigate to backend folder:
+```
+$ cd backend
+```
 - install dependencies:
-  npm install
+```
+$ npm install
+```
 - Start the backend server:
-  npm start
+```
+$ npm start
+```
 
 ### Frontend:
 - Navigate to the frontend folder
+```
+$ cd frontend
+```
 - Install dependencies:
-  npm install
+```
+$ npm install
+```
 - Start the frontend server:
-  npm start
+```
+$ npm start
+```
 
 ## Features
 
