@@ -24,14 +24,17 @@ Tech Titan is a full-featured e-commerce web application that allows users to br
 
 ### Order Management:
 -Users can view their order history and account details.
+
 ![order history with account](https://github.com/user-attachments/assets/582ac607-6c87-4d54-82ce-480b6cd4c816)
 
 ### Search Functionality:
 -A search bar feature to find products quickly.
+
 ![search feature](https://github.com/user-attachments/assets/4c18f548-a4dc-49d5-897a-ea69bba46840) ![search result](https://github.com/user-attachments/assets/9d00b24b-3b1c-4ad3-95ad-7d061be807d8)
   
 ### Responsive Design:
 -Fully responsive design with a mobile-friendly toggle dropdown menu.
+
 ![mobile media query with dropdown menu](https://github.com/user-attachments/assets/b45c2524-ec88-4412-9e6f-d06484609a8b)
 
 ## TechStack
